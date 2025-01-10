@@ -1,0 +1,13 @@
+{
+  "device_info": {
+    "name": "Device Name",
+    "sn": "Device SN"
+  },
+  "navbar": {
+    "device_setting": "Device Settings",
+    "device_upgrade": "Device Upgrade",
+    "flash": "Flash",
+    "setting": "Settings",
+    "about": "About"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "device_info": {
+    "name": "设备名称",
+    "sn": "设备序列号"
+  },
+  "navbar": {
+    "device_setting": "设备设置",
+    "device_upgrade": "设备升级",
+    "flash": "烧录",
+    "setting": "设置",
+    "about": "关于"
+  }
+}
