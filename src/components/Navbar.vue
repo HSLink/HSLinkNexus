@@ -1,8 +1,10 @@
 <template>
   <nav class="bg-base-100 shadow-md p-4">
-    <div class="flex justify-between items-center">
-      <a href="/device_setting" class="text-xl font-bold">{{ $t('device_info.sn') }}</a>
-      <ul class="flex space-x-4">
+    <div class="flex items-center">
+      <button class="btn btn-ghost" @click="gotoDeviceSetting">
+        <DeviceInfo/>
+      </button>
+      <ul class="flex space-x-4 items-center mx-auto">
         <li>
           <router-link to="/device_setting" class="btn btn-ghost">{{ $t('navbar.device_setting') }}</router-link>
         </li>
@@ -19,7 +21,9 @@
           <router-link to="/about" class="btn btn-ghost">{{ $t('navbar.about') }}</router-link>
         </li>
       </ul>
-      <button @click="toggleLanguage" class="btn btn-sm btn-primary">{{ currentLanguage }}</button>
+      <button @click="toggleLanguage" class="btn btn-sm btn-primary">
+        {{ currentLanguage }}
+      </button>
     </div>
   </nav>
 </template>
@@ -28,6 +32,8 @@
 import {computed} from 'vue';
 import {useI18n} from 'vue-i18n';
 import {useUserStore} from "../stores/userStore.ts";
+import DeviceInfo from "./DeviceInfo.vue";
+import router from "../router.ts";
 
 const {locale, availableLocales} = useI18n();
 
@@ -46,6 +52,10 @@ const toggleLanguage = () => {
   }
   userStore.setLanguage(locale.value)
 };
+
+const gotoDeviceSetting = () => {
+  router.push("/device_setting")
+}
 
 
 </script>

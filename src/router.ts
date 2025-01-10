@@ -6,6 +6,7 @@ import Flash from "./pages/Flash.vue";
 import Setting from "./pages/Setting.vue";
 
 const routes = [
+    {path: '/', redirect: '/device_setting'},
     {path: '/device_setting', name: 'DeviceSetting', component: DeviceSetting},
     {path: '/device_upgrade', name: 'DeviceUpgrade', component: DeviceUpgrade},
     {path: '/flash', name: 'Flash', component: Flash},
