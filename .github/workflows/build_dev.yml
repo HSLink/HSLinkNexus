@@ -73,5 +73,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: hslink-${{ matrix.platform }}
-          path: src-tauri/target/release/*.exe
+#          path: src-tauri/target/release/*.exe
+          path: src-tauri/target/release/bundle/nsis/hslinkupper_0.1.0_x64-setup.exe
           if-no-files-found: error
