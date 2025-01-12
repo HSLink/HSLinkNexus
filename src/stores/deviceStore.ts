@@ -2,7 +2,7 @@ import {defineStore} from 'pinia';
 
 export interface DeviceInfo {
     sn: string;
-    type: string;
+    model: string;
     hw_ver: string;
     sw_ver: string;
     bl_ver: string;
@@ -12,7 +12,7 @@ export const useDeviceStore = defineStore('device', {
     state: () => ({
         connected: false,
         sn: '',
-        type: '',
+        model: '',
         hw_ver: '',
         sw_ver: '',
         bl_ver: '',
@@ -21,7 +21,7 @@ export const useDeviceStore = defineStore('device', {
         setDeviceInfo(deviceInfo: DeviceInfo) {
             this.connected = true;
             this.sn = deviceInfo.sn;
-            this.type = deviceInfo.type;
+            this.model = deviceInfo.model;
             this.hw_ver = deviceInfo.hw_ver;
             this.sw_ver = deviceInfo.sw_ver;
             this.bl_ver = deviceInfo.bl_ver;
@@ -29,7 +29,7 @@ export const useDeviceStore = defineStore('device', {
         resetDeviceInfo() {
             this.connected = false;
             this.sn = '';
-            this.type = '';
+            this.model = '';
             this.hw_ver = '';
             this.sw_ver = '';
             this.bl_ver = '';

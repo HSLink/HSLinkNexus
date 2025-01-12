@@ -38,7 +38,7 @@ function TestToggleConn() {
     }
     deviceStore.setDeviceInfo({
       sn: random_sn,
-      type: "HSLink-Pro",
+      model: "HSLink-Pro",
       hw_ver: random_hw_ver,
       sw_ver: random_sw_ver,
       bl_ver: random_bl_ver
@@ -61,7 +61,7 @@ function test() {
 <template>
   <div v-if="connected" class="grid gap-4 text-sm font-bold text-orange-500">
     {{ $t('device_info.device_connected') }}<br/>
-    {{ $t('device_info.type') }}: {{ deviceStore.type }}
+    {{ $t('device_info.model') }}: {{ deviceStore.model }}
   </div>
   <div v-else class="text-sm font-bold text-blue-500">
     {{ $t('device_info.device_disconnected') }}

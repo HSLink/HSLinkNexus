@@ -34,12 +34,6 @@ import {useI18n} from 'vue-i18n';
 import {useUserStore} from "../stores/userStore.ts";
 import DeviceInfo from "./DeviceInfo.vue";
 import router from "../router.ts";
-import {
-  hslink_list_device,
-  hslink_open_device,
-  hslink_write,
-  hslink_write_wait_rsp
-} from "../backend/hslink_backend.ts";
 
 const {locale, availableLocales} = useI18n();
 
@@ -60,21 +54,6 @@ const toggleLanguage = () => {
 };
 
 const gotoDeviceSetting = async () => {
-  let devices = await hslink_list_device()
-  if (devices.length === 1) {
-    let device_sn = devices[0]
-    console.log("device_sn:", device_sn)
-    let res = await hslink_open_device(device_sn)
-    if (res == "success") {
-      console.log("open device success")
-      let rsp = await hslink_write_wait_rsp(JSON.stringify({
-        "name": "Hello"
-      }), 1000)
-      console.log("rsp:", rsp)
-    } else {
-      console.log("open device failed")
-    }
-  }
   router.push("/device_setting")
 }
 

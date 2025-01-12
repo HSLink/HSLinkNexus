@@ -4,7 +4,7 @@
     "device_disconnected": "设备未连接",
     "name": "设备名称",
     "sn": "设备序列号",
-    "type": "设备型号"
+    "model": "设备型号"
   },
   "navbar": {
     "device_setting": "设备设置",

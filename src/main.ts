@@ -7,6 +7,7 @@ import en from './locales/en.json';
 import zh from './locales/zh.json';
 import {createPinia} from "pinia";
 import {useUserStore} from "./stores/userStore.ts";
+import {useDeviceStore} from "./stores/deviceStore.ts";
 
 const pinia = createPinia();
 
@@ -30,3 +31,6 @@ const userStore = useUserStore();
 await userStore.loadAll()
 
 i18n.global.locale = userStore.language as typeof i18n.global.locale;
+
+const deviceStore = useDeviceStore()
+deviceStore.resetDeviceInfo()
