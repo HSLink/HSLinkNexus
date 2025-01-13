@@ -17,8 +17,8 @@ jobs:
       matrix:
         include:
           # TODO other platform
-#          - platform: 'macos-latest' # for Arm based macs (M1 and above).
-#            args: '--target aarch64-apple-darwin'
+          - platform: 'macos-latest' # for Arm based macs (M1 and above).
+            args: '--target aarch64-apple-darwin'
 #          - platform: 'macos-latest' # for Intel based macs.
 #            args: '--target x86_64-apple-darwin'
 #          - platform: 'ubuntu-22.04'
@@ -68,10 +68,18 @@ jobs:
           tauriScript: pnpm tauri
           args: ${{ matrix.args }}
 
-      - name: Upload Artifacts
+      - name: Upload Artifacts Windows
         if: matrix.platform == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
           name: hslink-${{ matrix.platform }}
           path: src-tauri/target/release/*.exe
+          if-no-files-found: error
+
+      - name: Upload Artifacts macOS
+        if: matrix.platform == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: hslink-${{ matrix.platform }}
+          path: src-tauri/target/release/bundle/macos/*.app
           if-no-files-found: error
