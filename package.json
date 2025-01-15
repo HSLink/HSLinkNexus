@@ -16,6 +16,7 @@
     "@tauri-apps/plugin-store": "~2",
     "autoprefixer": "^10.4.20",
     "daisyui": "^4.12.23",
+    "lodash": "^4.17.21",
     "pinia": "^2.3.0",
     "postcss": "^8.4.49",
     "vue": "^3.5.13",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2",
+    "@types/lodash": "^4.17.14",
     "@vitejs/plugin-vue": "^5.2.1",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.6.2",

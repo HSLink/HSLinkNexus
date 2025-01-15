@@ -39,6 +39,7 @@ function TestToggleConn() {
     deviceStore.setDeviceInfo({
       sn: random_sn,
       model: "HSLink-Pro",
+      nickname: "HSLink",
       hw_ver: random_hw_ver,
       sw_ver: random_sw_ver,
       bl_ver: random_bl_ver
