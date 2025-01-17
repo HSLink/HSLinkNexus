@@ -4,7 +4,6 @@ import {onMounted, Reactive, reactive, Ref, ref} from "vue";
 import {hslink_list_device, hslink_open_device, hslink_write_wait_rsp} from "../backend/hslink_backend.ts";
 import {storeToRefs} from "pinia";
 import {useDeviceStore} from "../stores/deviceStore.ts";
-import cloneDeep from "lodash";
 
 const device_list: Ref<string[]> = ref([])
 const selected_device_sn: Ref<string> = ref("")
@@ -17,6 +16,9 @@ const {
   power_power_on, power_port_on, power_vref_voltage,
   reset_mode, led_enable, led_brightness
 } = storeToRefs(deviceStore)
+
+const show_alert = ref(false)
+const alert_msg = ref("")
 
 async function SearchDevice() {
   device_list.value = await hslink_list_device()
@@ -100,6 +102,66 @@ async function DisconnectDevice() {
   deviceStore.resetDeviceInfo()
 }
 
+async function DownloadSetting() {
+  console.log("download setting")
+  let setting_str = JSON.stringify({
+    name: "set_nickname",
+    nickname: nickname.value
+  })
+  console.log(`setting str is ${setting_str}, len is ${setting_str.length}`)
+  let rsp = await hslink_write_wait_rsp(setting_str, 1000)
+  try {
+    let rsp_json = JSON.parse(rsp)
+    if (rsp_json["status"] == "success") {
+      console.log("set nickname success")
+    } else {
+      alert_msg.value = rsp_json["message"]
+      show_alert.value = true
+      setTimeout(() => {
+        show_alert.value = false
+      })
+      console.log(`set nickname failed: ${rsp}`)
+    }
+  } catch (e) {
+    console.log(`download nickname failed: ${rsp}`)
+  }
+
+  setting_str = JSON.stringify({
+    name: "settings",
+    data: {
+      boost: speed_boost_enable.value,
+      swd_port_mode: swd_simulate_mode.value,
+      jtag_port_mode: jtag_simulate_mode.value,
+      power: {
+        power_on: power_power_on.value,
+        port_on: power_port_on.value,
+        vref: power_vref_voltage.value
+      },
+      reset: reset_mode.value,
+      led: led_enable.value,
+      led_brightness: led_brightness.value
+    }
+  })
+  console.log(`setting str is ${setting_str}, len is ${setting_str.length}`)
+  rsp = await hslink_write_wait_rsp(setting_str, 1000)
+
+  try {
+    let rsp_json = JSON.parse(rsp)
+    if (rsp_json["status"] == "success") {
+      console.log("set setting success")
+    } else {
+      alert_msg.value = rsp_json["message"]
+      show_alert.value = true
+      setTimeout(() => {
+        show_alert.value = false
+      })
+      console.log(`set setting failed: ${rsp}`)
+    }
+  } catch (e) {
+    console.log(`download setting failed: ${rsp}`)
+  }
+}
+
 onMounted(async () => {
   await SearchDevice()
   if (device_list.value.length > 0) {
@@ -143,11 +205,11 @@ onMounted(async () => {
       <form>
         <div class="mb-4 space-x-4 ">
           <span class="text-lg font-medium">设备昵称:  </span>
-          <input type="text" placeholder="请输入设备名称" class="input input-bordered"/>
+          <input type="text" placeholder="请输入设备名称" class="input input-bordered" v-model="nickname"/>
         </div>
         <div class="mb-4 space-x-4">
           <span class="text-lg font-medium">启用速度Boost:</span>
-          <span>{{ speed_boost_enable }}</span>
+<!--          <span>{{ speed_boost_enable }}</span>-->
           <input type="radio" name="speed_boost" class="radio-xs" v-model="speed_boost_enable"
                  :value="true"/>启用
           <input type="radio" name="speed_boost" class="radio-xs" v-model="speed_boost_enable"
@@ -155,7 +217,7 @@ onMounted(async () => {
         </div>
         <div class="mb-4 space-x-4">
           <span class="text-lg font-medium">SWD输出方式:  </span>
-          <span>{{ swd_simulate_mode }}</span>
+<!--          <span>{{ swd_simulate_mode }}</span>-->
           <input type="radio" name="swd_mode" class="radio-xs" v-model="swd_simulate_mode"
                  :value="'spi'"/>SPI
           <input type="radio" name="swd_mode" class="radio-xs" v-model="swd_simulate_mode"
@@ -163,7 +225,7 @@ onMounted(async () => {
         </div>
         <div class="mb-4 space-x-4">
           <span class="text-lg font-medium">JTAG输出方式:  </span>
-          <span>{{ jtag_simulate_mode }}</span>
+<!--          <span>{{ jtag_simulate_mode }}</span>-->
           <input type="radio" name="jtag_mode" class="radio-xs" v-model="jtag_simulate_mode"
                  :value="'spi'"/>SPI
           <input type="radio" name="jtag_mode" class="radio-xs" v-model="jtag_simulate_mode"
@@ -171,7 +233,7 @@ onMounted(async () => {
         </div>
         <div class="mb-4 space-x-4">
           <span class="text-lg font-medium">上电开启电源输出:  </span>
-          <span>{{ power_power_on }}</span>
+<!--          <span>{{ power_power_on }}</span>-->
           <input type="radio" name="power_power_on" class="radio-xs" v-model="power_power_on"
                  :value="true"/>启用
           <input type="radio" name="power_power_on" class="radio-xs" v-model="power_power_on"
@@ -179,7 +241,7 @@ onMounted(async () => {
         </div>
         <div class="mb-4 space-x-4">
           <span class="text-lg font-medium">上电开启IO输出:  </span>
-          <span>{{ power_port_on }}</span>
+<!--          <span>{{ power_port_on }}</span>-->
           <input type="radio" name="power_port_on" class="radio-xs" v-model="power_port_on"
                  :value="true"/>启用
           <input type="radio" name="power_port_on" class="radio-xs" v-model="power_port_on"
@@ -187,22 +249,43 @@ onMounted(async () => {
         </div>
         <div class="mb-4 space-x-4">
           <span class="text-lg font-medium">参考电压:  </span>
-          <span>{{ power_vref_voltage }}</span>
+<!--          <span>{{ power_vref_voltage }}</span>-->
+          <input type="radio" name="power_vref_voltage" class="radio-xs" v-model="power_vref_voltage"
+                 :value="1.8"/>1.8V
+          <input type="radio" name="power_vref_voltage" class="radio-xs" v-model="power_vref_voltage"
+                 :value="3.3"/>3.3V
+          <input type="radio" name="power_vref_voltage" class="radio-xs" v-model="power_vref_voltage"
+                 :value="5"/>5V
+          <input type="radio" name="power_vref_voltage" class="radio-xs" v-model="power_vref_voltage"
+                 :value="0"/>外部输入
         </div>
         <div class="mb-4 space-x-4">
           <span class="text-lg font-medium">默认复位方式:  </span>
-          <span>{{ reset_mode }}</span>
+<!--          <span>{{ reset_mode }}</span>-->
+          <input type="checkbox" :value="'nrst'" class="checkbox-xs" v-model="reset_mode"/>NRST输出
+          <input type="checkbox" :value="'por'" class="checkbox-xs" v-model="reset_mode"/>电源复位
+          <input type="checkbox" :value="'swd_soft'" class="checkbox-xs" v-model="reset_mode"/>Arm SWD 软复位
         </div>
         <div class="mb-4 space-x-4">
           <span class="text-lg font-medium">启用LED:  </span>
-          <span>{{ led_enable }}</span>
+<!--          <span>{{ led_enable }}</span>-->
+          <input type="radio" name="led_enable" class="radio-xs" v-model="led_enable"
+                 :value="true"/>启用
+          <input type="radio" name="led_enable" class="radio-xs" v-model="led_enable"
+                 :value="false"/> 禁用
         </div>
-        <div class="mb-4 space-x-4">
+        <div class="mb-4 space-x-4" v-if="led_enable">
           <span class="text-lg font-medium">LED亮度:  </span>
-          <span>{{ led_brightness }}</span>
+<!--          <span>{{ led_brightness }}</span>-->
+          <input type="radio" name="led_brightness" class="radio-xs" v-model="led_brightness"
+                 :value="10"/>低亮度
+          <input type="radio" name="led_brightness" class="radio-xs" v-model="led_brightness"
+                 :value="30"/>中亮度
+          <input type="radio" name="led_brightness" class="radio-xs" v-model="led_brightness"
+                 :value="100"/>高亮度
         </div>
-        <button class="btn btn-primary w-full">保存设置</button>
       </form>
+      <button class="btn btn-primary w-full" @click="DownloadSetting">保存设置</button>
     </div>
   </div>
 </template>
