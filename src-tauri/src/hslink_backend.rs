@@ -4,8 +4,8 @@ use std::string::ToString;
 use std::sync::Mutex;
 
 lazy_static! {
-    static ref HID_API: hidapi::HidApi =
-        hidapi::HidApi::new().expect("Failed to create HidApi instance");
+    static ref HID_API: Mutex<hidapi::HidApi> =
+        Mutex::new(hidapi::HidApi::new().expect("Failed to create HidApi instance"));
     static ref HSLink_VID: u16 = 0x0D28;
     static ref HSLink_PID: u16 = 0x0204;
     static ref HSLink_DEVICE: Mutex<Option<hidapi::HidDevice>> = Mutex::new(None);
@@ -39,7 +39,9 @@ impl serde::Serialize for HSLinkError {
 #[tauri::command]
 pub fn hslink_list_device() -> Vec<String> {
     let mut devices: Vec<String> = Vec::new();
-    for device_info in HID_API.device_list() {
+    let mut hid_api = HID_API.lock().unwrap();
+    hid_api.refresh_devices().unwrap();
+    for device_info in hid_api.device_list() {
         if device_info.vendor_id() == *HSLink_VID && device_info.product_id() == *HSLink_PID {
             println!("Device Found:");
             println!("  Vendor ID: {:04X}", device_info.vendor_id());
@@ -51,16 +53,20 @@ pub fn hslink_list_device() -> Vec<String> {
             }
         }
     }
+    if devices.is_empty() {
+        println!("No HSLink devices found");
+    }
     devices
 }
 
 #[tauri::command]
 pub fn hslink_open_device(serial_number: String) -> Result<String, HSLinkError> {
     let mut device_lock = HSLink_DEVICE.lock().unwrap();
-    for device_info in HID_API.device_list() {
+    let mut hid_api = HID_API.lock().unwrap();
+    for device_info in hid_api.device_list() {
         if device_info.vendor_id() == *HSLink_VID && device_info.product_id() == *HSLink_PID {
             if device_info.serial_number().unwrap().to_string() == serial_number {
-                match HID_API.open_path(device_info.path()) {
+                match hid_api.open_path(device_info.path()) {
                     Ok(device) => {
                         println!("Device Opened: {:?}", device);
                         let sn = device_info.serial_number().unwrap().to_string();

@@ -21,7 +21,9 @@ const show_alert = ref(false)
 const alert_msg = ref("")
 
 async function SearchDevice() {
+  console.log("searching device")
   device_list.value = await hslink_list_device()
+  console.log(`device list: ${device_list.value}`)
 }
 
 async function ConnectDevice() {
@@ -178,7 +180,7 @@ onMounted(async () => {
       <h2 class="text-2xl font-bold mb-4">连接设备</h2>
       <div class="mb-4 text-lg font-medium space-x-4">
         <span>选择设备:</span>
-        <select class="select select-bordered" v-model="selected_device_sn">
+        <select class="select select-bordered" v-model="selected_device_sn" @click="SearchDevice">
           <option v-for="device in device_list" :key="device" :value="device">{{ device }}</option>
         </select>
       </div>
