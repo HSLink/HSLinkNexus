@@ -1,15 +1,4 @@
 {
-  "name": "hslinkupper",
-  "private": true,
-  "version": "0.1.0",
-  "type": "module",
-  "packageManager": "pnpm@9.13.2",
-  "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview",
-    "tauri": "tauri"
-  },
   "dependencies": {
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
@@ -26,10 +15,22 @@
   "devDependencies": {
     "@tauri-apps/cli": "^2",
     "@types/lodash": "^4.17.14",
+    "@types/node": "^22.13.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.6.2",
     "vite": "^6.0.3",
     "vue-tsc": "^2.1.10"
-  }
+  },
+  "name": "hslinkupper",
+  "packageManager": "pnpm@9.13.2",
+  "private": true,
+  "scripts": {
+    "build": "vue-tsc --noEmit && vite build",
+    "dev": "vite",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "type": "module",
+  "version": "0.0.1+991c624"
 }
