@@ -21,6 +21,16 @@ const developers: Ref<Developer[]> = ref([
     name: "半糖",
     role: "调试器",
     github: "https://github.com/HalfSweet"
+  },
+  {
+    name: "RCSN",
+    role: "CherryDAP HPM Port",
+    github: "https://github.com/RCSN"
+  },
+  {
+    name: "sakumisu",
+    role: "CherryDAP",
+    github: "https://github.com/sakumisu"
   }
 ]);
 </script>
