@@ -55,19 +55,22 @@ fn modify_version() {
     let mut config_json: Value =
         serde_json::from_str(&config_content).expect("Failed to parse JSON");
 
-    // 修改 `version`, 给打包器用的纯数字版本
-    config_json["version"] = Value::String(number_version.clone());
+    // 仅在版本不一致时修改 `version` 字段
+    if config_json["version"].as_str() != Some(&number_version) {
+        config_json["version"] = Value::String(number_version.clone());
 
-    // 转回 JSON 格式
-    let new_config_content =
-        serde_json::to_string_pretty(&config_json).expect("Failed to serialize JSON");
+        // 转回 JSON 格式
+        let new_config_content =
+            serde_json::to_string_pretty(&config_json).expect("Failed to serialize JSON");
 
-    // 写回 `tauri.conf.json`
-    fs::write(config_path, new_config_content).expect("Failed to update tauri.conf.json");
+        // 写回 `tauri.conf.json`
+        fs::write(config_path, new_config_content).expect("Failed to update tauri.conf.json");
+        println!("Updated tauri.conf.json with version: {}", number_version);
+    } else {
+        println!("tauri.conf.json version is up-to-date. No update needed.");
+    }
 
-    // FIXME 比较奇怪的是nsis打包器会使用修改前的版本号
-
-    // 同样的方式处理package.json
+    // 同样的方式处理 package.json
     let package_path = if current_dir.ends_with("src-tauri") {
         "../package.json"
     } else {
@@ -76,15 +79,16 @@ fn modify_version() {
     let package_content = fs::read_to_string(package_path).expect("Failed to read package.json");
     let mut package_json: Map<String, Value> =
         serde_json::from_str(&package_content).expect("Failed to parse JSON");
-    package_json.insert("version".to_string(), Value::String(semver_version.clone()));
-    let new_package_content =
-        serde_json::to_string_pretty(&package_json).expect("Failed to serialize JSON");
-    fs::write(package_path, new_package_content).expect("Failed to update package.json");
 
-    println!(
-        "Updated tauri.conf.json and package.json with version: {}",
-        semver_version
-    );
+    if package_json.get("version").and_then(|v| v.as_str()) != Some(&semver_version) {
+        package_json.insert("version".to_string(), Value::String(semver_version.clone()));
+        let new_package_content =
+            serde_json::to_string_pretty(&package_json).expect("Failed to serialize JSON");
+        fs::write(package_path, new_package_content).expect("Failed to update package.json");
+        println!("Updated package.json with version: {}", semver_version);
+    } else {
+        println!("package.json version is up-to-date. No update needed.");
+    }
 }
 
 fn main() {
