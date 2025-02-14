@@ -176,7 +176,7 @@ onMounted(async () => {
 <template>
   <div class="flex h-screen">
     <!-- 左侧部分：连接设备 -->
-    <div class="w-2/5 bg-gray-100 p-6 border-r border-gray-300">
+    <div class="w-2/5 bg-gray-100 dark:bg-gray-800 p-6 border-r border-gray-300">
       <h2 class="text-2xl font-bold mb-4">连接设备</h2>
       <div class="mb-4 text-lg font-medium space-x-4">
         <span>选择设备:</span>
