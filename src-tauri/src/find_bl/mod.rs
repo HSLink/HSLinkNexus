@@ -1,6 +1,5 @@
 #[cfg(target_os = "macos")]
 mod find_bl_macos;
-mod find_bl_macos;
 #[cfg(target_os = "windows")]
 mod find_bl_win;
 #[cfg(target_os = "linux")]
