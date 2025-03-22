@@ -8,6 +8,10 @@
   "permissions": [
     "core:default",
     "opener:default",
-    "store:default"
+    "store:default",
+    "fs:default",
+    "fs:allow-copy-file",
+    "dialog:default",
+    "shell:default"
   ]
 }
