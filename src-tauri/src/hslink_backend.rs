@@ -26,6 +26,8 @@ pub enum HSLinkError {
     ReadErr,
     #[error("HSLinkError: Response error")]
     RspErr,
+    #[error("HSLinkError: NotSupport")]
+    NotSupport,
 }
 
 impl serde::Serialize for HSLinkError {
