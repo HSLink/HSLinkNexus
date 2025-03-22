@@ -70,7 +70,7 @@ async function ConnectDevice() {
     let power_output = rsp_json["power"]
     let power_on = power_output["power_on"]
     let port_on = power_output["port_on"]
-    let vref_voltage = power_output["vref"] | power_output["voltage"]
+    let vref_voltage = power_output["vref"]
     let reset_mode = rsp_json["reset"]
     let led = rsp_json["led"]
     let led_brightness = rsp_json["led_brightness"]
