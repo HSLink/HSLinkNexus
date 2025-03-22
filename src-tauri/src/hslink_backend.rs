@@ -14,16 +14,17 @@ lazy_static! {
 }
 
 #[derive(Debug, thiserror::Error)]
+// add HSLinkError to let frontend to handle it
 pub enum HSLinkError {
-    #[error("Device not found")]
+    #[error("HSLinkError: Device not found")]
     DeviceNotFound,
-    #[error("Device not opened")]
+    #[error("HSLinkError: Device not opened")]
     DeviceNotOpened,
-    #[error("Write error")]
+    #[error("HSLinkError: Write error")]
     WriteErr,
-    #[error("Read error")]
+    #[error("HSLinkError: Read error")]
     ReadErr,
-    #[error("Response error")]
+    #[error("HSLinkError: Response error")]
     RspErr,
 }
 
