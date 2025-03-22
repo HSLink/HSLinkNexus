@@ -1,7 +1,10 @@
 {
   "dependencies": {
     "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-dialog": "~2.2.0",
+    "@tauri-apps/plugin-fs": "~2.2.0",
     "@tauri-apps/plugin-opener": "^2",
+    "@tauri-apps/plugin-shell": "~2",
     "@tauri-apps/plugin-store": "~2",
     "autoprefixer": "^10.4.20",
     "daisyui": "^4.12.23",
@@ -32,5 +35,5 @@
     "tauri": "tauri"
   },
   "type": "module",
-  "version": "0.0.1+0e384f6"
+  "version": "0.0.1+d22bc42"
 }
