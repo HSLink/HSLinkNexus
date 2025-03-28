@@ -18,7 +18,7 @@ HSLinkUpper is a simple tool that allows you to config HSLink.
 ## Linux udev rules
 
 ```bash
-sudo install -Dvm644 49-hslink.rules -t /usr/lib/udev/rules.d/ 
+sudo install -Dvm644 99-hslink.rules -t /usr/lib/udev/rules.d/ 
 ```
 
 If rules fail to reload automatically, you can refresh udev rules with the command "udevadm control --reload"
@@ -59,3 +59,21 @@ Arch Linux can install the hslinkupper development package via the [AUR](https:/
 ```bash
 yay -Syu hslink-upper-git
 ```
+
+### Debian or  Ubuntu etc
+
+```bash
+pnpm install
+pnpm tauri build -b deb
+dpkg -i hslinkupper*.deb
+```
+
+
+### RHEL / Fedora etc
+
+```bash
+pnpm install
+pnpm tauri build -b rpm
+rpm -ivh hslinkupper*.rpm
+```
+

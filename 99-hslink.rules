@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: MIT
 
 # HSLinkPro boards, https://github.com/HSLink/HSLink_Hardware
+# HSLinkPro firmware, https://github.com/cherry-embedded/CherryDAP/releases
 
 # Copy this file to /etc/udev/rules.d/
 # If rules fail to reload automatically, you can refresh udev rules
