@@ -266,7 +266,7 @@ onMounted(async () => {
 <!--          <span>{{ reset_mode }}</span>-->
           <input type="checkbox" :value="'nrst'" class="checkbox-xs" v-model="reset_mode"/>NRST输出
           <input type="checkbox" :value="'por'" class="checkbox-xs" v-model="reset_mode"/>电源复位
-          <input type="checkbox" :value="'swd_soft'" class="checkbox-xs" v-model="reset_mode"/>Arm SWD 软复位
+          <input type="checkbox" :value="'arm_swd_soft'" class="checkbox-xs" v-model="reset_mode"/>Arm SWD 软复位
         </div>
         <div class="mb-4 space-x-4">
           <span class="text-lg font-medium">启用LED:  </span>
