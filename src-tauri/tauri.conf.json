@@ -27,9 +27,11 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "resources": [
-      "/usr/lib/udev/rules.d/": "udev-rules/99-hslink.rules"
-    ],
+    "resources": {
+      "../99-hslink.rules": "99-hslink.rules",
+      "../LICENSE": "LICENSE",
+      "../README.md": "README.md"
+    },
     "targets": "all"
   },
   "identifier": "com.hslinkupper.app",

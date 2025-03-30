@@ -17,8 +17,11 @@ HSLinkUpper is a simple tool that allows you to config HSLink.
 
 ## Linux udev rules
 
+If you are using a repository-compiled deb or rpm package, you need to install 99-hslink.rules manually.
+
 ```bash
-sudo install -Dvm644 src-tauri/udev-rules/99-hslink.rules -t /usr/lib/udev/rules.d/ 
+cd /usr/lib/hslinkupper
+sudo install -Dvm644 99-hslink.rules -t /usr/lib/udev/rules.d/ 
 ```
 
 If rules fail to reload automatically, you can refresh udev rules with the command "udevadm control --reload"
