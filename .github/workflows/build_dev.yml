@@ -115,6 +115,9 @@ jobs:
       - name: Copy rpm to release assets
         run: cp src-tauri/target/release/bundle/rpm/${{ env.REPO_NAME }}-${{ env.VERSION }}-1.x86_64.rpm artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_linux_amd64.rpm
 
+      - name: Copy appimage to release assets
+        run: cp src-tauri/target/release/bundle/appimage/${{ env.REPO_NAME }}_${{ env.VERSION }}_amd64.AppImage artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_amd64.AppImage
+
       - name: Zip portable to release assets
         run: |
           cd src-tauri/target/release
