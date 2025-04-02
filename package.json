@@ -8,6 +8,7 @@
     "@tauri-apps/plugin-store": "~2",
     "autoprefixer": "^10.4.20",
     "daisyui": "^4.12.23",
+    "js-base64": "^3.7.7",
     "lodash": "^4.17.21",
     "pinia": "^2.3.0",
     "postcss": "^8.4.49",
@@ -35,5 +36,5 @@
     "tauri": "tauri"
   },
   "type": "module",
-  "version": "1.0.0"
+  "version": "1.0.0-8-g4b18945"
 }

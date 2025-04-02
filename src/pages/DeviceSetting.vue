@@ -43,15 +43,16 @@ async function ConnectDevice() {
     let serial = rsp_json["serial"]
     let model = rsp_json["model"]
     let version = rsp_json["version"]
+    let hardware = rsp_json["hardware"]
     let bootloader = rsp_json["bootloader"]
     let nickname = rsp_json["nickname"]
     console.log(`get hslink info: serial: ${serial}, nickname ${nickname} model: ${model}`)
-    console.log(`version: ${version}, bootloader: ${bootloader}`)
+    console.log(`hw:${hardware} app: ${version}, bootloader: ${bootloader}`)
     deviceStore.setDeviceInfo({
       sn: serial,
       nickname,
       model,
-      hw_ver: "",
+      hw_ver: hardware,
       sw_ver: version,
       bl_ver: bootloader
     })
@@ -192,6 +193,7 @@ onMounted(async () => {
       <div class="mb-4 text-lg font-medium" v-if="connected">
         <p>设备昵称：{{ nickname }}</p>
         <p>设备型号：{{ model }}</p>
+        <p>设备硬件版本：{{ hw_ver }}</p>
         <p>设备APP版本：{{ sw_ver }}</p>
         <p>设备BL版本：{{ bl_ver }}</p>
       </div>

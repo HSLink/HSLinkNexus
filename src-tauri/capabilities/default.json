@@ -11,6 +11,7 @@
     "store:default",
     "fs:default",
     "fs:allow-copy-file",
+    "fs:read-all",
     "dialog:default",
     "shell:default"
   ]
