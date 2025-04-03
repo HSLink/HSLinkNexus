@@ -55,12 +55,14 @@ jobs:
 
       - name: Build tauri app
         uses: tauri-apps/tauri-action@v0
+        with:
+          tauriScript: pnpm tauri
 
-      - name: Create artifacts directory
-        run: mkdir -p artifacts
+      # - name: Create artifacts directory
+      #   run: mkdir -p artifacts
 
-      - name: Copy nsis to release assets
-        run: cp src-tauri/target/release/bundle/nsis/${{ env.REPO_NAME }}_${{ env.VERSION }}_x64-setup.exe artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_windows_x64.exe
+      # - name: Copy nsis to release assets
+      #   run: cp src-tauri/target/release/bundle/nsis/${{ env.REPO_NAME }}_${{ env.VERSION }}_x64-setup.exe artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_windows_x64.exe
 
       - name: Zip portable to release assets
         run: |
