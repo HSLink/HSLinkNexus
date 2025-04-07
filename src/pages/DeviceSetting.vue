@@ -317,7 +317,7 @@ onMounted(async () => {
                  :value="100"/>高亮度
         </div>
       </form>
-      <button class="btn btn-primary w-full" @click="DownloadSetting">保存设置</button>
+      <button class="btn btn-primary w-full" @click="DownloadSetting" :disabled="!connected">保存设置</button>
     </div>
   </div>
   
