@@ -14,7 +14,7 @@ const {sn, nickname, model, hw_ver, sw_ver, bl_ver} = storeToRefs(deviceStore)
 const {
   speed_boost_enable, swd_simulate_mode, jtag_simulate_mode,
   power_power_on, power_port_on, power_vref_voltage,
-  reset_mode, led_enable, led_brightness
+  reset_mode, led_enable, led_brightness, jtag_single_bit_mode
 } = storeToRefs(deviceStore)
 
 const show_alert = ref(false)
@@ -68,6 +68,7 @@ async function ConnectDevice() {
     let speed_boost_enable = rsp_json["boost"]
     let swd_simulate_mode = rsp_json["swd_port_mode"]
     let jtag_simulate_mode = rsp_json["jtag_port_mode"]
+    let jtag_single_bit_mode = rsp_json["jtag_single_bit_mode"] ?? false
     let power_output = rsp_json["power"]
     let power_on = power_output["power_on"]
     let port_on = power_output["port_on"]
@@ -76,13 +77,14 @@ async function ConnectDevice() {
     let led = rsp_json["led"]
     let led_brightness = rsp_json["led_brightness"]
     console.log(`get device setting: ${rsp}`)
-    console.log(`speed_boost_enable: ${speed_boost_enable}, swd_simulate_mode: ${swd_simulate_mode}, jtag_simulate_mode: ${jtag_simulate_mode}`)
+    console.log(`speed_boost_enable: ${speed_boost_enable}, swd_simulate_mode: ${swd_simulate_mode}, jtag_simulate_mode: ${jtag_simulate_mode}, jtag_single_bit_mode: ${jtag_single_bit_mode}`)
     console.log(`power_on: ${power_on}, port_on: ${port_on}, vref: ${vref_voltage}`)
     console.log(`reset_mode: ${reset_mode}, led: ${led}, led_brightness: ${led_brightness}`)
     deviceStore.setDeviceSetting({
       speed_boost_enable,
       swd_simulate_mode,
       jtag_simulate_mode,
+      jtag_single_bit_mode,
       power_output: {
         power_on,
         port_on,
@@ -135,6 +137,7 @@ async function DownloadSetting() {
       boost: speed_boost_enable.value,
       swd_port_mode: swd_simulate_mode.value,
       jtag_port_mode: jtag_simulate_mode.value,
+      jtag_single_bit_mode: jtag_single_bit_mode.value,
       power: {
         power_on: power_power_on.value,
         port_on: power_port_on.value,
@@ -234,6 +237,14 @@ onMounted(async () => {
                  :value="'spi'"/>SPI
           <input type="radio" name="jtag_mode" class="radio-xs" v-model="jtag_simulate_mode"
                  :value="'gpio'"/> GPIO
+        </div>
+        <div class="mb-4 space-x-4" v-if="jtag_simulate_mode === 'spi'">
+          <!-- 这个地方注意jtag_simulate_mode是反逻辑的，JTAG_SHIFT加速打开之后jtag_single_bit应当为false -->
+          <span class="text-lg font-medium">JTAG_SHIFT 加速:  </span>
+          <input type="radio" name="jtag_single_bit" class="radio-xs" v-model="jtag_single_bit_mode"
+                 :value="false"/>启用
+          <input type="radio" name="jtag_single_bit" class="radio-xs" v-model="jtag_single_bit_mode"
+                 :value="true"/> 禁用
         </div>
         <div class="mb-4 space-x-4">
           <span class="text-lg font-medium">上电开启电源输出:  </span>

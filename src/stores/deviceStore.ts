@@ -13,6 +13,7 @@ interface DeviceSetting {
     speed_boost_enable: boolean
     swd_simulate_mode: "gpio" | "spi"
     jtag_simulate_mode: "gpio" | "spi"
+    jtag_single_bit_mode: boolean
     power_output: {
         power_on: boolean
         port_on: boolean
@@ -29,6 +30,7 @@ const DEVICE_SETTING_DEFAULT: DeviceSetting = {
     speed_boost_enable: false,
     swd_simulate_mode: "gpio",
     jtag_simulate_mode: "gpio",
+    jtag_single_bit_mode: false,
     power_output: {
         power_on: false,
         port_on: false,
@@ -55,6 +57,7 @@ export const useDeviceStore = defineStore('device', {
         speed_boost_enable: false,
         swd_simulate_mode: "gpio",
         jtag_simulate_mode: "gpio",
+        jtag_single_bit_mode: false,
         power_power_on: false,
         power_port_on: false,
         power_vref_voltage: 3.3,
@@ -85,6 +88,7 @@ export const useDeviceStore = defineStore('device', {
             this.speed_boost_enable = deviceSetting.speed_boost_enable;
             this.swd_simulate_mode = deviceSetting.swd_simulate_mode;
             this.jtag_simulate_mode = deviceSetting.jtag_simulate_mode;
+            this.jtag_single_bit_mode = deviceSetting.jtag_single_bit_mode;
             this.power_power_on = deviceSetting.power_output.power_on;
             this.power_port_on = deviceSetting.power_output.port_on;
             this.power_vref_voltage = deviceSetting.power_output.vref_voltage;
@@ -96,6 +100,7 @@ export const useDeviceStore = defineStore('device', {
             this.speed_boost_enable = DEVICE_SETTING_DEFAULT.speed_boost_enable;
             this.swd_simulate_mode = DEVICE_SETTING_DEFAULT.swd_simulate_mode;
             this.jtag_simulate_mode = DEVICE_SETTING_DEFAULT.jtag_simulate_mode;
+            this.jtag_single_bit_mode = DEVICE_SETTING_DEFAULT.jtag_single_bit_mode;
             this.power_power_on = DEVICE_SETTING_DEFAULT.power_output.power_on;
             this.power_port_on = DEVICE_SETTING_DEFAULT.power_output.port_on;
             this.power_vref_voltage = DEVICE_SETTING_DEFAULT.power_output.vref_voltage;
