@@ -215,17 +215,12 @@ jobs:
 
       - name: Create GitHub Release
         id: create_release
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: ncipollo/release-action@v1
         with:
-          name: Desktop App v${{ needs.windows-build.outputs.VERSION }}
-          body: |
-            Take a look at the assets to download and install this app.
-          files: |
+          artifacts: |
             artifacts/windows/*
             artifacts/linux/*
             artifacts/macos-aarch64/*
             artifacts/macos-x86_64/*
-          draft: true
-          prerelease: false
+          allowUpdates: true
+          generateReleaseNotes: true
