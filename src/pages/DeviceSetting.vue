@@ -124,11 +124,18 @@ async function DownloadSetting() {
       show_alert.value = true
       setTimeout(() => {
         show_alert.value = false
-      })
+      }, 3000)
       console.log(`set nickname failed: ${rsp}`)
+      return
     }
   } catch (e) {
+    alert_msg.value = "设置失败，请重试"
+    show_alert.value = true
+    setTimeout(() => {
+      show_alert.value = false
+    }, 3000)
     console.log(`download nickname failed: ${rsp}`)
+    return
   }
 
   setting_str = JSON.stringify({
@@ -154,16 +161,26 @@ async function DownloadSetting() {
   try {
     let rsp_json = JSON.parse(rsp)
     if (rsp_json["status"] == "success") {
-      console.log("set setting success")
-    } else {
-      alert_msg.value = rsp_json["message"]
+      alert_msg.value = "设置成功"
       show_alert.value = true
       setTimeout(() => {
         show_alert.value = false
-      })
+      }, 3000)
+      console.log("set setting success")
+    } else {
+      alert_msg.value = "设置失败，错误原因:" + rsp_json["message"]
+      show_alert.value = true
+      setTimeout(() => {
+        show_alert.value = false
+      }, 3000)
       console.log(`set setting failed: ${rsp}`)
     }
   } catch (e) {
+    alert_msg.value = "设置失败，请重试"
+    show_alert.value = true
+    setTimeout(() => {
+      show_alert.value = false
+    }, 3000)
     console.log(`download setting failed: ${rsp}`)
   }
 }
@@ -303,8 +320,69 @@ onMounted(async () => {
       <button class="btn btn-primary w-full" @click="DownloadSetting">保存设置</button>
     </div>
   </div>
+  
+  <!-- 添加提示组件 -->
+  <transition
+    enter-active-class="transition duration-300 ease-out"
+    enter-from-class="transform translate-x-full opacity-0"
+    enter-to-class="transform translate-x-0 opacity-100"
+    leave-active-class="transition duration-200 ease-in"
+    leave-from-class="transform translate-x-0 opacity-100"
+    leave-to-class="transform translate-x-full opacity-0"
+  >
+    <div v-if="show_alert" 
+         class="fixed top-4 right-4 p-4 rounded-lg shadow-lg"
+         :class="{'bg-green-500': alert_msg.includes('成功'), 'bg-red-500': alert_msg.includes('失败')}">
+      <div class="flex items-center text-white">
+        <span class="mr-2">
+          <svg v-if="alert_msg.includes('成功')" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </span>
+        <span>{{ alert_msg }}</span>
+      </div>
+    </div>
+  </transition>
 </template>
 
 <style scoped>
+.transform {
+  transform: translateX(0);
+}
 
+.translate-x-full {
+  transform: translateX(100%);
+}
+
+.opacity-0 {
+  opacity: 0;
+}
+
+.opacity-100 {
+  opacity: 1;
+}
+
+.transition {
+  transition-property: transform, opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.duration-200 {
+  transition-duration: 200ms;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
+}
+
+.ease-in {
+  transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}
+
+.ease-out {
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
 </style>
