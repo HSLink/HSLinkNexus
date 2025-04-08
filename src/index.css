@@ -1,3 +1,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 隐藏所有滚动条但保留滚动功能 */
+@layer utilities {
+  /* Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
+
+/* 全局禁用滚动条 */
+html, body {
+  overflow: hidden;
+  height: 100%;
+}
+
+/* 确保主容器可以滚动但不显示滚动条 */
+#app {
+  height: 100%;
+  overflow: auto;
+  @apply no-scrollbar;
+}
