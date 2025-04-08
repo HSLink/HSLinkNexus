@@ -1,29 +1,40 @@
 <template>
-  <nav class="bg-base-100 shadow-md p-4">
-    <div class="flex items-center">
-      <button class="btn btn-ghost" @click="gotoDeviceSetting">
-        <DeviceInfo/>
-      </button>
-      <ul class="flex space-x-4 items-center mx-auto">
-        <li>
-          <router-link to="/device_setting" class="btn btn-ghost">{{ $t('navbar.device_setting') }}</router-link>
-        </li>
-        <li>
-          <router-link to="/device_upgrade" class="btn btn-ghost">{{ $t('navbar.device_upgrade') }}</router-link>
-        </li>
-        <li>
-          <router-link to="/flash" class="btn btn-ghost">{{ $t('navbar.flash') }}</router-link>
-        </li>
-        <li>
-          <router-link to="/setting" class="btn btn-ghost">{{ $t('navbar.setting') }}</router-link>
-        </li>
-        <li>
-          <router-link to="/about" class="btn btn-ghost">{{ $t('navbar.about') }}</router-link>
-        </li>
-      </ul>
-      <button @click="toggleLanguage" class="btn btn-sm btn-primary">
-        {{ currentLanguage }}
-      </button>
+  <nav class="bg-base-100 shadow-md p-4 fixed top-0 left-0 right-0 z-50">
+    <div class="flex justify-between items-center max-w-screen-xl mx-auto">
+      <!-- 左侧固定宽度区域 -->
+      <div class="w-48">
+        <button class="btn btn-ghost" @click="gotoDeviceSetting">
+          <DeviceInfo/>
+        </button>
+      </div>
+      
+      <!-- 中间导航区域，固定宽度和位置 -->
+      <div class="flex-grow flex justify-center">
+        <ul class="flex space-x-4 items-center">
+          <li>
+            <router-link to="/device_setting" class="btn btn-ghost">{{ $t('navbar.device_setting') }}</router-link>
+          </li>
+          <li>
+            <router-link to="/device_upgrade" class="btn btn-ghost">{{ $t('navbar.device_upgrade') }}</router-link>
+          </li>
+          <li>
+            <router-link to="/flash" class="btn btn-ghost">{{ $t('navbar.flash') }}</router-link>
+          </li>
+          <li>
+            <router-link to="/setting" class="btn btn-ghost">{{ $t('navbar.setting') }}</router-link>
+          </li>
+          <li>
+            <router-link to="/about" class="btn btn-ghost">{{ $t('navbar.about') }}</router-link>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- 右侧固定宽度区域 -->
+      <div class="w-48 flex justify-end">
+        <button @click="toggleLanguage" class="btn btn-sm btn-primary">
+          {{ currentLanguage }}
+        </button>
+      </div>
     </div>
   </nav>
 </template>
