@@ -14,7 +14,7 @@ const {sn, nickname, model, hw_ver, sw_ver, bl_ver} = storeToRefs(deviceStore)
 const {
   speed_boost_enable, swd_simulate_mode, jtag_simulate_mode,
   power_power_on, power_port_on, power_vref_voltage,
-  reset_mode, led_enable, led_brightness, jtag_single_bit_mode
+  reset_mode, led_enable, led_brightness, jtag_single_bit_mode, jtag_20pin_compatible
 } = storeToRefs(deviceStore)
 
 const show_alert = ref(false)
@@ -76,8 +76,9 @@ async function ConnectDevice() {
     let reset_mode = rsp_json["reset"]
     let led = rsp_json["led"]
     let led_brightness = rsp_json["led_brightness"]
+    let jtag_20pin_compatible = rsp_json["jtag_20pin_compatible"] ?? false
     console.log(`get device setting: ${rsp}`)
-    console.log(`speed_boost_enable: ${speed_boost_enable}, swd_simulate_mode: ${swd_simulate_mode}, jtag_simulate_mode: ${jtag_simulate_mode}, jtag_single_bit_mode: ${jtag_single_bit_mode}`)
+    console.log(`speed_boost_enable: ${speed_boost_enable}, swd_simulate_mode: ${swd_simulate_mode}, jtag_simulate_mode: ${jtag_simulate_mode}, jtag_single_bit_mode: ${jtag_single_bit_mode}, jtag_20pin_compatible: ${jtag_20pin_compatible}`)
     console.log(`power_on: ${power_on}, port_on: ${port_on}, vref: ${vref_voltage}`)
     console.log(`reset_mode: ${reset_mode}, led: ${led}, led_brightness: ${led_brightness}`)
     deviceStore.setDeviceSetting({
@@ -85,6 +86,7 @@ async function ConnectDevice() {
       swd_simulate_mode,
       jtag_simulate_mode,
       jtag_single_bit_mode,
+      jtag_20pin_compatible,
       power_output: {
         power_on,
         port_on,
@@ -145,6 +147,7 @@ async function DownloadSetting() {
       swd_port_mode: swd_simulate_mode.value,
       jtag_port_mode: jtag_simulate_mode.value,
       jtag_single_bit_mode: jtag_single_bit_mode.value,
+      jtag_20pin_compatible: jtag_20pin_compatible.value,
       power: {
         power_on: power_power_on.value,
         port_on: power_port_on.value,
@@ -315,6 +318,13 @@ onMounted(async () => {
                  :value="30"/>中亮度
           <input type="radio" name="led_brightness" class="radio-xs" v-model="led_brightness"
                  :value="100"/>高亮度
+        </div>
+        <div class="mb-4 space-x-4">
+          <span class="text-lg font-medium">20P JTAG接口兼容模式:  </span>
+          <input type="radio" name="jtag_20pin_compatible" class="radio-xs" v-model="jtag_20pin_compatible"
+                 :value="true"/>启用
+          <input type="radio" name="jtag_20pin_compatible" class="radio-xs" v-model="jtag_20pin_compatible"
+                 :value="false"/> 禁用
         </div>
       </form>
       <button class="btn btn-primary w-full" @click="DownloadSetting" :disabled="!connected">保存设置</button>
