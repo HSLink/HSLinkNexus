@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {hslink_find_bl} from "../backend/find_bl.ts";
 import {hslink_write, hslink_write_wait_rsp} from "../backend/hslink_backend.ts";
-import {onMounted, onUnmounted, ref} from "vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
 import {storeToRefs} from "pinia";
 import {useDeviceStore} from "../stores/deviceStore.ts";
 import * as dialog from '@tauri-apps/plugin-dialog';
@@ -165,6 +165,21 @@ onUnmounted(() => {
   clearInterval(probe_tmr);
 })
 
+// 检查App版本是否满足升级Bootloader的最低要求(2.4.0)
+const isAppVersionSupported = computed(() => {
+  if (!sw_ver.value) return false;
+  
+  const versionParts = sw_ver.value.split('.').map(Number);
+  const minVersion = [2, 4, 0];
+  
+  for (let i = 0; i < 3; i++) {
+    const current = versionParts[i] || 0;
+    if (current > minVersion[i]) return true;
+    if (current < minVersion[i]) return false;
+  }
+  
+  return true;
+});
 
 </script>
 
@@ -193,7 +208,10 @@ onUnmounted(() => {
           <div v-if="connected">
             <input type="text" placeholder="固件地址" class="input input-bordered w-2/3" v-model="BootloaderFwPath">
             <button class="btn btn-primary w-1/3" @click="SelectBootloaderFw">选择固件</button>
-            <button class="btn btn-primary w-full mt-4" @click="UpgradeBootloader">升级Bootloader</button>
+            <button class="btn btn-primary w-full mt-4" :disabled="!isAppVersionSupported" @click="UpgradeBootloader">升级Bootloader</button>
+            <div v-if="!isAppVersionSupported" class="text-red-500 mt-2">
+              App固件版本需要2.4.0及以上才能升级Bootloader
+            </div>
           </div>
           <div v-else>
             <div class="text-lg font-medium mb-4">请先连接设备</div>
