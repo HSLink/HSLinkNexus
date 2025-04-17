@@ -290,6 +290,8 @@ onMounted(async () => {
           <input type="radio" name="power_vref_voltage" class="radio-xs" v-model="power_vref_voltage"
                  :value="3.3"/>3.3V
           <input type="radio" name="power_vref_voltage" class="radio-xs" v-model="power_vref_voltage"
+                 :value="3.6"/>3.6V
+          <input type="radio" name="power_vref_voltage" class="radio-xs" v-model="power_vref_voltage"
                  :value="5"/>5V
           <input type="radio" name="power_vref_voltage" class="radio-xs" v-model="power_vref_voltage"
                  :value="0"/>外部输入
