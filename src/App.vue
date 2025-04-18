@@ -1,7 +1,7 @@
 <template>
   <div class="flex">
     <Navbar />
-    <div :class="`transition-all duration-300 w-full min-h-screen bg-base-100 p-6 ${isNavbarCollapsed ? 'ml-16' : 'ml-64'}`">
+    <div :class="`transition-all duration-300 w-full min-h-screen bg-base-100 ${isNavbarCollapsed ? 'ml-16' : 'ml-64'}`">
       <router-view />
     </div>
   </div>
