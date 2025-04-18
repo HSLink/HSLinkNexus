@@ -17,7 +17,23 @@
         
         <!-- 页面导航菜单 -->
         <li>
-          <router-link to="/device_setting" class="nav-item">
+          <router-link to="/home" class="nav-item">
+            <div class="icon-box">
+              <span class="material-icons">home</span>
+              <div v-if="isCollapsed" class="tooltip">{{ $t('navbar.home') }}</div>
+            </div>
+            <span class="label" :class="{'hidden-label': isCollapsed}">
+              {{ $t('navbar.home') }}
+            </span>
+          </router-link>
+        </li>
+        <li>
+          <!-- 设备设置按钮，添加禁用逻辑 -->
+          <router-link 
+            v-if="connected" 
+            to="/device_setting" 
+            class="nav-item"
+          >
             <div class="icon-box">
               <span class="material-icons">hardware</span>
               <div v-if="isCollapsed" class="tooltip">{{ $t('navbar.device_setting') }}</div>
@@ -26,9 +42,27 @@
               {{ $t('navbar.device_setting') }}
             </span>
           </router-link>
+          <div 
+            v-else
+            class="nav-item disabled-nav-item" 
+            title="请先连接设备"
+          >
+            <div class="icon-box">
+              <span class="material-icons">hardware</span>
+              <div v-if="isCollapsed" class="tooltip">请先连接设备</div>
+            </div>
+            <span class="label" :class="{'hidden-label': isCollapsed}">
+              {{ $t('navbar.device_setting') }}
+            </span>
+          </div>
         </li>
         <li>
-          <router-link to="/device_upgrade" class="nav-item">
+          <!-- 设备升级按钮，添加禁用逻辑 -->
+          <router-link 
+            v-if="connected" 
+            to="/device_upgrade" 
+            class="nav-item"
+          >
             <div class="icon-box">
               <span class="material-icons">update</span>
               <div v-if="isCollapsed" class="tooltip">{{ $t('navbar.device_upgrade') }}</div>
@@ -37,6 +71,19 @@
               {{ $t('navbar.device_upgrade') }}
             </span>
           </router-link>
+          <div 
+            v-else
+            class="nav-item disabled-nav-item"
+            title="请先连接设备"
+          >
+            <div class="icon-box">
+              <span class="material-icons">update</span>
+              <div v-if="isCollapsed" class="tooltip">请先连接设备</div>
+            </div>
+            <span class="label" :class="{'hidden-label': isCollapsed}">
+              {{ $t('navbar.device_upgrade') }}
+            </span>
+          </div>
         </li>
         <li>
           <router-link to="/flash" class="nav-item">
@@ -79,11 +126,15 @@
 <script setup lang="ts">
 import {useI18n} from 'vue-i18n';
 import {useUserStore} from "../stores/userStore.ts";
+import {useDeviceStore} from "../stores/deviceStore.ts"; // 导入设备存储
+import {storeToRefs} from "pinia"; // 导入storeToRefs
 import router from "../router.ts";
 import { ref } from 'vue';
 
 const {locale} = useI18n();
 const userStore = useUserStore();
+const deviceStore = useDeviceStore(); // 获取设备存储
+const {connected} = storeToRefs(deviceStore); // 获取连接状态
 
 // 保留语言切换功能，但从界面上移除按钮
 const setLanguage = (lang: string) => {
@@ -268,5 +319,23 @@ initNavbarState();
   .tooltip {
     background-color: #6482ff !important;
   }
+}
+
+/* 添加禁用导航项样式 */
+.disabled-nav-item {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.disabled-nav-item:hover {
+  background-color: transparent !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}
+
+.disabled-nav-item .material-icons {
+  color: inherit !important;
+  transform: none !important;
 }
 </style>

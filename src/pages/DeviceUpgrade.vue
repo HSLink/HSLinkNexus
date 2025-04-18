@@ -190,106 +190,94 @@ const isAppVersionSupported = computed(() => {
       <h2 class="text-3xl font-extrabold">设备升级</h2>
     </div>
 
-    <!-- Content Section -->
-    <div class="flex flex-col lg:flex-row bg-white dark:bg-gray-700 shadow-md rounded-lg p-6 mb-4">
-      <!-- Left Column -->
-      <div class="lg:w-1/3 space-y-4">
-        <div class="space-y-2">
-          <h3 class="text-xl font-semibold ">Bootloader</h3>
-        </div>
-        <div class="space-y-2">
-          <p class="text-lg ">当前版本: {{ bl_ver }}</p>
-        </div>
+    <!-- 未连接设备时的提示 -->
+    <div v-if="!connected" class="flex items-center justify-center h-[70vh]">
+      <div class="bg-base-200 bg-opacity-80 rounded-xl p-10 shadow-lg text-center max-w-lg">
+        <span class="material-icons text-8xl text-primary mb-4">link_off</span>
+        <h2 class="text-2xl font-semibold mb-2">未连接设备</h2>
+        <p class="text-lg mb-6 text-base-content opacity-80">请先在主页连接设备，然后再进行升级操作。</p>
+        <router-link to="/" class="btn btn-primary">
+          <span class="material-icons mr-2">home</span>
+          返回主页
+        </router-link>
       </div>
+    </div>
 
-      <!-- Right Column -->
-      <div class="lg:w-2/3 space-y-4">
-        <div class="space-y-2">
-          <div v-if="connected">
-            <input type="text" placeholder="固件地址" class="input input-bordered w-2/3" v-model="BootloaderFwPath">
-            <button class="btn btn-primary w-1/3" @click="SelectBootloaderFw">选择固件</button>
-            <button class="btn btn-primary w-full mt-4" :disabled="!isAppVersionSupported" @click="UpgradeBootloader">升级Bootloader</button>
-            <div v-if="!isAppVersionSupported" class="text-red-500 mt-2">
-              App固件版本需要2.4.0及以上才能升级Bootloader
+    <!-- 已连接设备时显示升级选项 -->
+    <template v-else>
+      <!-- Content Section -->
+      <div class="flex flex-col lg:flex-row bg-white dark:bg-gray-700 shadow-md rounded-lg p-6 mb-4">
+        <!-- Left Column -->
+        <div class="lg:w-1/3 space-y-4">
+          <div class="space-y-2">
+            <h3 class="text-xl font-semibold ">Bootloader</h3>
+          </div>
+          <div class="space-y-2">
+            <p class="text-lg ">当前版本: {{ bl_ver }}</p>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="lg:w-2/3 space-y-4">
+          <div class="space-y-2">
+            <div v-if="connected">
+              <input type="text" placeholder="固件地址" class="input input-bordered w-2/3" v-model="BootloaderFwPath">
+              <button class="btn btn-primary w-1/3" @click="SelectBootloaderFw">选择固件</button>
+              <button class="btn btn-primary w-full mt-4" :disabled="!isAppVersionSupported" @click="UpgradeBootloader">升级Bootloader</button>
+              <div v-if="!isAppVersionSupported" class="text-red-500 mt-2">
+                App固件版本需要2.4.0及以上才能升级Bootloader
+              </div>
             </div>
           </div>
-          <div v-else>
-            <div class="text-lg font-medium mb-4">请先连接设备</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Content Section -->
-    <div class="flex flex-col lg:flex-row bg-white dark:bg-gray-700 shadow-md rounded-lg p-6 mb-4">
-      <!-- Left Column -->
-      <div class="lg:w-1/3 space-y-4">
-        <div class="space-y-2">
-          <h3 class="text-xl font-semibold ">App</h3>
-        </div>
-        <div class="space-y-2">
-          <p class="text-lg ">当前版本{{ sw_ver }}</p>
         </div>
       </div>
 
-      <!-- Right Column -->
-      <div class="lg:w-2/3 space-y-4">
-        <div class="space-y-2">
-          <div v-if="connected">
-            <button class="btn btn-primary w-full mt-4" @click="EntryBL">进入Bootloader</button>
+      <!-- Content Section -->
+      <div class="flex flex-col lg:flex-row bg-white dark:bg-gray-700 shadow-md rounded-lg p-6 mb-4">
+        <!-- Left Column -->
+        <div class="lg:w-1/3 space-y-4">
+          <div class="space-y-2">
+            <h3 class="text-xl font-semibold ">App</h3>
           </div>
-          <div v-else-if="inBootloader">
-            <div class="mb-4 flex items-center gap-4">
-              <input type="text" placeholder="固件地址" class="input input-bordered w-2/3" v-model="AppFwPath">
-              <button class="btn btn-primary w-1/3" @click="SelectAppFw">选择固件</button>
+          <div class="space-y-2">
+            <p class="text-lg ">当前版本{{ sw_ver }}</p>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="lg:w-2/3 space-y-4">
+          <div class="space-y-2">
+            <div v-if="connected">
+              <button class="btn btn-primary w-full mt-4" @click="EntryBL">进入Bootloader</button>
             </div>
-            <button class="btn btn-primary w-full mt-4" @click="UpgradeApp">升级APP</button>
+            <div v-else-if="inBootloader">
+              <div class="mb-4 flex items-center gap-4">
+                <input type="text" placeholder="固件地址" class="input input-bordered w-2/3" v-model="AppFwPath">
+                <button class="btn btn-primary w-1/3" @click="SelectAppFw">选择固件</button>
+              </div>
+              <button class="btn btn-primary w-full mt-4" @click="UpgradeApp">升级APP</button>
+            </div>
           </div>
-          <div v-else>
-            <div class="text-lg font-medium mb-4">请先连接设备</div>
+        </div>
+      </div>
+
+      <!-- Content Section -->
+      <div class="flex flex-col lg:flex-row bg-white dark:bg-gray-700 shadow-md rounded-lg p-6 mb-4">
+        <!-- Left Column -->
+        <div class="lg:w-1/3 space-y-4">
+          <div class="space-y-2">
+            <h3 class="text-xl font-semibold ">固件下载</h3>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="lg:w-2/3 space-y-4">
+          <div class="space-y-2">
+            <button class="btn btn-primary w-full mt-4" @click="DownloadFw">下载固件</button>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Content Section -->
-    <div class="flex flex-col lg:flex-row bg-white dark:bg-gray-700 shadow-md rounded-lg p-6 mb-4">
-      <!-- Left Column -->
-      <div class="lg:w-1/3 space-y-4">
-        <div class="space-y-2">
-          <h3 class="text-xl font-semibold ">固件下载</h3>
-        </div>
-      </div>
-
-      <!-- Right Column -->
-      <div class="lg:w-2/3 space-y-4">
-        <div class="space-y-2">
-          <button class="btn btn-primary w-full mt-4" @click="DownloadFw">下载固件</button>
-        </div>
-      </div>
-    </div>
-
-    <!--      <input type="text" placeholder="固件地址" class="input input-bordered" v-model="fileSelectedPath">-->
-    <!--      <button class="btn btn-primary" @click="SelectFw">选择固件</button>-->
-    <!--      <button class="btn btn-primary w-full mt-4" @click="SendTest">发送测试</button>-->
-
-    <!--      <div v-if="connected">-->
-    <!--        <button class="btn btn-primary w-full mt-4" @click="EntryBL">进入Bootloader</button>-->
-    <!--      </div>-->
-    <!--      <div v-else-if="inBootloader">-->
-    <!--        <div class="mb-4 flex items-center gap-4">-->
-    <!--          <input type="text" placeholder="固件地址" class="input input-bordered" v-model="fileSelectedPath">-->
-    <!--          <button class="btn btn-primary" @click="SelectFw">选择固件</button>-->
-    <!--          <button class="btn btn-primary" @click="DownloadFw">下载固件</button>-->
-    <!--        </div>-->
-    <!--        <button class="btn btn-primary w-full mt-4" @click="Upgrade">升级APP</button>-->
-    <!--      </div>-->
-    <!--      <div v-else>-->
-    <!--        <div class="text-lg font-medium mb-4">请先连接设备</div>-->
-    <!--      </div>-->
-
-    <!--    </div>-->
-
+    </template>
   </div>
 </template>
 
