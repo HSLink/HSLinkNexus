@@ -8,6 +8,7 @@ import zh from './locales/zh.json';
 import {createPinia} from "pinia";
 import {useUserStore} from "./stores/userStore.ts";
 import {useDeviceStore} from "./stores/deviceStore.ts";
+import 'material-icons/iconfont/material-icons.css';
 
 const pinia = createPinia();
 
