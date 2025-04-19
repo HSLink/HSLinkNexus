@@ -2,7 +2,7 @@
 
 import {onMounted, reactive, ref, computed, watch} from "vue";
 import {hslink_write_wait_rsp} from "../backend/hslink_backend.ts";
-import {storeToRefs} from "pinia";
+import {storeToRefs}from "pinia";
 import {useDeviceStore}from "../stores/deviceStore.ts";
 
 const deviceStore = useDeviceStore()
@@ -365,21 +365,26 @@ async function DownloadSetting() {
             </div>
           </div>
 
-          <div class="form-control mt-4" v-if="jtag_simulate_mode === 'spi'">
-            <div class="bg-base-200 p-4 rounded-lg">
-              <div class="flex items-center justify-between">
-                <span class="label-text text-lg">JTAG_SHIFT 加速</span>
-                <div class="flex items-center gap-2">
-                  <input type="checkbox" class="toggle toggle-primary" 
-                         :checked="!jtag_single_bit_mode" 
-                         @change="jtag_single_bit_mode = !$event.target.checked"/>
-                  <span class="label-text text-sm opacity-70">{{ !jtag_single_bit_mode ? '已启用' : '已禁用' }}</span>
+          <!-- JTAG_SHIFT 加速选项 -->
+          <div class="jtag-shift-container mt-4">
+            <transition name="slide-fade">
+              <div class="form-control" v-if="jtag_simulate_mode === 'spi'">
+                <div class="bg-base-200 p-4 rounded-lg">
+                  <div class="flex items-center justify-between">
+                    <span class="label-text text-lg">JTAG_SHIFT 加速</span>
+                    <div class="flex items-center gap-2">
+                      <input type="checkbox" class="toggle toggle-primary" 
+                             :checked="!jtag_single_bit_mode" 
+                             @change="jtag_single_bit_mode = !$event.target.checked"/>
+                      <span class="label-text text-sm opacity-70">{{ !jtag_single_bit_mode ? '已启用' : '已禁用' }}</span>
+                    </div>
+                  </div>
+                  <div class="text-xs mt-1 ml-1 opacity-70">
+                    启用后可提升JTAG操作速度，但可能降低部分设备的兼容性
+                  </div>
                 </div>
               </div>
-              <div class="text-xs mt-1 ml-1 opacity-70">
-                启用后可提升JTAG操作速度，但可能降低部分设备的兼容性
-              </div>
-            </div>
+            </transition>
           </div>
         </div>
       </div>
