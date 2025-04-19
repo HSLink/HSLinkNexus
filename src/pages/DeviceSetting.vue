@@ -3,7 +3,7 @@
 import {onMounted, reactive, ref, computed, watch} from "vue";
 import {hslink_write_wait_rsp} from "../backend/hslink_backend.ts";
 import {storeToRefs} from "pinia";
-import {useDeviceStore} from "../stores/deviceStore.ts";
+import {useDeviceStore}from "../stores/deviceStore.ts";
 
 const deviceStore = useDeviceStore()
 const {connected} = storeToRefs(deviceStore);
@@ -126,6 +126,48 @@ watch(() => power_vref_voltage.value, (newVal) => {
       }
   }
 }, { immediate: true });
+
+// 处理元素高度过渡动画
+const startExpandAnimation = (element) => {
+  // 首先设置元素高度为0
+  element.style.height = '0';
+  
+  // 强制回流并触发过渡
+  void element.offsetHeight;
+  
+  // 设置元素高度为内容的实际高度
+  element.style.height = element.scrollHeight + 'px';
+};
+
+const endExpandAnimation = (element) => {
+  // 动画结束后移除高度限制，让元素自然适应内容
+  element.style.height = '';
+};
+
+const startCollapseAnimation = (element) => {
+  // 先记录当前高度
+  const elementHeight = element.scrollHeight;
+  element.style.height = elementHeight + 'px';
+  
+  // 强制回流并触发过渡
+  void element.offsetHeight;
+  
+  // 设置高度为0，开始收起动画
+  element.style.height = '0';
+};
+
+const endCollapseAnimation = (element) => {
+  // 动画结束后移除高度设置，但保持父元素的高度稳定
+  element.style.height = '';
+  element.style.display = 'none';
+  
+  // 确保在下一个渲染周期将display恢复为空
+  setTimeout(() => {
+    if (!led_enable.value) {  // 只有在LED仍然禁用时才恢复
+      element.style.display = '';
+    }
+  }, 50);
+};
 
 // 处理复选框的复位模式切换
 function toggleResetMode(mode: string, checked: boolean) {
@@ -417,81 +459,92 @@ async function DownloadSetting() {
                 </div>
               </div>
               
-              <div v-if="!isExternalVref" class="space-y-3">
-                <!-- 电压设置模式选择 -->
-                <div class="tabs tabs-boxed">
-                  <a class="tab" :class="{'tab-active': voltageMode === 'preset'}" @click="voltageMode = 'preset'">预设值</a>
-                  <a class="tab" :class="{'tab-active': voltageMode === 'custom'}" @click="switchToCustomMode">自定义</a>
-                </div>
-                
-                <!-- 预设电压选择 -->
-                <div v-if="voltageMode === 'preset'" class="grid grid-cols-4 gap-2">
-                  <button v-for="voltage in presetVoltages" :key="voltage" 
-                          class="btn"
-                          :class="{'btn-primary': power_vref_voltage === voltage, 'btn-outline': power_vref_voltage !== voltage}"
-                          @click="selectPresetVoltage(voltage)">
-                    {{ voltage }}V
-                  </button>
-                </div>
-                
-                <!-- 自定义电压输入 -->
-                <div v-else class="form-control">
-                  <div class="relative">
-                    <div class="text-center mb-2 pb-1 border-b border-base-300 opacity-70">
-                      <span class="text-sm font-medium">电压值</span>
-                    </div>
-                    <div class="relative">
-                      <input type="number"
-                             class="input input-bordered w-full transition-all duration-200 pr-8"
-                             :class="{
-                               'input-error': voltageErrorMsg,
-                               'focus:ring-2 focus:ring-error': voltageErrorMsg
-                             }"
-                             v-model="customVoltage"
-                             @input="updateCustomVoltage"
-                             @blur="updateCustomVoltage"
-                             step="0.1"
-                             min="1.8"
-                             max="5.0"
-                             placeholder="输入1.8-5.0之间的电压"/>
-                      <span class="absolute right-3 top-1/2 -translate-y-1/2 text-base-content opacity-70">V</span>
-                    </div>
+              <transition
+                name="fade"
+                mode="out-in"
+              >
+                <div v-if="!isExternalVref" key="internal" class="space-y-3">
+                  <!-- 电压设置模式选择 -->
+                  <div class="tabs tabs-boxed">
+                    <a class="tab" :class="{'tab-active': voltageMode === 'preset'}" @click="voltageMode = 'preset'">预设值</a>
+                    <a class="tab" :class="{'tab-active': voltageMode === 'custom'}" @click="switchToCustomMode">自定义</a>
                   </div>
                   
-                  <!-- Error message display - Enhanced with animation and better styling -->
-                  <div v-if="voltageErrorMsg" 
-                       class="text-error mt-2 text-sm font-medium bg-error/10 p-2 rounded-md border-l-4 border-error">
-                    <div class="flex">
-                      <span class="material-icons text-base mr-2">error_outline</span>
-                      <div>
-                        <strong>错误：</strong>{{ voltageErrorMsg }}
-                        <div class="text-xs mt-1">
-                          <span v-if="voltageErrorMsg.includes('低于')">
-                            建议值：1.8V (最小允许值)
-                          </span>
-                          <span v-else-if="voltageErrorMsg.includes('超过')">
-                            建议值：5.0V (最大允许值)
-                          </span>
+                  <!-- 预设电压选择 -->
+                  <transition name="fade" mode="out-in">
+                    <div v-if="voltageMode === 'preset'" key="preset" class="grid grid-cols-4 gap-2">
+                      <button v-for="voltage in presetVoltages" :key="voltage" 
+                              class="btn"
+                              :class="{'btn-primary': power_vref_voltage === voltage, 'btn-outline': power_vref_voltage !== voltage}"
+                              @click="selectPresetVoltage(voltage)">
+                        {{ voltage }}V
+                      </button>
+                    </div>
+                    
+                    <!-- 自定义电压输入 -->
+                    <div v-else key="custom" class="form-control">
+                      <div class="relative">
+                        <div class="text-center mb-2 pb-1 border-b border-base-300 opacity-70">
+                          <span class="text-sm font-medium">电压值</span>
+                        </div>
+                        <div class="relative">
+                          <input type="number"
+                                 class="input input-bordered w-full transition-all duration-200 pr-8"
+                                 :class="{
+                                   'input-error': voltageErrorMsg,
+                                   'focus:ring-2 focus:ring-error': voltageErrorMsg
+                                 }"
+                                 v-model="customVoltage"
+                                 @input="updateCustomVoltage"
+                                 @blur="updateCustomVoltage"
+                                 step="0.1"
+                                 min="1.8"
+                                 max="5.0"
+                                 placeholder="输入1.8-5.0之间的电压"/>
+                          <span class="absolute right-3 top-1/2 -translate-y-1/2 text-base-content opacity-70">V</span>
                         </div>
                       </div>
+                      
+                      <!-- Error message and help text -->
+                      <div>
+                        <transition name="fade">
+                          <div v-if="voltageErrorMsg" 
+                               class="text-error mt-2 text-sm font-medium bg-error/10 p-2 rounded-md border-l-4 border-error">
+                            <div class="flex">
+                              <span class="material-icons text-base mr-2">error_outline</span>
+                              <div>
+                                <strong>错误：</strong>{{ voltageErrorMsg }}
+                                <div class="text-xs mt-1">
+                                  <span v-if="voltageErrorMsg.includes('低于')">
+                                    建议值：1.8V (最小允许值)
+                                  </span>
+                                  <span v-else-if="voltageErrorMsg.includes('超过')">
+                                    建议值：5.0V (最大允许值)
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div v-else class="text-xs mt-1 opacity-70 ml-1">请输入1.8V-5.0V之间的电压值</div>
+                        </transition>
+                      </div>
                     </div>
-                  </div>
+                  </transition>
                   
-                  <!-- Help text when no error -->
-                  <div v-else class="text-xs mt-1 opacity-70 ml-1">请输入1.8V-5.0V之间的电压值</div>
+                  <!-- Display current setting only if valid -->
+                  <transition name="fade">
+                    <div class="flex items-center" v-if="!voltageErrorMsg && !isExternalVref">
+                      <span class="text-sm mr-2">当前设置:</span>
+                      <div class="badge badge-primary p-2">{{ power_vref_voltage }}V</div>
+                    </div>
+                  </transition>
                 </div>
                 
-                <!-- Display current setting only if valid -->
-                <div class="flex items-center" v-if="!voltageErrorMsg && !isExternalVref">
-                  <span class="text-sm mr-2">当前设置:</span>
-                  <div class="badge badge-primary p-2">{{ power_vref_voltage }}V</div>
+                <div v-else key="external" class="bg-base-100 p-4 rounded-lg text-center">
+                  <div class="text-lg font-medium">使用外部参考电压输入</div>
+                  <p class="text-xs mt-1 opacity-70">设备使用Vref引脚的电压作为参考电平</p>
                 </div>
-              </div>
-              
-              <div v-else class="bg-base-100 p-4 rounded-lg text-center">
-                <div class="text-lg font-medium">使用外部参考电压输入</div>
-                <p class="text-xs mt-1 opacity-70">设备使用Vref引脚的电压作为参考电平</p>
-              </div>
+              </transition>
               
               <p class="text-xs mt-3 opacity-70">选择合适的参考电压，对应目标设备的工作电压</p>
             </div>
@@ -570,28 +623,32 @@ async function DownloadSetting() {
                   <span class="label-text text-sm opacity-70">{{ led_enable ? '已启用' : '已禁用' }}</span>
                 </div>
               </div>
-              <!-- <p class="text-xs ml-1 mt-1 opacity-70">控制设备LED指示灯的开关状态</p> -->
+              <p class="text-xs ml-1 mt-1 opacity-70">控制设备LED指示灯的开关状态</p>
             </div>
             
-            <div class="form-control mt-4" v-if="led_enable">
-              <label class="label">
-                <span class="label-text text-lg font-medium">LED亮度</span>
-              </label>
-              <input type="range" min="1" max="100" v-model.number="led_brightness" class="range range-primary" step="1"/>
-              <div class="w-full flex justify-between text-xs px-2 mt-1">
-                <span>1%</span>
-                <span>25%</span>
-                <span>50%</span>
-                <span>75%</span>
-                <span>100%</span>
-              </div>
-              <div class="mt-2">
-                <div class="flex justify-between items-center">
-                  <span class="text-sm opacity-70">当前亮度:</span>
-                  <div class="badge badge-primary p-3">{{ led_brightness }}%</div>
+            <div class="led-brightness-container">
+              <transition name="slide-fade">
+                <div v-if="led_enable" class="form-control mt-4 led-brightness-content">
+                  <label class="label">
+                    <span class="label-text text-lg font-medium">LED亮度</span>
+                  </label>
+                  <input type="range" min="1" max="100" v-model.number="led_brightness" class="range range-primary" step="1"/>
+                  <div class="w-full flex justify-between text-xs px-2 mt-1">
+                    <span>1%</span>
+                    <span>25%</span>
+                    <span>50%</span>
+                    <span>75%</span>
+                    <span>100%</span>
+                  </div>
+                  <div class="mt-2">
+                    <div class="flex justify-between items-center">
+                      <span class="text-sm opacity-70">当前亮度:</span>
+                      <div class="badge badge-primary p-3">{{ led_brightness }}%</div>
+                    </div>
+                  </div>
+                  <p class="text-xs mt-3 opacity-70">调节LED指示灯的亮度，较低亮度可延长设备使用寿命</p>
                 </div>
-              </div>
-              <p class="text-xs mt-3 opacity-70">调节LED指示灯的亮度，较低亮度可延长设备使用寿命</p>
+              </transition>
             </div>
           </div>
         </div>
@@ -721,5 +778,55 @@ input, textarea {
 /* 悬停效果 */
 .hover\:scale-102:hover {
   transform: scale(1.02); /* 减小悬停放大效果 */
+}
+
+/* 过渡动画 - 展开/收起 */
+.expand-enter-active,
+.expand-leave-active {
+  transition: height 0.3s ease, opacity 0.3s ease;
+  overflow: hidden;
+}
+
+.expand-enter-from,
+.expand-leave-to {
+  height: 0;
+  opacity: 0;
+}
+
+/* 过渡动画 - 淡入淡出 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* 过渡动画 - 滑动淡入淡出 */
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.3s ease;
+  overflow: hidden;
+  max-height: 300px; /* 足够容纳内容的最大高度 */
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* LED亮度容器样式 */
+.led-brightness-container {
+  position: relative;
+}
+
+.led-brightness-content {
+  transform-origin: top;
 }
 </style>
