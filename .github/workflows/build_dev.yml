@@ -60,12 +60,12 @@ jobs:
         run: mkdir -p artifacts
 
       - name: Copy nsis to release assets
-        run: cp src-tauri/target/release/bundle/nsis/${{ env.REPO_NAME }}_${{ env.VERSION }}_x64-setup.exe artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_windows_x64.exe
+        run: cp "src-tauri/target/release/bundle/nsis/${{ env.REPO_NAME }}_${{ env.VERSION }}_x64-setup.exe" "artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_windows_x64.exe"
 
       - name: Zip portable to release assets
         run: |
           cd src-tauri/target/release
-          7z a -tzip ../../../artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_windows_x64_portable.zip ${{ env.REPO_NAME }}.exe
+          7z a -tzip "../../../artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_windows_x64_portable.zip" "${{ env.REPO_NAME }}.exe"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -110,18 +110,18 @@ jobs:
         run: mkdir -p artifacts
 
       - name: Copy deb to release assets
-        run: cp src-tauri/target/release/bundle/deb/${{ env.REPO_NAME }}_${{ env.VERSION }}_amd64.deb artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_linux_amd64.deb
+        run: cp "src-tauri/target/release/bundle/deb/${{ env.REPO_NAME }}_${{ env.VERSION }}_amd64.deb" "artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_linux_amd64.deb"
 
       - name: Copy rpm to release assets
-        run: cp src-tauri/target/release/bundle/rpm/${{ env.REPO_NAME }}-${{ env.VERSION }}-1.x86_64.rpm artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_linux_amd64.rpm
+        run: cp "src-tauri/target/release/bundle/rpm/${{ env.REPO_NAME }}-${{ env.VERSION }}-1.x86_64.rpm" "artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_linux_amd64.rpm"
 
       - name: Copy appimage to release assets
-        run: cp src-tauri/target/release/bundle/appimage/${{ env.REPO_NAME }}_${{ env.VERSION }}_amd64.AppImage artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_amd64.AppImage
+        run: cp "src-tauri/target/release/bundle/appimage/${{ env.REPO_NAME }}_${{ env.VERSION }}_amd64.AppImage" "artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_amd64.AppImage"
 
       - name: Zip portable to release assets
         run: |
           cd src-tauri/target/release
-          tar -czf ../../../artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_linux_amd64_portable.tar.gz ${{ env.REPO_NAME }}
+          tar -czf "../../../artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_linux_amd64_portable.tar.gz" "${{ env.REPO_NAME }}"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -172,7 +172,7 @@ jobs:
       - name: Copy dmg to release assets
         env:
           ARCH_ALIAS: ${{ matrix.arch == 'x86_64' && 'x64' || matrix.arch }}
-        run: cp src-tauri/target/${{ matrix.arch }}-apple-darwin/release/bundle/dmg/${{ env.REPO_NAME }}_${{ env.VERSION }}_${{ env.ARCH_ALIAS }}.dmg artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_macos_${{ matrix.arch }}.dmg
+        run: cp "src-tauri/target/${{ matrix.arch }}-apple-darwin/release/bundle/dmg/${{ env.REPO_NAME }}_${{ env.VERSION }}_${{ env.ARCH_ALIAS }}.dmg" "artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_macos_${{ matrix.arch }}.dmg"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
