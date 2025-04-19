@@ -273,7 +273,7 @@ async function DownloadSetting() {
                   <span class="label-text text-sm opacity-70">{{ speed_boost_enable ? '已启用' : '已禁用' }}</span>
                 </div>
               </div>
-              <p class="text-xs ml-1 mt-1 opacity-70">启用后可提高数据传输速度，但可能在某些设备上降低稳定性</p>
+              <p class="text-xs ml-1 mt-1 opacity-70">10倍加速调试，但可能因速度过快导致通信错误，建议谨慎使用</p>
             </div>
           </div>
           
@@ -296,8 +296,8 @@ async function DownloadSetting() {
                 </div>
               </div>
               <div class="text-xs text-center mt-3 opacity-70">
-                <p>SPI模式：提供更高的速度，适合大多数设备</p>
-                <p class="mt-1">GPIO模式：提供更好的兼容性，适合特殊设备</p>
+                <p>SPI模式：该模式下实际速率和设置速率将保持一致，波形也更规范</p>
+                <p class="mt-1">GPIO模式：实际速率可能会更低，但兼容性更好，如果通信出现错误可以尝试使用该模式</p>
               </div>
             </div>
 
@@ -317,8 +317,8 @@ async function DownloadSetting() {
                 </div>
               </div>
               <div class="text-xs text-center mt-3 opacity-70">
-                <p>SPI模式：提供更高的速度，适合大多数设备</p>
-                <p class="mt-1">GPIO模式：提供更好的兼容性，适合特殊设备</p>
+                <p>SPI模式：该模式下实际速率和设置速率将保持一致，波形也更规范</p>
+                <p class="mt-1">GPIO模式：实际速率可能会更低，但兼容性更好，如果通信出现错误可以尝试使用该模式</p>
               </div>
             </div>
           </div>
@@ -360,7 +360,7 @@ async function DownloadSetting() {
                 <span class="label-text text-sm opacity-70">{{ jtag_20pin_compatible ? '已启用' : '已禁用' }}</span>
               </div>
             </div>
-            <p class="text-xs ml-1 mt-1 opacity-70">启用后可支持20针JTAG接口，适用于部分老型号设备</p>
+            <p class="text-xs ml-1 mt-1 opacity-70">启用后将关闭UART功能，全部输出低电平，避免部分设备接地导致发热较高</p>
           </div>
         </div>
       </div>
@@ -385,7 +385,8 @@ async function DownloadSetting() {
                   <span class="label-text text-sm opacity-70">{{ power_power_on ? '已启用' : '已禁用' }}</span>
                 </div>
               </div>
-              <p class="text-xs ml-1 mt-1 opacity-70">设备连接后自动打开电源输出，为目标设备供电</p>
+              <p class="text-xs ml-1 mt-1 opacity-70">打开之后TVcc默认开启，输出电压与参考电压保持一致</p>
+              <p class="text-xs ml-1 mt-1 opacity-70">关闭后TVcc默认关闭，直到Vref引脚上输入电压大于1.6V之后才会开启输出</p>
             </div>
             
             <!-- 右侧：上电开启IO输出 -->
@@ -399,7 +400,8 @@ async function DownloadSetting() {
                   <span class="label-text text-sm opacity-70">{{ power_port_on ? '已启用' : '已禁用' }}</span>
                 </div>
               </div>
-              <p class="text-xs ml-1 mt-1 opacity-70">设备连接后自动使能IO引脚，允许数据传输</p>
+              <p class="text-xs ml-1 mt-1 opacity-70">打开之后所有IO默认开启输出，电平与参考电压保持一致</p>
+              <p class="text-xs ml-1 mt-1 opacity-70">关闭后所有IO默认关闭输出，为高阻态，直到Vref引脚上输入电压大于1.6V之后才会开启输出</p>
             </div>
           </div>
 
@@ -488,7 +490,7 @@ async function DownloadSetting() {
               
               <div v-else class="bg-base-100 p-4 rounded-lg text-center">
                 <div class="text-lg font-medium">使用外部参考电压输入</div>
-                <p class="text-xs mt-1 opacity-70">设备将从外部引脚获取参考电压，而非由内部提供</p>
+                <p class="text-xs mt-1 opacity-70">设备使用Vref引脚的电压作为参考电平</p>
               </div>
               
               <p class="text-xs mt-3 opacity-70">选择合适的参考电压，对应目标设备的工作电压</p>
@@ -529,7 +531,7 @@ async function DownloadSetting() {
                          @change="toggleResetMode('por', $event.target.checked)"/>
                   <div>
                     <div class="font-medium">电源复位</div>
-                    <div class="text-xs opacity-70">通过断开电源实现复位</div>
+                    <div class="text-xs opacity-70">触发复位动作之后将关闭TVcc和+5V输出，复位动作结束后再打开</div>
                   </div>
                 </label>
                 <label class="flex items-center gap-2 p-3 bg-base-100 rounded-lg cursor-pointer border-2 transition-all hover:bg-base-300" 
@@ -539,7 +541,7 @@ async function DownloadSetting() {
                          @change="toggleResetMode('arm_swd_soft', $event.target.checked)"/>
                   <div>
                     <div class="font-medium">Arm SWD 软复位</div>
-                    <div class="text-xs opacity-70">通过调试协议实现软复位</div>
+                    <div class="text-xs opacity-70">该选项只对Arm内核芯片有效</div>
                   </div>
                 </label>
               </div>
@@ -568,7 +570,7 @@ async function DownloadSetting() {
                   <span class="label-text text-sm opacity-70">{{ led_enable ? '已启用' : '已禁用' }}</span>
                 </div>
               </div>
-              <p class="text-xs ml-1 mt-1 opacity-70">控制设备LED指示灯的开关状态</p>
+              <!-- <p class="text-xs ml-1 mt-1 opacity-70">控制设备LED指示灯的开关状态</p> -->
             </div>
             
             <div class="form-control mt-4" v-if="led_enable">
