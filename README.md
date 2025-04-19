@@ -51,11 +51,13 @@ sudo gpasswd -a $USER plugdev
 
 ### Arch Linux
 
-Arch Linux can install the hslink-nexus release via [AUR](https://aur.archlinux.org/packages/hslink-nexus) or [self-sourcing](https://github.com/taotieren/aur-repo).
+Arch Linux can install the hslink-nexus release via [AUR](https://aur.archlinux.org/packages/hslinknexus) or [self-sourcing](https://github.com/taotieren/aur-repo).
 
 ```bash
-yay -Syu hslink-nexus
+yay -Syu hslinknexus
 ```
+
+Note: The package of `hslinkupper` has been installed. Install the `hslinknexus` package directly to upgrade. The new package has been replaced and dependent.
 
 Arch Linux can install the hslink-nexus development package via the [AUR](https://aur.archlinux.org/packages/hslink-nexus-git).
 
@@ -63,7 +65,7 @@ Arch Linux can install the hslink-nexus development package via the [AUR](https:
 yay -Syu hslink-nexus-git
 ```
 
-### Debian or  Ubuntu etc
+### Debian /  Ubuntu etc
 
 ```bash
 pnpm install
