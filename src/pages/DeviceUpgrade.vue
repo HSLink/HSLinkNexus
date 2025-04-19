@@ -187,18 +187,18 @@ const isAppVersionSupported = computed(() => {
   <div class="flex flex-col h-screen bg-gray-100 dark:bg-gray-800 p-6">
     <!-- Header Section -->
     <div class="mb-6">
-      <h2 class="text-3xl font-extrabold">设备升级</h2>
+      <h2 class="text-3xl font-extrabold">{{ $t('device_upgrade.title') }}</h2>
     </div>
 
     <!-- 未连接设备时的提示 -->
     <div v-if="!connected" class="flex items-center justify-center h-[70vh]">
       <div class="bg-base-200 bg-opacity-80 rounded-xl p-10 shadow-lg text-center max-w-lg">
         <span class="material-icons text-8xl text-primary mb-4">link_off</span>
-        <h2 class="text-2xl font-semibold mb-2">未连接设备</h2>
-        <p class="text-lg mb-6 text-base-content opacity-80">请先在主页连接设备，然后再进行升级操作。</p>
+        <h2 class="text-2xl font-semibold mb-2">{{ $t('device_upgrade.not_connected') }}</h2>
+        <p class="text-lg mb-6 text-base-content opacity-80">{{ $t('device_upgrade.connect_prompt') }}</p>
         <router-link to="/" class="btn btn-primary">
           <span class="material-icons mr-2">home</span>
-          返回主页
+          {{ $t('device_upgrade.back_to_home') }}
         </router-link>
       </div>
     </div>
@@ -210,10 +210,10 @@ const isAppVersionSupported = computed(() => {
         <!-- Left Column -->
         <div class="lg:w-1/3 space-y-4">
           <div class="space-y-2">
-            <h3 class="text-xl font-semibold ">Bootloader</h3>
+            <h3 class="text-xl font-semibold ">{{ $t('device_upgrade.bootloader.title') }}</h3>
           </div>
           <div class="space-y-2">
-            <p class="text-lg ">当前版本: {{ bl_ver }}</p>
+            <p class="text-lg ">{{ $t('device_upgrade.bootloader.current_version') }}: {{ bl_ver }}</p>
           </div>
         </div>
 
@@ -221,11 +221,11 @@ const isAppVersionSupported = computed(() => {
         <div class="lg:w-2/3 space-y-4">
           <div class="space-y-2">
             <div v-if="connected">
-              <input type="text" placeholder="固件地址" class="input input-bordered w-2/3" v-model="BootloaderFwPath">
-              <button class="btn btn-primary w-1/3" @click="SelectBootloaderFw">选择固件</button>
-              <button class="btn btn-primary w-full mt-4" :disabled="!isAppVersionSupported" @click="UpgradeBootloader">升级Bootloader</button>
+              <input type="text" :placeholder="$t('device_upgrade.bootloader.firmware_path')" class="input input-bordered w-2/3" v-model="BootloaderFwPath">
+              <button class="btn btn-primary w-1/3" @click="SelectBootloaderFw">{{ $t('device_upgrade.bootloader.select_firmware') }}</button>
+              <button class="btn btn-primary w-full mt-4" :disabled="!isAppVersionSupported" @click="UpgradeBootloader">{{ $t('device_upgrade.bootloader.upgrade') }}</button>
               <div v-if="!isAppVersionSupported" class="text-red-500 mt-2">
-                App固件版本需要2.4.0及以上才能升级Bootloader
+                {{ $t('device_upgrade.bootloader.version_required') }}
               </div>
             </div>
           </div>
@@ -237,10 +237,10 @@ const isAppVersionSupported = computed(() => {
         <!-- Left Column -->
         <div class="lg:w-1/3 space-y-4">
           <div class="space-y-2">
-            <h3 class="text-xl font-semibold ">App</h3>
+            <h3 class="text-xl font-semibold ">{{ $t('device_upgrade.app.title') }}</h3>
           </div>
           <div class="space-y-2">
-            <p class="text-lg ">当前版本{{ sw_ver }}</p>
+            <p class="text-lg ">{{ $t('device_upgrade.app.current_version') }} {{ sw_ver }}</p>
           </div>
         </div>
 
@@ -248,14 +248,14 @@ const isAppVersionSupported = computed(() => {
         <div class="lg:w-2/3 space-y-4">
           <div class="space-y-2">
             <div v-if="connected">
-              <button class="btn btn-primary w-full mt-4" @click="EntryBL">进入Bootloader</button>
+              <button class="btn btn-primary w-full mt-4" @click="EntryBL">{{ $t('device_upgrade.app.enter_bootloader') }}</button>
             </div>
             <div v-else-if="inBootloader">
               <div class="mb-4 flex items-center gap-4">
-                <input type="text" placeholder="固件地址" class="input input-bordered w-2/3" v-model="AppFwPath">
-                <button class="btn btn-primary w-1/3" @click="SelectAppFw">选择固件</button>
+                <input type="text" :placeholder="$t('device_upgrade.app.firmware_path')" class="input input-bordered w-2/3" v-model="AppFwPath">
+                <button class="btn btn-primary w-1/3" @click="SelectAppFw">{{ $t('device_upgrade.app.select_firmware') }}</button>
               </div>
-              <button class="btn btn-primary w-full mt-4" @click="UpgradeApp">升级APP</button>
+              <button class="btn btn-primary w-full mt-4" @click="UpgradeApp">{{ $t('device_upgrade.app.upgrade') }}</button>
             </div>
           </div>
         </div>
@@ -266,14 +266,14 @@ const isAppVersionSupported = computed(() => {
         <!-- Left Column -->
         <div class="lg:w-1/3 space-y-4">
           <div class="space-y-2">
-            <h3 class="text-xl font-semibold ">固件下载</h3>
+            <h3 class="text-xl font-semibold ">{{ $t('device_upgrade.download.title') }}</h3>
           </div>
         </div>
 
         <!-- Right Column -->
         <div class="lg:w-2/3 space-y-4">
           <div class="space-y-2">
-            <button class="btn btn-primary w-full mt-4" @click="DownloadFw">下载固件</button>
+            <button class="btn btn-primary w-full mt-4" @click="DownloadFw">{{ $t('device_upgrade.download.download_button') }}</button>
           </div>
         </div>
       </div>

@@ -57,7 +57,7 @@ async function SearchDevice() {
     if (connectedDeviceSn.value && removedDevices.includes(connectedDeviceSn.value)) {
       console.log(`Connected device ${connectedDeviceSn.value} was removed`);
       DisconnectDevice();
-      showAlert("设备已断开连接", "warning");
+      showAlert($t('home.alert.disconnect'), "warning");
     }
   }
   
@@ -168,7 +168,7 @@ async function ConnectDevice(deviceSn = "") {
   let ret = await hslink_open_device(sn);
   if (ret != "success") {
     console.log(`connect to ${sn} failed: ${ret}`);
-    showAlert(`连接失败: ${ret}`, "error");
+    showAlert($t('home.alert.connect_fail') + `: ${ret}`, "error");
     return;
   }
   
@@ -219,10 +219,10 @@ async function ConnectDevice(deviceSn = "") {
       };
     }
     
-    showAlert("设备连接成功", "success");
+    showAlert($t('home.alert.connect_success'), "success");
   } catch (e) {
     console.log(`request info failed: ${rsp}`);
-    showAlert("设备信息获取失败", "error");
+    showAlert($t('home.alert.info_fail'), "error");
     connectedDeviceSn.value = "";
     return;
   }
@@ -292,7 +292,7 @@ async function DisconnectDevice() {
   connectedDeviceSn.value = "";
   deviceStore.resetDeviceInfo();
   
-  showAlert("设备已断开连接", "success");
+  showAlert($t('home.alert.disconnect'), "success");
 }
 
 // 获取设备显示名称
@@ -387,22 +387,22 @@ watch(sn, () => {
     <div v-if="availableDevices.length === 0" class="flex items-center justify-center h-[80vh]">
       <div class="bg-base-200 bg-opacity-80 rounded-xl p-10 shadow-lg text-center max-w-lg">
         <span class="material-icons text-8xl text-primary mb-4">sensors_off</span>
-        <h2 class="text-2xl font-semibold mb-2">未检测到设备</h2>
-        <p class="text-lg mb-6 text-base-content opacity-80">请确保您的HSLink设备已正确连接到计算机，并点击刷新按钮重新搜索。</p>
+        <h2 class="text-2xl font-semibold mb-2">{{ $t('home.no_device') }}</h2>
+        <p class="text-lg mb-6 text-base-content opacity-80">{{ $t('home.connect_prompt') }}</p>
         <button @click="SearchDevice" class="btn btn-primary">
           <span class="material-icons mr-2">refresh</span>
-          刷新设备列表
+          {{ $t('home.refresh') }}
         </button>
       </div>
     </div>
 
     <!-- 设备列表标题 -->
     <div v-if="availableDevices.length > 0" class="mb-6 flex items-center justify-between">
-      <h2 class="text-2xl font-bold">我的设备</h2>
+      <h2 class="text-2xl font-bold">{{ $t('home.my_devices') }}</h2>
       <div class="flex items-center space-x-2">
         <button @click="SearchDevice" class="btn btn-primary">
           <span class="material-icons mr-2">refresh</span>
-          刷新设备列表
+          {{ $t('home.refresh') }}
         </button>
       </div>
     </div>
@@ -417,8 +417,8 @@ watch(sn, () => {
           <!-- 卡片头部：设备名称和连接状态 -->
           <div class="px-6 py-5 bg-base-200 flex items-center justify-between">
             <h3 class="text-xl font-bold truncate">{{ device.nickname || device.sn.substring(0, 6) }}</h3>
-            <span v-if="device.sn === connectedDeviceSn" class="badge badge-success">已连接</span>
-            <span v-else class="badge badge-outline">未连接</span>
+            <span v-if="device.sn === connectedDeviceSn" class="badge badge-success">{{ $t('home.connected') }}</span>
+            <span v-else class="badge badge-outline">{{ $t('home.disconnected') }}</span>
           </div>
           
           <!-- 设备信息部分 -->
@@ -427,7 +427,7 @@ watch(sn, () => {
             <div v-if="!device.infoLoaded" class="flex-grow flex flex-col items-center justify-center">
               <span class="loading loading-spinner loading-lg text-primary mb-4"></span>
               <p class="text-center text-base-content opacity-70">
-                正在获取设备信息...
+                {{ $t('home.loading') }}
               </p>
             </div>
             
@@ -435,31 +435,31 @@ watch(sn, () => {
             <div v-else-if="device.sn !== connectedDeviceSn && device.infoLoaded" class="flex-grow flex flex-col">
               <div class="grid grid-cols-2 gap-y-3 gap-x-4 mb-4">
                 <div>
-                  <p class="text-sm opacity-70">硬件版本</p>
-                  <p class="font-medium text-primary">{{ device.hw_ver || "未知" }}</p>
+                  <p class="text-sm opacity-70">{{ $t('home.hardware_version') }}</p>
+                  <p class="font-medium text-primary">{{ device.hw_ver || $t('home.unknown') }}</p>
                 </div>
                 <div>
-                  <p class="text-sm opacity-70">软件版本</p>
-                  <p class="font-medium text-primary">{{ device.sw_ver || "未知" }}</p>
+                  <p class="text-sm opacity-70">{{ $t('home.software_version') }}</p>
+                  <p class="font-medium text-primary">{{ device.sw_ver || $t('home.unknown') }}</p>
                 </div>
                 <div>
-                  <p class="text-sm opacity-70">引导版本</p>
-                  <p class="font-medium text-primary">{{ device.bl_ver || "未知" }}</p>
+                  <p class="text-sm opacity-70">{{ $t('home.bootloader_version') }}</p>
+                  <p class="font-medium text-primary">{{ device.bl_ver || $t('home.unknown') }}</p>
                 </div>
                 <div>
-                  <p class="text-sm opacity-70">设备型号</p>
-                  <p class="font-medium text-primary">{{ device.model || "未知" }}</p>
+                  <p class="text-sm opacity-70">{{ $t('home.device_model') }}</p>
+                  <p class="font-medium text-primary">{{ device.model || $t('home.unknown') }}</p>
                 </div>
               </div>
               
               <!-- 设备昵称和序列号 (可复制) -->
               <div class="mb-4 allow-select">
                 <div class="mb-2">
-                  <p class="text-sm opacity-70">设备昵称</p>
-                  <p class="font-medium text-primary break-words">{{ device.nickname || "未命名" }}</p>
+                  <p class="text-sm opacity-70">{{ $t('home.device_nickname') }}</p>
+                  <p class="font-medium text-primary break-words">{{ device.nickname || $t('home.unnamed') }}</p>
                 </div>
                 <div>
-                  <p class="text-sm opacity-70">设备序列号</p>
+                  <p class="text-sm opacity-70">{{ $t('device_info.sn') }}</p>
                   <p class="font-medium text-primary break-words">{{ device.sn }}</p>
                 </div>
               </div>
@@ -474,31 +474,31 @@ watch(sn, () => {
             <div v-else-if="device.sn === connectedDeviceSn" class="flex-grow flex flex-col">
               <div class="grid grid-cols-2 gap-y-3 gap-x-4 mb-4">
                 <div>
-                  <p class="text-sm opacity-70">硬件版本</p>
-                  <p class="font-medium text-primary">{{ device.hw_ver || "未知" }}</p>
+                  <p class="text-sm opacity-70">{{ $t('home.hardware_version') }}</p>
+                  <p class="font-medium text-primary">{{ device.hw_ver || $t('home.unknown') }}</p>
                 </div>
                 <div>
-                  <p class="text-sm opacity-70">软件版本</p>
-                  <p class="font-medium text-primary">{{ device.sw_ver || "未知" }}</p>
+                  <p class="text-sm opacity-70">{{ $t('home.software_version') }}</p>
+                  <p class="font-medium text-primary">{{ device.sw_ver || $t('home.unknown') }}</p>
                 </div>
                 <div>
-                  <p class="text-sm opacity-70">引导版本</p>
-                  <p class="font-medium text-primary">{{ device.bl_ver || "未知" }}</p>
+                  <p class="text-sm opacity-70">{{ $t('home.bootloader_version') }}</p>
+                  <p class="font-medium text-primary">{{ device.bl_ver || $t('home.unknown') }}</p>
                 </div>
                 <div>
-                  <p class="text-sm opacity-70">设备型号</p>
-                  <p class="font-medium text-primary">{{ device.model || "未知" }}</p>
+                  <p class="text-sm opacity-70">{{ $t('home.device_model') }}</p>
+                  <p class="font-medium text-primary">{{ device.model || $t('home.unknown') }}</p>
                 </div>
               </div>
               
               <!-- 设备昵称和序列号 (可复制) -->
               <div class="mb-4 allow-select">
                 <div class="mb-2">
-                  <p class="text-sm opacity-70">设备昵称</p>
-                  <p class="font-medium text-primary break-words">{{ device.nickname || "未命名" }}</p>
+                  <p class="text-sm opacity-70">{{ $t('home.device_nickname') }}</p>
+                  <p class="font-medium text-primary break-words">{{ device.nickname || $t('home.unnamed') }}</p>
                 </div>
                 <div>
-                  <p class="text-sm opacity-70">设备序列号</p>
+                  <p class="text-sm opacity-70">{{ $t('device_info.sn') }}</p>
                   <p class="font-medium text-primary break-words">{{ device.sn }}</p>
                 </div>
               </div>
@@ -513,31 +513,31 @@ watch(sn, () => {
             <div class="flex flex-wrap justify-center gap-2 mt-4">
               <button v-if="device.sn === connectedDeviceSn" 
                       class="btn btn-sm btn-outline min-w-[80px]" 
-                      @click="DisconnectDevice">断开连接</button>
+                      @click="DisconnectDevice">{{ $t('home.disconnect') }}</button>
               <button v-else 
                       class="btn btn-sm btn-primary min-w-[80px]" 
-                      @click="ConnectDevice(device.sn)">连接</button>
+                      @click="ConnectDevice(device.sn)">{{ $t('home.connect') }}</button>
                       
               <router-link v-if="device.sn === connectedDeviceSn" 
                           to="/device_setting" 
                           class="btn btn-sm btn-primary min-w-[80px]">
                 <span class="material-icons mr-1 text-sm">settings</span>
-                设置
+                {{ $t('home.settings') }}
               </router-link>
               <button v-else class="btn btn-sm btn-disabled min-w-[80px]" disabled>
                 <span class="material-icons mr-1 text-sm">settings</span>
-                设置
+                {{ $t('home.settings') }}
               </button>
               
               <router-link v-if="device.sn === connectedDeviceSn" 
                           to="/device_upgrade" 
                           class="btn btn-sm btn-secondary min-w-[80px]">
                 <span class="material-icons mr-1 text-sm">update</span>
-                升级
+                {{ $t('home.upgrade') }}
               </router-link>
               <button v-else class="btn btn-sm btn-disabled min-w-[80px]" disabled>
                 <span class="material-icons mr-1 text-sm">update</span>
-                升级
+                {{ $t('home.upgrade') }}
               </button>
             </div>
           </div>
