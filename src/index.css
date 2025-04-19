@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Emoji字体定义 */
+@font-face {
+  font-family: 'NotoColorEmoji';
+  src: url('./assets/fonts/NotoColorEmoji.ttf') format('truetype');
+  font-display: swap;
+  unicode-range: U+1F1E6-1F1FF, U+1F300-1F5FF, U+1F600-1F64F, U+1F680-1F6FF, U+2600-26FF;
+}
+
+:root {
+  --emoji-font: 'NotoColorEmoji', 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif;
+}
+
 /* 隐藏所有滚动条但保留滚动功能 */
 @layer utilities {
   /* Chrome, Safari and Opera */
