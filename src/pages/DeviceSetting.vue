@@ -42,15 +42,6 @@ const customVoltage = ref("");
 // 电压输入错误信息
 const voltageErrorMsg = ref("");
 
-// 验证电压值是否有效 - 只返回布尔值，不设置错误信息
-const isVoltageValid = computed(() => {
-  if (isExternalVref.value || voltageMode.value === 'preset') {
-    return true;
-  }
-  const value = parseFloat(customVoltage.value);
-  return !isNaN(value) && value >= 1.8 && value <= 5.0;
-});
-
 // 检查是否可以保存设置 - 使用 voltageErrorMsg 判断
 const canSave = computed(() => {
   return connected.value && !voltageErrorMsg.value; // 如果没有错误信息，则认为有效
@@ -126,48 +117,6 @@ watch(() => power_vref_voltage.value, (newVal) => {
       }
   }
 }, { immediate: true });
-
-// 处理元素高度过渡动画
-const startExpandAnimation = (element: HTMLElement) => {
-  // 首先设置元素高度为0
-  element.style.height = '0';
-  
-  // 强制回流并触发过渡
-  void element.offsetHeight;
-  
-  // 设置元素高度为内容的实际高度
-  element.style.height = element.scrollHeight + 'px';
-};
-
-const endExpandAnimation = (element: HTMLElement) => {
-  // 动画结束后移除高度限制，让元素自然适应内容
-  element.style.height = '';
-};
-
-const startCollapseAnimation = (element: HTMLElement) => {
-  // 先记录当前高度
-  const elementHeight = element.scrollHeight;
-  element.style.height = elementHeight + 'px';
-  
-  // 强制回流并触发过渡
-  void element.offsetHeight;
-  
-  // 设置高度为0，开始收起动画
-  element.style.height = '0';
-};
-
-const endCollapseAnimation = (element: HTMLElement) => {
-  // 动画结束后移除高度设置，但保持父元素的高度稳定
-  element.style.height = '';
-  element.style.display = 'none';
-  
-  // 确保在下一个渲染周期将display恢复为空
-  setTimeout(() => {
-    if (!led_enable.value) {  // 只有在LED仍然禁用时才恢复
-      element.style.display = '';
-    }
-  }, 50);
-};
 
 // 处理复选框的复位模式切换
 function toggleResetMode(mode: string, checked: boolean) {
