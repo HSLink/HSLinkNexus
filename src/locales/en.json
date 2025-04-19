@@ -52,7 +52,7 @@
     "speed_boost": "Enable Speed Boost",
     "enabled": "Enabled",
     "disabled": "Disabled",
-    "speed_boost_desc": "Debug 10 times faster, but use with caution as the high speed may cause communication errors",
+    "speed_boost_desc": "Debug 10 times faster, but use with care as the high speed may cause communication errors",
     "interface_settings": "Interface settings",
     "swd_output_mode": "SWD output mode",
     "jtag_output_mode": "JTAG output mode",
@@ -63,7 +63,7 @@
       "gpio_desc": "GPIO Mode: The actual speed may be lower, but compatibility is improved. Use this mode if communication errors occur"
     },
     "jtag_shift": "JTAG_SHIFT acceleration",
-    "jtag_shift_desc": "Enabling this increases JTAG operation speed but may reduce compatibility on some devices",
+    "jtag_shift_desc": "By enabling this, JTAG operation speed is increased but compatibility issue can occur on some devices",
     "compatibility": "Compatibility options",
     "jtag_20pin": "20-Pin JTAG interface compatibility mode",
     "jtag_20pin_desc": "When enabled, UART functionality is disabled and all outputs are set low to prevent overheating caused by grounding on some devices",
@@ -81,7 +81,7 @@
       "custom": "Custom"
     },
     "voltage_input": "Voltage value",
-    "voltage_placeholder": "Enter a voltage between 1.8 and 5.0",
+    "voltage_placeholder": "Enter a voltage value between 1.8V and 5.0V",
     "voltage_error": "Error",
     "min_voltage": "Recommended: 1.8V (minimum allowed)",
     "max_voltage": "Recommended: 5.0V (maximum allowed)",
@@ -92,7 +92,7 @@
     "voltage_select_desc": "Select the appropriate reference voltage corresponding to the target device's operating voltage",
     "voltage_errors": {
       "empty": "Please enter a voltage value",
-      "invalid": "Please enter a valid number",
+      "invalid": "Please enter a valid value",
       "too_low": "Voltage value cannot be lower than 1.8V",
       "too_high": "Voltage value cannot exceed 5.0V"
     },
@@ -101,11 +101,11 @@
     "reset_multi_select": "Multiple reset modes can be selected simultaneously",
     "reset_mode": {
       "nrst": "NRST output",
-      "nrst_desc": "Reset via the NRST pin",
+      "nrst_desc": "Reset with NRST pin",
       "por": "Power reset",
       "por_desc": "After triggering the reset, TVcc and +5V outputs will be turned off, then re-enabled after the reset is complete",
       "arm_swd_soft": "ARM SWD Soft Reset",
-      "arm_swd_soft_desc": "This option is only available for ARM core chips"
+      "arm_swd_soft_desc": "This option is only available on ARM-based chips"
     },
     "reset_desc": "Choose different reset methods based on your target device's characteristics; multiple methods can be combined in complex situations",
     "led_settings": "LED settings",
