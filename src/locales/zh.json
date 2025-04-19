@@ -12,6 +12,153 @@
     "device_upgrade": "设备升级",
     "flash": "烧录",
     "setting": "设置",
-    "about": "关于"
+    "about": "关于",
+    "collapse_menu": "收起菜单",
+    "device_required": "请先连接设备"
+  },
+  "home": {
+    "no_device": "未检测到设备",
+    "connect_prompt": "请确保您的HSLink设备已正确连接到计算机，并点击刷新按钮重新搜索。",
+    "refresh": "刷新设备列表",
+    "my_devices": "我的设备",
+    "connected": "已连接",
+    "disconnected": "未连接",
+    "loading": "正在获取设备信息...",
+    "hardware_version": "硬件版本",
+    "software_version": "软件版本",
+    "bootloader_version": "引导版本",
+    "device_model": "设备型号",
+    "device_nickname": "设备昵称",
+    "unnamed": "未命名",
+    "unknown": "未知",
+    "disconnect": "断开连接",
+    "connect": "连接",
+    "settings": "设置",
+    "upgrade": "升级",
+    "alert": {
+      "connect_success": "设备连接成功",
+      "connect_fail": "连接失败",
+      "disconnect": "设备已断开连接",
+      "info_fail": "设备信息获取失败"
+    }
+  },
+  "device_setting": {
+    "title": "设备设置",
+    "connect_warning": "请先在主页连接设备，然后再进行设置",
+    "basic_info": "设备基本信息",
+    "nickname_placeholder": "请输入设备名称",
+    "nickname_desc": "设置设备的显示名称，便于识别多台设备",
+    "performance": "性能设置",
+    "speed_boost": "启用速度Boost",
+    "enabled": "已启用",
+    "disabled": "已禁用",
+    "speed_boost_desc": "10倍加速调试，但可能因速度过快导致通信错误，建议谨慎使用",
+    "interface_settings": "接口设置",
+    "swd_output_mode": "SWD输出方式",
+    "jtag_output_mode": "JTAG输出方式",
+    "port_mode": {
+      "spi": "SPI",
+      "gpio": "GPIO",
+      "spi_desc": "SPI模式：该模式下实际速率和设置速率将保持一致，波形也更规范",
+      "gpio_desc": "GPIO模式：实际速率可能会更低，但兼容性更好，如果通信出现错误可以尝试使用该模式"
+    },
+    "jtag_shift": "JTAG_SHIFT 加速",
+    "jtag_shift_desc": "启用后可提升JTAG操作速度，但可能降低部分设备的兼容性",
+    "compatibility": "兼容性选项",
+    "jtag_20pin": "20P JTAG接口兼容模式",
+    "jtag_20pin_desc": "启用后将关闭UART功能，全部输出低电平，避免部分设备接地导致发热较高",
+    "power_settings": "电源设置",
+    "power_on_startup": "上电开启电源输出",
+    "power_on_desc": "打开之后TVcc默认开启，输出电压与参考电压保持一致",
+    "power_on_desc2": "关闭后TVcc默认关闭，直到Vref引脚上输入电压大于1.6V之后才会开启输出",
+    "io_on_startup": "上电开启IO输出",
+    "io_on_desc": "打开之后所有IO默认开启输出，电平与参考电压保持一致",
+    "io_on_desc2": "关闭后所有IO默认关闭输出，为高阻态，直到Vref引脚上输入电压大于1.6V之后才会开启输出",
+    "reference_voltage": "参考电压",
+    "external_input": "外部输入",
+    "voltage_modes": {
+      "preset": "预设值",
+      "custom": "自定义"
+    },
+    "voltage_input": "电压值",
+    "voltage_placeholder": "输入1.8-5.0之间的电压",
+    "voltage_error": "错误",
+    "min_voltage": "建议值：1.8V (最小允许值)",
+    "max_voltage": "建议值：5.0V (最大允许值)",
+    "voltage_range_desc": "请输入1.8V-5.0V之间的电压值",
+    "current_setting": "当前设置",
+    "external_vref_title": "使用外部参考电压输入",
+    "external_vref_desc": "设备使用Vref引脚的电压作为参考电平",
+    "voltage_select_desc": "选择合适的参考电压，对应目标设备的工作电压",
+    "voltage_errors": {
+      "empty": "请输入电压值",
+      "invalid": "请输入有效的数字",
+      "too_low": "电压值不能低于1.8V",
+      "too_high": "电压值不能超过5.0V"
+    },
+    "reset_settings": "复位设置",
+    "reset_modes": "默认复位方式 (可多选)",
+    "reset_multi_select": "可同时选择多种复位方式",
+    "reset_mode": {
+      "nrst": "NRST输出",
+      "nrst_desc": "通过NRST引脚进行复位",
+      "por": "电源复位",
+      "por_desc": "触发复位动作之后将关闭TVcc和+5V输出，复位动作结束后再打开",
+      "arm_swd_soft": "Arm SWD 软复位",
+      "arm_swd_soft_desc": "该选项只对Arm内核芯片有效"
+    },
+    "reset_desc": "根据目标设备特性选择不同复位方式，复杂情况可组合使用",
+    "led_settings": "LED设置",
+    "enable_led": "启用LED",
+    "led_desc": "控制设备LED指示灯的开关状态",
+    "led_brightness": "LED亮度",
+    "current_brightness": "当前亮度",
+    "led_brightness_desc": "调节LED指示灯的亮度，较低亮度可延长设备使用寿命",
+    "save_settings": "保存所有设置",
+    "alert": {
+      "success": "设置成功",
+      "fail": "设置失败，请重试",
+      "fail_reason": "设置失败，错误原因:"
+    }
+  },
+  "device_upgrade": {
+    "title": "设备升级",
+    "not_connected": "未连接设备",
+    "connect_prompt": "请先在主页连接设备，然后再进行升级操作。",
+    "back_to_home": "返回主页",
+    "bootloader": {
+      "title": "Bootloader",
+      "current_version": "当前版本",
+      "firmware_path": "固件地址",
+      "select_firmware": "选择固件",
+      "upgrade": "升级Bootloader",
+      "version_required": "App固件版本需要2.4.0及以上才能升级Bootloader"
+    },
+    "app": {
+      "title": "App",
+      "current_version": "当前版本",
+      "enter_bootloader": "进入Bootloader",
+      "firmware_path": "固件地址",
+      "select_firmware": "选择固件",
+      "upgrade": "升级APP"
+    },
+    "download": {
+      "title": "固件下载",
+      "download_button": "下载固件"
+    }
+  },
+  "about": {
+    "title": "关于",
+    "team_members": "贡献列表",
+    "members": {
+      "halfsweet": "硬件设计/固件开发/上位机",
+      "rcsn": "CherryDAP HPmicro Port 支持",
+      "yekai": "固件开发/上位机",
+      "sakumisu": "CherryDAP 创始人"
+    },
+    "technology_stack": "技术栈列表",
+    "version_info": "版本信息",
+    "app_version": "应用版本",
+    "software_license": "软件许可"
   }
 }

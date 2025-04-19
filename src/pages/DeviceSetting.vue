@@ -60,20 +60,20 @@ const updateCustomVoltage = () => {
   console.log("更新电压值:", customVoltage.value);
   const valueStr = customVoltage.value.toString().trim();
   if (valueStr === "") {
-    voltageErrorMsg.value = "请输入电压值";
+    voltageErrorMsg.value = $t('device_setting.voltage_errors.empty');
     return; // Exit early if empty
   }
 
   const value = Number(valueStr);
 
   if (isNaN(value)) {
-    voltageErrorMsg.value = "请输入有效的数字";
+    voltageErrorMsg.value = $t('device_setting.voltage_errors.invalid');
     console.log("无效的数字:", valueStr);
   } else if (value < 1.8) {
-    voltageErrorMsg.value = "电压值不能低于1.8V";
+    voltageErrorMsg.value = $t('device_setting.voltage_errors.too_low');
     console.log("电压值太低:", value);
   } else if (value > 5.0) {
-    voltageErrorMsg.value = "电压值不能超过5.0V";
+    voltageErrorMsg.value = $t('device_setting.voltage_errors.too_high');
     console.log("电压值太高:", value);
   } else {
     // Valid input
@@ -99,7 +99,7 @@ const switchToCustomMode = () => {
   } else {
       // Handle case where initial voltage is 0 (external) or invalid
       customVoltage.value = ""; // Keep it empty
-      voltageErrorMsg.value = "请输入电压值"; // Prompt user
+      voltageErrorMsg.value = $t('device_setting.voltage_errors.empty'); // Prompt user
   }
 };
 
@@ -151,7 +151,7 @@ async function DownloadSetting() {
       return
     }
   } catch (e) {
-    alert_msg.value = "设置失败，请重试"
+    alert_msg.value = $t('device_setting.alert.fail')
     alert_type.value = "error"
     show_alert.value = true
     setTimeout(() => {
@@ -185,7 +185,7 @@ async function DownloadSetting() {
   try {
     let rsp_json = JSON.parse(rsp)
     if (rsp_json["status"] == "success") {
-      alert_msg.value = "设置成功"
+      alert_msg.value = $t('device_setting.alert.success')
       alert_type.value = "success"
       show_alert.value = true
       setTimeout(() => {
@@ -193,7 +193,7 @@ async function DownloadSetting() {
       }, 3000)
       console.log("set setting success")
     } else {
-      alert_msg.value = "设置失败，错误原因:" + rsp_json["message"]
+      alert_msg.value = $t('device_setting.alert.fail_reason') + rsp_json["message"]
       alert_type.value = "error"
       show_alert.value = true
       setTimeout(() => {
@@ -202,7 +202,7 @@ async function DownloadSetting() {
       console.log(`set setting failed: ${rsp}`)
     }
   } catch (e) {
-    alert_msg.value = "设置失败，请重试"
+    alert_msg.value = $t('device_setting.alert.fail')
     alert_type.value = "error"
     show_alert.value = true
     setTimeout(() => {
@@ -216,12 +216,12 @@ async function DownloadSetting() {
 
 <template>
   <div class="min-h-screen p-6 bg-base-200">
-    <h2 class="text-2xl font-bold mb-6">设备设置</h2>
+    <h2 class="text-2xl font-bold mb-6">{{ $t('device_setting.title') }}</h2>
     
     <div v-if="!connected" class="alert alert-warning shadow-lg mb-6">
       <div>
         <span class="material-icons">warning</span>
-        <span>请先在主页连接设备，然后再进行设置</span>
+        <span>{{ $t('device_setting.connect_warning') }}</span>
       </div>
     </div>
     
@@ -231,16 +231,16 @@ async function DownloadSetting() {
         <div class="card-body">
           <h2 class="card-title flex items-center">
             <span class="material-icons text-primary mr-2">device_hub</span>
-            设备基本信息
+            {{ $t('device_setting.basic_info') }}
           </h2>
           <div class="form-control">
             <div class="relative">
               <div class="text-center mb-2">
-                <span class="label-text text-lg font-medium">设备昵称</span>
+                <span class="label-text text-lg font-medium">{{ $t('device_info.name') }}</span>
               </div>
-              <input type="text" placeholder="请输入设备名称" class="input input-bordered w-full" v-model="nickname"/>
+              <input type="text" :placeholder="$t('device_setting.nickname_placeholder')" class="input input-bordered w-full" v-model="nickname"/>
             </div>
-            <p class="text-xs mt-2 ml-2 opacity-70">设置设备的显示名称，便于识别多台设备</p>
+            <p class="text-xs mt-2 ml-2 opacity-70">{{ $t('device_setting.nickname_desc') }}</p>
           </div>
         </div>
       </div>
@@ -250,66 +250,66 @@ async function DownloadSetting() {
         <div class="card-body">
           <h2 class="card-title flex items-center">
             <span class="material-icons text-primary mr-2">speed</span>
-            性能设置
+            {{ $t('device_setting.performance') }}
           </h2>
           
           <div class="bg-base-200 p-3 rounded-lg">
             <div class="form-control">
               <div class="flex items-center justify-between">
-                <span class="label-text text-lg">启用速度Boost</span>
+                <span class="label-text text-lg">{{ $t('device_setting.speed_boost') }}</span>
                 <div class="flex items-center gap-2">
                   <input type="checkbox" class="toggle toggle-primary" 
                          :checked="speed_boost_enable" 
                          @change="speed_boost_enable = ($event.target as HTMLInputElement).checked"/>
-                  <span class="label-text text-sm opacity-70">{{ speed_boost_enable ? '已启用' : '已禁用' }}</span>
+                  <span class="label-text text-sm opacity-70">{{ speed_boost_enable ? $t('device_setting.enabled') : $t('device_setting.disabled') }}</span>
                 </div>
               </div>
-              <p class="text-xs ml-1 mt-1 opacity-70">10倍加速调试，但可能因速度过快导致通信错误，建议谨慎使用</p>
+              <p class="text-xs ml-1 mt-1 opacity-70">{{ $t('device_setting.speed_boost_desc') }}</p>
             </div>
           </div>
           
-          <div class="divider my-2">接口设置</div>
+          <div class="divider my-2">{{ $t('device_setting.interface_settings') }}</div>
           
           <div class="grid md:grid-cols-2 gap-6">
             <!-- 左侧：SWD输出方式 -->
             <div class="bg-base-200 p-4 rounded-lg">
               <label class="label justify-center">
-                <span class="label-text text-lg font-medium">SWD输出方式</span>
+                <span class="label-text text-lg font-medium">{{ $t('device_setting.swd_output_mode') }}</span>
               </label>
               <div class="flex justify-center mt-2">
                 <div class="flex gap-4">
                   <button class="btn px-6" 
                           :class="{'btn-primary': swd_simulate_mode === 'spi', 'btn-outline': swd_simulate_mode !== 'spi'}" 
-                          @click="swd_simulate_mode = 'spi'">SPI</button>
+                          @click="swd_simulate_mode = 'spi'">{{ $t('device_setting.port_mode.spi') }}</button>
                   <button class="btn px-6"
                           :class="{'btn-primary': swd_simulate_mode === 'gpio', 'btn-outline': swd_simulate_mode !== 'gpio'}" 
-                          @click="swd_simulate_mode = 'gpio'">GPIO</button>
+                          @click="swd_simulate_mode = 'gpio'">{{ $t('device_setting.port_mode.gpio') }}</button>
                 </div>
               </div>
               <div class="text-xs text-center mt-3 opacity-70">
-                <p>SPI模式：该模式下实际速率和设置速率将保持一致，波形也更规范</p>
-                <p class="mt-1">GPIO模式：实际速率可能会更低，但兼容性更好，如果通信出现错误可以尝试使用该模式</p>
+                <p>{{ $t('device_setting.port_mode.spi_desc') }}</p>
+                <p class="mt-1">{{ $t('device_setting.port_mode.gpio_desc') }}</p>
               </div>
             </div>
 
             <!-- 右侧：JTAG输出方式 -->
             <div class="bg-base-200 p-4 rounded-lg">
               <label class="label justify-center">
-                <span class="label-text text-lg font-medium">JTAG输出方式</span>
+                <span class="label-text text-lg font-medium">{{ $t('device_setting.jtag_output_mode') }}</span>
               </label>
               <div class="flex justify-center mt-2">
                 <div class="flex gap-4">
                   <button class="btn px-6" 
                           :class="{'btn-primary': jtag_simulate_mode === 'spi', 'btn-outline': jtag_simulate_mode !== 'spi'}" 
-                          @click="jtag_simulate_mode = 'spi'">SPI</button>
+                          @click="jtag_simulate_mode = 'spi'">{{ $t('device_setting.port_mode.spi') }}</button>
                   <button class="btn px-6"
                           :class="{'btn-primary': jtag_simulate_mode === 'gpio', 'btn-outline': jtag_simulate_mode !== 'gpio'}" 
-                          @click="jtag_simulate_mode = 'gpio'">GPIO</button>
+                          @click="jtag_simulate_mode = 'gpio'">{{ $t('device_setting.port_mode.gpio') }}</button>
                 </div>
               </div>
               <div class="text-xs text-center mt-3 opacity-70">
-                <p>SPI模式：该模式下实际速率和设置速率将保持一致，波形也更规范</p>
-                <p class="mt-1">GPIO模式：实际速率可能会更低，但兼容性更好，如果通信出现错误可以尝试使用该模式</p>
+                <p>{{ $t('device_setting.port_mode.spi_desc') }}</p>
+                <p class="mt-1">{{ $t('device_setting.port_mode.gpio_desc') }}</p>
               </div>
             </div>
           </div>
@@ -320,16 +320,16 @@ async function DownloadSetting() {
               <div class="form-control" v-if="jtag_simulate_mode === 'spi'">
                 <div class="bg-base-200 p-4 rounded-lg">
                   <div class="flex items-center justify-between">
-                    <span class="label-text text-lg">JTAG_SHIFT 加速</span>
+                    <span class="label-text text-lg">{{ $t('device_setting.jtag_shift') }}</span>
                     <div class="flex items-center gap-2">
                       <input type="checkbox" class="toggle toggle-primary" 
                              :checked="!jtag_single_bit_mode" 
                              @change="jtag_single_bit_mode = !($event.target as HTMLInputElement).checked"/>
-                      <span class="label-text text-sm opacity-70">{{ !jtag_single_bit_mode ? '已启用' : '已禁用' }}</span>
+                      <span class="label-text text-sm opacity-70">{{ !jtag_single_bit_mode ? $t('device_setting.enabled') : $t('device_setting.disabled') }}</span>
                     </div>
                   </div>
                   <div class="text-xs mt-1 ml-1 opacity-70">
-                    启用后可提升JTAG操作速度，但可能降低部分设备的兼容性
+                    {{ $t('device_setting.jtag_shift_desc') }}
                   </div>
                 </div>
               </div>
@@ -343,20 +343,20 @@ async function DownloadSetting() {
         <div class="card-body">
           <h2 class="card-title flex items-center">
             <span class="material-icons text-primary mr-2">device_hub</span>
-            兼容性选项
+            {{ $t('device_setting.compatibility') }}
           </h2>
           
           <div class="bg-base-200 p-4 rounded-lg">
             <div class="flex items-center justify-between">
-              <span class="label-text text-lg">20P JTAG接口兼容模式</span>
+              <span class="label-text text-lg">{{ $t('device_setting.jtag_20pin') }}</span>
               <div class="flex items-center gap-2">
                 <input type="checkbox" class="toggle toggle-primary" 
                        :checked="jtag_20pin_compatible" 
                        @change="jtag_20pin_compatible = ($event.target as HTMLInputElement).checked"/>
-                <span class="label-text text-sm opacity-70">{{ jtag_20pin_compatible ? '已启用' : '已禁用' }}</span>
+                <span class="label-text text-sm opacity-70">{{ jtag_20pin_compatible ? $t('device_setting.enabled') : $t('device_setting.disabled') }}</span>
               </div>
             </div>
-            <p class="text-xs ml-1 mt-1 opacity-70">启用后将关闭UART功能，全部输出低电平，避免部分设备接地导致发热较高</p>
+            <p class="text-xs ml-1 mt-1 opacity-70">{{ $t('device_setting.jtag_20pin_desc') }}</p>
           </div>
         </div>
       </div>
@@ -366,47 +366,47 @@ async function DownloadSetting() {
         <div class="card-body">
           <h2 class="card-title flex items-center">
             <span class="material-icons text-primary mr-2">power</span>
-            电源设置
+            {{ $t('device_setting.power_settings') }}
           </h2>
           
           <div class="grid md:grid-cols-2 gap-4">
             <!-- 左侧：上电开启电源输出-->
             <div class="form-control bg-base-200 p-3 rounded-lg">
               <div class="flex items-center justify-between">
-                <span class="label-text text-lg">上电开启电源输出</span>
+                <span class="label-text text-lg">{{ $t('device_setting.power_on_startup') }}</span>
                 <div class="flex items-center gap-2">
                   <input type="checkbox" class="toggle toggle-primary" 
                          :checked="power_power_on" 
                          @change="power_power_on = ($event.target as HTMLInputElement).checked"/>
-                  <span class="label-text text-sm opacity-70">{{ power_power_on ? '已启用' : '已禁用' }}</span>
+                  <span class="label-text text-sm opacity-70">{{ power_power_on ? $t('device_setting.enabled') : $t('device_setting.disabled') }}</span>
                 </div>
               </div>
-              <p class="text-xs ml-1 mt-1 opacity-70">打开之后TVcc默认开启，输出电压与参考电压保持一致</p>
-              <p class="text-xs ml-1 mt-1 opacity-70">关闭后TVcc默认关闭，直到Vref引脚上输入电压大于1.6V之后才会开启输出</p>
+              <p class="text-xs ml-1 mt-1 opacity-70">{{ $t('device_setting.power_on_desc') }}</p>
+              <p class="text-xs ml-1 mt-1 opacity-70">{{ $t('device_setting.power_on_desc2') }}</p>
             </div>
             
             <!-- 右侧：上电开启IO输出 -->
             <div class="form-control bg-base-200 p-3 rounded-lg">
               <div class="flex items-center justify-between">
-                <span class="label-text text-lg">上电开启IO输出</span>
+                <span class="label-text text-lg">{{ $t('device_setting.io_on_startup') }}</span>
                 <div class="flex items-center gap-2">
                   <input type="checkbox" class="toggle toggle-primary" 
                          :checked="power_port_on" 
                          @change="power_port_on = ($event.target as HTMLInputElement).checked"/>
-                  <span class="label-text text-sm opacity-70">{{ power_port_on ? '已启用' : '已禁用' }}</span>
+                  <span class="label-text text-sm opacity-70">{{ power_port_on ? $t('device_setting.enabled') : $t('device_setting.disabled') }}</span>
                 </div>
               </div>
-              <p class="text-xs ml-1 mt-1 opacity-70">打开之后所有IO默认开启输出，电平与参考电压保持一致</p>
-              <p class="text-xs ml-1 mt-1 opacity-70">关闭后所有IO默认关闭输出，为高阻态，直到Vref引脚上输入电压大于1.6V之后才会开启输出</p>
+              <p class="text-xs ml-1 mt-1 opacity-70">{{ $t('device_setting.io_on_desc') }}</p>
+              <p class="text-xs ml-1 mt-1 opacity-70">{{ $t('device_setting.io_on_desc2') }}</p>
             </div>
           </div>
 
           <div class="form-control mt-4">
             <div class="bg-base-200 p-4 rounded-lg">
               <div class="flex items-center justify-between mb-3">
-                <span class="label-text text-lg font-medium">参考电压</span>
+                <span class="label-text text-lg font-medium">{{ $t('device_setting.reference_voltage') }}</span>
                 <div class="flex items-center gap-2">
-                  <span class="text-sm">外部输入</span>
+                  <span class="text-sm">{{ $t('device_setting.external_input') }}</span>
                   <input type="checkbox" class="toggle toggle-primary" 
                          :checked="isExternalVref" 
                          @change="isExternalVref = ($event.target as HTMLInputElement).checked"/>
@@ -420,8 +420,8 @@ async function DownloadSetting() {
                 <div v-if="!isExternalVref" key="internal" class="space-y-3">
                   <!-- 电压设置模式选择 -->
                   <div class="tabs tabs-boxed">
-                    <a class="tab" :class="{'tab-active': voltageMode === 'preset'}" @click="voltageMode = 'preset'">预设值</a>
-                    <a class="tab" :class="{'tab-active': voltageMode === 'custom'}" @click="switchToCustomMode">自定义</a>
+                    <a class="tab" :class="{'tab-active': voltageMode === 'preset'}" @click="voltageMode = 'preset'">{{ $t('device_setting.voltage_modes.preset') }}</a>
+                    <a class="tab" :class="{'tab-active': voltageMode === 'custom'}" @click="switchToCustomMode">{{ $t('device_setting.voltage_modes.custom') }}</a>
                   </div>
                   
                   <!-- 预设电压选择 -->
@@ -439,7 +439,7 @@ async function DownloadSetting() {
                     <div v-else key="custom" class="form-control">
                       <div class="relative">
                         <div class="text-center mb-2 pb-1 border-b border-base-300 opacity-70">
-                          <span class="text-sm font-medium">电压值</span>
+                          <span class="text-sm font-medium">{{ $t('device_setting.voltage_input') }}</span>
                         </div>
                         <div class="relative">
                           <input type="number"
@@ -454,7 +454,7 @@ async function DownloadSetting() {
                                  step="0.1"
                                  min="1.8"
                                  max="5.0"
-                                 placeholder="输入1.8-5.0之间的电压"/>
+                                 :placeholder="$t('device_setting.voltage_placeholder')"/>
                           <span class="absolute right-3 top-1/2 -translate-y-1/2 text-base-content opacity-70">V</span>
                         </div>
                       </div>
@@ -467,19 +467,19 @@ async function DownloadSetting() {
                             <div class="flex">
                               <span class="material-icons text-base mr-2">error_outline</span>
                               <div>
-                                <strong>错误：</strong>{{ voltageErrorMsg }}
+                                <strong>{{ $t('device_setting.voltage_error') }}：</strong>{{ voltageErrorMsg }}
                                 <div class="text-xs mt-1">
                                   <span v-if="voltageErrorMsg.includes('低于')">
-                                    建议值：1.8V (最小允许值)
+                                    {{ $t('device_setting.min_voltage') }}
                                   </span>
                                   <span v-else-if="voltageErrorMsg.includes('超过')">
-                                    建议值：5.0V (最大允许值)
+                                    {{ $t('device_setting.max_voltage') }}
                                   </span>
                                 </div>
                               </div>
                             </div>
                           </div>
-                          <div v-else class="text-xs mt-1 opacity-70 ml-1">请输入1.8V-5.0V之间的电压值</div>
+                          <div v-else class="text-xs mt-1 opacity-70 ml-1">{{ $t('device_setting.voltage_range_desc') }}</div>
                         </transition>
                       </div>
                     </div>
@@ -488,19 +488,19 @@ async function DownloadSetting() {
                   <!-- Display current setting only if valid -->
                   <transition name="fade">
                     <div class="flex items-center" v-if="!voltageErrorMsg && !isExternalVref">
-                      <span class="text-sm mr-2">当前设置:</span>
+                      <span class="text-sm mr-2">{{ $t('device_setting.current_setting') }}:</span>
                       <div class="badge badge-primary p-2">{{ power_vref_voltage }}V</div>
                     </div>
                   </transition>
                 </div>
                 
                 <div v-else key="external" class="bg-base-100 p-4 rounded-lg text-center">
-                  <div class="text-lg font-medium">使用外部参考电压输入</div>
-                  <p class="text-xs mt-1 opacity-70">设备使用Vref引脚的电压作为参考电平</p>
+                  <div class="text-lg font-medium">{{ $t('device_setting.external_vref_title') }}</div>
+                  <p class="text-xs mt-1 opacity-70">{{ $t('device_setting.external_vref_desc') }}</p>
                 </div>
               </transition>
               
-              <p class="text-xs mt-3 opacity-70">选择合适的参考电压，对应目标设备的工作电压</p>
+              <p class="text-xs mt-3 opacity-70">{{ $t('device_setting.voltage_select_desc') }}</p>
             </div>
           </div>
         </div>
@@ -511,14 +511,14 @@ async function DownloadSetting() {
         <div class="card-body">
           <h2 class="card-title flex items-center">
             <span class="material-icons text-primary mr-2">refresh</span>
-            复位设置
+            {{ $t('device_setting.reset_settings') }}
           </h2>
           
           <div class="form-control">
             <div class="bg-base-200 p-4 rounded-lg">
               <label class="label">
-                <span class="label-text text-lg font-medium">默认复位方式 (可多选)</span>
-                <span class="text-xs opacity-70">可同时选择多种复位方式</span>
+                <span class="label-text text-lg font-medium">{{ $t('device_setting.reset_modes') }}</span>
+                <span class="text-xs opacity-70">{{ $t('device_setting.reset_multi_select') }}</span>
               </label>
               <div class="grid md:grid-cols-3 gap-2 mt-2">
                 <label class="flex items-center gap-2 p-3 bg-base-100 rounded-lg cursor-pointer border-2 transition-all hover:bg-base-300"
@@ -527,8 +527,8 @@ async function DownloadSetting() {
                          :checked="reset_mode.includes('nrst')"
                          @change="toggleResetMode('nrst', ($event.target as HTMLInputElement).checked)"/>
                   <div>
-                    <div class="font-medium">NRST输出</div>
-                    <div class="text-xs opacity-70">通过NRST引脚进行复位</div>
+                    <div class="font-medium">{{ $t('device_setting.reset_mode.nrst') }}</div>
+                    <div class="text-xs opacity-70">{{ $t('device_setting.reset_mode.nrst_desc') }}</div>
                   </div>
                 </label>
                 <label class="flex items-center gap-2 p-3 bg-base-100 rounded-lg cursor-pointer border-2 transition-all hover:bg-base-300" 
@@ -537,8 +537,8 @@ async function DownloadSetting() {
                          :checked="reset_mode.includes('por')"
                          @change="toggleResetMode('por', ($event.target as HTMLInputElement).checked)"/>
                   <div>
-                    <div class="font-medium">电源复位</div>
-                    <div class="text-xs opacity-70">触发复位动作之后将关闭TVcc和+5V输出，复位动作结束后再打开</div>
+                    <div class="font-medium">{{ $t('device_setting.reset_mode.por') }}</div>
+                    <div class="text-xs opacity-70">{{ $t('device_setting.reset_mode.por_desc') }}</div>
                   </div>
                 </label>
                 <label class="flex items-center gap-2 p-3 bg-base-100 rounded-lg cursor-pointer border-2 transition-all hover:bg-base-300" 
@@ -547,12 +547,12 @@ async function DownloadSetting() {
                          :checked="reset_mode.includes('arm_swd_soft')"
                          @change="toggleResetMode('arm_swd_soft', ($event.target as HTMLInputElement).checked)"/>
                   <div>
-                    <div class="font-medium">Arm SWD 软复位</div>
-                    <div class="text-xs opacity-70">该选项只对Arm内核芯片有效</div>
+                    <div class="font-medium">{{ $t('device_setting.reset_mode.arm_swd_soft') }}</div>
+                    <div class="text-xs opacity-70">{{ $t('device_setting.reset_mode.arm_swd_soft_desc') }}</div>
                   </div>
                 </label>
               </div>
-              <p class="text-xs mt-3 opacity-70">根据目标设备特性选择不同复位方式，复杂情况可组合使用</p>
+              <p class="text-xs mt-3 opacity-70">{{ $t('device_setting.reset_desc') }}</p>
             </div>
           </div>
         </div>
@@ -563,28 +563,28 @@ async function DownloadSetting() {
         <div class="card-body">
           <h2 class="card-title flex items-center">
             <span class="material-icons text-primary mr-2">lightbulb</span>
-            LED设置
+            {{ $t('device_setting.led_settings') }}
           </h2>
           
           <div class="bg-base-200 p-4 rounded-lg">
             <div class="form-control">
               <div class="flex items-center justify-between">
-                <span class="label-text text-lg">启用LED</span>
+                <span class="label-text text-lg">{{ $t('device_setting.enable_led') }}</span>
                 <div class="flex items-center gap-2">
                   <input type="checkbox" class="toggle toggle-primary" 
                          :checked="led_enable" 
                          @change="led_enable = ($event.target as HTMLInputElement).checked"/>
-                  <span class="label-text text-sm opacity-70">{{ led_enable ? '已启用' : '已禁用' }}</span>
+                  <span class="label-text text-sm opacity-70">{{ led_enable ? $t('device_setting.enabled') : $t('device_setting.disabled') }}</span>
                 </div>
               </div>
-              <p class="text-xs ml-1 mt-1 opacity-70">控制设备LED指示灯的开关状态</p>
+              <p class="text-xs ml-1 mt-1 opacity-70">{{ $t('device_setting.led_desc') }}</p>
             </div>
             
             <div class="led-brightness-container">
               <transition name="slide-fade">
                 <div v-if="led_enable" class="form-control mt-4 led-brightness-content">
                   <label class="label">
-                    <span class="label-text text-lg font-medium">LED亮度</span>
+                    <span class="label-text text-lg font-medium">{{ $t('device_setting.led_brightness') }}</span>
                   </label>
                   <input type="range" min="1" max="100" v-model.number="led_brightness" class="range range-primary" step="1"/>
                   <div class="w-full flex justify-between text-xs px-2 mt-1">
@@ -596,11 +596,11 @@ async function DownloadSetting() {
                   </div>
                   <div class="mt-2">
                     <div class="flex justify-between items-center">
-                      <span class="text-sm opacity-70">当前亮度:</span>
+                      <span class="text-sm opacity-70">{{ $t('device_setting.current_brightness') }}:</span>
                       <div class="badge badge-primary p-3">{{ led_brightness }}%</div>
                     </div>
                   </div>
-                  <p class="text-xs mt-3 opacity-70">调节LED指示灯的亮度，较低亮度可延长设备使用寿命</p>
+                  <p class="text-xs mt-3 opacity-70">{{ $t('device_setting.led_brightness_desc') }}</p>
                 </div>
               </transition>
             </div>
@@ -613,7 +613,7 @@ async function DownloadSetting() {
               @click="DownloadSetting" 
               :disabled="!canSave">
         <span class="material-icons mr-2">save</span>
-        保存所有设置
+        {{ $t('device_setting.save_settings') }}
       </button>
     </div>
   </div>

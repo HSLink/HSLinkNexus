@@ -16,6 +16,9 @@ import halfSweetAvatar from "../assets/contributors/halfsweet.png";
 import rcsnAvatar from "../assets/contributors/rcsn.png";
 import sakumisuAvatar from "../assets/contributors/sakumisu.png";
 
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
+
 // 技术栈信息
 interface Tech {
   name: string;
@@ -61,25 +64,25 @@ interface Developer {
 const developers: Ref<Developer[]> = ref([
   {
     name: "yekai",
-    role: "上位机",
+    role: t('about.members.yekai'),
     github: "https://github.com/kaidegit",
     avatar: yekaiAvatar
   },
   {
     name: "半糖",
-    role: "调试器",
+    role: t('about.members.halfsweet'),
     github: "https://github.com/HalfSweet",
     avatar: halfSweetAvatar
   },
   {
     name: "RCSN",
-    role: "CherryDAP HPM Port",
+    role: t('about.members.rcsn'),
     github: "https://github.com/RCSN",
     avatar: rcsnAvatar
   },
   {
     name: "sakumisu",
-    role: "CherryDAP",
+    role: t('about.members.sakumisu'),
     github: "https://github.com/sakumisu",
     avatar: sakumisuAvatar
   }
@@ -112,7 +115,7 @@ onMounted(async () => {
 const copyEnvironmentInfo = async () => {
   const environmentInfo = `
 HSLink Nexus 环境信息:
-软件版本: ${ver.value}
+${t('about.app_version')}: ${ver.value}
 操作系统: ${osType.value} ${osVersionText.value} (${osArchText.value})
 时间: ${new Date().toLocaleString()}
 `;
@@ -137,7 +140,7 @@ HSLink Nexus 环境信息:
       <!-- Header Section with Animation -->
       <div class="mb-8 animate-fade-in-down text-center">
         <div class="relative inline-block">
-          <h2 class="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">关于</h2>
+          <h2 class="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">{{ $t('about.title') }}</h2>
           <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-1 w-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"></div>
         </div>
       </div>
@@ -151,7 +154,7 @@ HSLink Nexus 环境信息:
             
             <h3 class="text-xl font-bold mb-6 text-gray-800 dark:text-white flex items-center">
               <span class="i-tabler-info-circle mr-2 text-blue-500"></span>
-              <span>软件信息</span>
+              <span>{{ $t('about.version_info') }}</span>
             </h3>
             
             <div class="space-y-6 relative z-10">
@@ -160,7 +163,7 @@ HSLink Nexus 环境信息:
                   <span class="i-tabler-version text-blue-500 dark:text-blue-300"></span>
                 </div>
                 <div>
-                  <h4 class="font-medium text-gray-600 dark:text-gray-300">软件版本</h4>
+                  <h4 class="font-medium text-gray-600 dark:text-gray-300">{{ $t('about.app_version') }}</h4>
                   <p class="text-lg font-semibold text-gray-900 dark:text-white select-text">{{ ver }}</p>
                 </div>
               </div>
@@ -170,7 +173,7 @@ HSLink Nexus 环境信息:
                   <span class="i-tabler-license text-purple-500 dark:text-purple-300"></span>
                 </div>
                 <div>
-                  <h4 class="font-medium text-gray-600 dark:text-gray-300">开源协议</h4>
+                  <h4 class="font-medium text-gray-600 dark:text-gray-300">{{ $t('about.software_license') }}</h4>
                   <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ opensource_lic }}</p>
                 </div>
               </div>
@@ -210,7 +213,7 @@ HSLink Nexus 环境信息:
             
             <h3 class="text-xl font-bold mb-6 text-gray-800 dark:text-white flex items-center">
               <span class="i-tabler-users mr-2 text-purple-500"></span>
-              <span>贡献列表</span>
+              <span>{{ $t('about.team_members') }}</span>
             </h3>
             
             <ul class="space-y-4 relative z-10">
@@ -243,7 +246,7 @@ HSLink Nexus 环境信息:
             
             <h3 class="text-xl font-bold mb-6 text-gray-800 dark:text-white flex items-center">
               <span class="i-tabler-stack-2 mr-2 text-pink-500"></span>
-              <span>技术栈致谢</span>
+              <span>{{ $t('about.technology_stack') }}</span>
             </h3>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">

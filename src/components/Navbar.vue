@@ -10,7 +10,7 @@
               <span class="material-icons">{{ isCollapsed ? 'menu' : 'menu_open' }}</span>
             </div>
             <span class="label" :class="{'hidden-label': isCollapsed}">
-              {{ isCollapsed ? '' : '收起菜单' }}
+              {{ isCollapsed ? '' : $t('navbar.collapse_menu') }}
             </span>
           </button>
         </li>
@@ -45,11 +45,11 @@
           <div 
             v-else
             class="nav-item disabled-nav-item" 
-            title="请先连接设备"
+            :title="$t('navbar.device_required')"
           >
             <div class="icon-box">
               <span class="material-icons">hardware</span>
-              <div v-if="isCollapsed" class="tooltip">请先连接设备</div>
+              <div v-if="isCollapsed" class="tooltip">{{ $t('navbar.device_required') }}</div>
             </div>
             <span class="label" :class="{'hidden-label': isCollapsed}">
               {{ $t('navbar.device_setting') }}
@@ -74,11 +74,11 @@
           <div 
             v-else
             class="nav-item disabled-nav-item"
-            title="请先连接设备"
+            :title="$t('navbar.device_required')"
           >
             <div class="icon-box">
               <span class="material-icons">update</span>
-              <div v-if="isCollapsed" class="tooltip">请先连接设备</div>
+              <div v-if="isCollapsed" class="tooltip">{{ $t('navbar.device_required') }}</div>
             </div>
             <span class="label" :class="{'hidden-label': isCollapsed}">
               {{ $t('navbar.device_upgrade') }}
