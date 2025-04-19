@@ -1,8 +1,6 @@
 import { createI18n } from 'vue-i18n';
 import zh from './zh.json';
 import en from './en.json';
-import { invoke } from "@tauri-apps/api/tauri";
-import { fs } from "@tauri-apps/api";
 import { useUserStore } from '../stores/userStore';
 
 // 默认语言
@@ -13,6 +11,9 @@ const messages = {
   zh,
   en
 };
+
+// 定义可用语言类型，从messages对象自动提取
+type AvailableLocales = keyof typeof messages;
 
 // 语言列表配置
 export interface Language {
@@ -59,5 +60,5 @@ export async function getAvailableLanguages(): Promise<string[]> {
 export async function setupI18n() {
   const userStore = useUserStore();
   await userStore.loadLanguage();
-  i18n.global.locale.value = userStore.language;
+  i18n.global.locale.value = userStore.language as AvailableLocales;
 }

@@ -4,6 +4,9 @@ import {onMounted, reactive, ref, computed, watch} from "vue";
 import {hslink_write_wait_rsp} from "../backend/hslink_backend.ts";
 import {storeToRefs}from "pinia";
 import {useDeviceStore}from "../stores/deviceStore.ts";
+import {useI18n} from 'vue-i18n';
+
+const {t} = useI18n();
 
 const deviceStore = useDeviceStore()
 const {connected} = storeToRefs(deviceStore);
@@ -60,20 +63,20 @@ const updateCustomVoltage = () => {
   console.log("更新电压值:", customVoltage.value);
   const valueStr = customVoltage.value.toString().trim();
   if (valueStr === "") {
-    voltageErrorMsg.value = $t('device_setting.voltage_errors.empty');
+    voltageErrorMsg.value = t('device_setting.voltage_errors.empty');
     return; // Exit early if empty
   }
 
   const value = Number(valueStr);
 
   if (isNaN(value)) {
-    voltageErrorMsg.value = $t('device_setting.voltage_errors.invalid');
+    voltageErrorMsg.value = t('device_setting.voltage_errors.invalid');
     console.log("无效的数字:", valueStr);
   } else if (value < 1.8) {
-    voltageErrorMsg.value = $t('device_setting.voltage_errors.too_low');
+    voltageErrorMsg.value = t('device_setting.voltage_errors.too_low');
     console.log("电压值太低:", value);
   } else if (value > 5.0) {
-    voltageErrorMsg.value = $t('device_setting.voltage_errors.too_high');
+    voltageErrorMsg.value = t('device_setting.voltage_errors.too_high');
     console.log("电压值太高:", value);
   } else {
     // Valid input
@@ -99,7 +102,7 @@ const switchToCustomMode = () => {
   } else {
       // Handle case where initial voltage is 0 (external) or invalid
       customVoltage.value = ""; // Keep it empty
-      voltageErrorMsg.value = $t('device_setting.voltage_errors.empty'); // Prompt user
+      voltageErrorMsg.value = t('device_setting.voltage_errors.empty'); // Prompt user
   }
 };
 
@@ -141,7 +144,7 @@ async function DownloadSetting() {
     if (rsp_json["status"] == "success") {
       console.log("set nickname success")
     } else {
-      alert_msg.value = rsp_json["message"]
+      alert_msg.value = t('device_setting.alert.fail')
       alert_type.value = "error"
       show_alert.value = true
       setTimeout(() => {
@@ -151,7 +154,7 @@ async function DownloadSetting() {
       return
     }
   } catch (e) {
-    alert_msg.value = $t('device_setting.alert.fail')
+    alert_msg.value = t('device_setting.alert.fail')
     alert_type.value = "error"
     show_alert.value = true
     setTimeout(() => {
@@ -185,7 +188,7 @@ async function DownloadSetting() {
   try {
     let rsp_json = JSON.parse(rsp)
     if (rsp_json["status"] == "success") {
-      alert_msg.value = $t('device_setting.alert.success')
+      alert_msg.value = t('device_setting.alert.success')
       alert_type.value = "success"
       show_alert.value = true
       setTimeout(() => {
@@ -193,7 +196,7 @@ async function DownloadSetting() {
       }, 3000)
       console.log("set setting success")
     } else {
-      alert_msg.value = $t('device_setting.alert.fail_reason') + rsp_json["message"]
+      alert_msg.value = t('device_setting.alert.fail_reason') + rsp_json["message"]
       alert_type.value = "error"
       show_alert.value = true
       setTimeout(() => {
@@ -202,7 +205,7 @@ async function DownloadSetting() {
       console.log(`set setting failed: ${rsp}`)
     }
   } catch (e) {
-    alert_msg.value = $t('device_setting.alert.fail')
+    alert_msg.value = t('device_setting.alert.fail')
     alert_type.value = "error"
     show_alert.value = true
     setTimeout(() => {
@@ -216,12 +219,12 @@ async function DownloadSetting() {
 
 <template>
   <div class="min-h-screen p-6 bg-base-200">
-    <h2 class="text-2xl font-bold mb-6">{{ $t('device_setting.title') }}</h2>
+    <h2 class="text-2xl font-bold mb-6">{{ t('device_setting.title') }}</h2>
     
     <div v-if="!connected" class="alert alert-warning shadow-lg mb-6">
       <div>
         <span class="material-icons">warning</span>
-        <span>{{ $t('device_setting.connect_warning') }}</span>
+        <span>{{ t('device_setting.connect_warning') }}</span>
       </div>
     </div>
     
@@ -231,16 +234,16 @@ async function DownloadSetting() {
         <div class="card-body">
           <h2 class="card-title flex items-center">
             <span class="material-icons text-primary mr-2">device_hub</span>
-            {{ $t('device_setting.basic_info') }}
+            {{ t('device_setting.basic_info') }}
           </h2>
           <div class="form-control">
             <div class="relative">
               <div class="text-center mb-2">
-                <span class="label-text text-lg font-medium">{{ $t('device_info.name') }}</span>
+                <span class="label-text text-lg font-medium">{{ t('device_info.name') }}</span>
               </div>
-              <input type="text" :placeholder="$t('device_setting.nickname_placeholder')" class="input input-bordered w-full" v-model="nickname"/>
+              <input type="text" :placeholder="t('device_setting.nickname_placeholder')" class="input input-bordered w-full" v-model="nickname"/>
             </div>
-            <p class="text-xs mt-2 ml-2 opacity-70">{{ $t('device_setting.nickname_desc') }}</p>
+            <p class="text-xs mt-2 ml-2 opacity-70">{{ t('device_setting.nickname_desc') }}</p>
           </div>
         </div>
       </div>
@@ -250,66 +253,66 @@ async function DownloadSetting() {
         <div class="card-body">
           <h2 class="card-title flex items-center">
             <span class="material-icons text-primary mr-2">speed</span>
-            {{ $t('device_setting.performance') }}
+            {{ t('device_setting.performance') }}
           </h2>
           
           <div class="bg-base-200 p-3 rounded-lg">
             <div class="form-control">
               <div class="flex items-center justify-between">
-                <span class="label-text text-lg">{{ $t('device_setting.speed_boost') }}</span>
+                <span class="label-text text-lg">{{ t('device_setting.speed_boost') }}</span>
                 <div class="flex items-center gap-2">
                   <input type="checkbox" class="toggle toggle-primary" 
                          :checked="speed_boost_enable" 
                          @change="speed_boost_enable = ($event.target as HTMLInputElement).checked"/>
-                  <span class="label-text text-sm opacity-70">{{ speed_boost_enable ? $t('device_setting.enabled') : $t('device_setting.disabled') }}</span>
+                  <span class="label-text text-sm opacity-70">{{ speed_boost_enable ? t('device_setting.enabled') : t('device_setting.disabled') }}</span>
                 </div>
               </div>
-              <p class="text-xs ml-1 mt-1 opacity-70">{{ $t('device_setting.speed_boost_desc') }}</p>
+              <p class="text-xs ml-1 mt-1 opacity-70">{{ t('device_setting.speed_boost_desc') }}</p>
             </div>
           </div>
           
-          <div class="divider my-2">{{ $t('device_setting.interface_settings') }}</div>
+          <div class="divider my-2">{{ t('device_setting.interface_settings') }}</div>
           
           <div class="grid md:grid-cols-2 gap-6">
             <!-- 左侧：SWD输出方式 -->
             <div class="bg-base-200 p-4 rounded-lg">
               <label class="label justify-center">
-                <span class="label-text text-lg font-medium">{{ $t('device_setting.swd_output_mode') }}</span>
+                <span class="label-text text-lg font-medium">{{ t('device_setting.swd_output_mode') }}</span>
               </label>
               <div class="flex justify-center mt-2">
                 <div class="flex gap-4">
                   <button class="btn px-6" 
                           :class="{'btn-primary': swd_simulate_mode === 'spi', 'btn-outline': swd_simulate_mode !== 'spi'}" 
-                          @click="swd_simulate_mode = 'spi'">{{ $t('device_setting.port_mode.spi') }}</button>
+                          @click="swd_simulate_mode = 'spi'">{{ t('device_setting.port_mode.spi') }}</button>
                   <button class="btn px-6"
                           :class="{'btn-primary': swd_simulate_mode === 'gpio', 'btn-outline': swd_simulate_mode !== 'gpio'}" 
-                          @click="swd_simulate_mode = 'gpio'">{{ $t('device_setting.port_mode.gpio') }}</button>
+                          @click="swd_simulate_mode = 'gpio'">{{ t('device_setting.port_mode.gpio') }}</button>
                 </div>
               </div>
               <div class="text-xs text-center mt-3 opacity-70">
-                <p>{{ $t('device_setting.port_mode.spi_desc') }}</p>
-                <p class="mt-1">{{ $t('device_setting.port_mode.gpio_desc') }}</p>
+                <p>{{ t('device_setting.port_mode.spi_desc') }}</p>
+                <p class="mt-1">{{ t('device_setting.port_mode.gpio_desc') }}</p>
               </div>
             </div>
 
             <!-- 右侧：JTAG输出方式 -->
             <div class="bg-base-200 p-4 rounded-lg">
               <label class="label justify-center">
-                <span class="label-text text-lg font-medium">{{ $t('device_setting.jtag_output_mode') }}</span>
+                <span class="label-text text-lg font-medium">{{ t('device_setting.jtag_output_mode') }}</span>
               </label>
               <div class="flex justify-center mt-2">
                 <div class="flex gap-4">
                   <button class="btn px-6" 
                           :class="{'btn-primary': jtag_simulate_mode === 'spi', 'btn-outline': jtag_simulate_mode !== 'spi'}" 
-                          @click="jtag_simulate_mode = 'spi'">{{ $t('device_setting.port_mode.spi') }}</button>
+                          @click="jtag_simulate_mode = 'spi'">{{ t('device_setting.port_mode.spi') }}</button>
                   <button class="btn px-6"
                           :class="{'btn-primary': jtag_simulate_mode === 'gpio', 'btn-outline': jtag_simulate_mode !== 'gpio'}" 
-                          @click="jtag_simulate_mode = 'gpio'">{{ $t('device_setting.port_mode.gpio') }}</button>
+                          @click="jtag_simulate_mode = 'gpio'">{{ t('device_setting.port_mode.gpio') }}</button>
                 </div>
               </div>
               <div class="text-xs text-center mt-3 opacity-70">
-                <p>{{ $t('device_setting.port_mode.spi_desc') }}</p>
-                <p class="mt-1">{{ $t('device_setting.port_mode.gpio_desc') }}</p>
+                <p>{{ t('device_setting.port_mode.spi_desc') }}</p>
+                <p class="mt-1">{{ t('device_setting.port_mode.gpio_desc') }}</p>
               </div>
             </div>
           </div>
@@ -320,16 +323,16 @@ async function DownloadSetting() {
               <div class="form-control" v-if="jtag_simulate_mode === 'spi'">
                 <div class="bg-base-200 p-4 rounded-lg">
                   <div class="flex items-center justify-between">
-                    <span class="label-text text-lg">{{ $t('device_setting.jtag_shift') }}</span>
+                    <span class="label-text text-lg">{{ t('device_setting.jtag_shift') }}</span>
                     <div class="flex items-center gap-2">
                       <input type="checkbox" class="toggle toggle-primary" 
                              :checked="!jtag_single_bit_mode" 
                              @change="jtag_single_bit_mode = !($event.target as HTMLInputElement).checked"/>
-                      <span class="label-text text-sm opacity-70">{{ !jtag_single_bit_mode ? $t('device_setting.enabled') : $t('device_setting.disabled') }}</span>
+                      <span class="label-text text-sm opacity-70">{{ !jtag_single_bit_mode ? t('device_setting.enabled') : t('device_setting.disabled') }}</span>
                     </div>
                   </div>
                   <div class="text-xs mt-1 ml-1 opacity-70">
-                    {{ $t('device_setting.jtag_shift_desc') }}
+                    {{ t('device_setting.jtag_shift_desc') }}
                   </div>
                 </div>
               </div>
@@ -343,20 +346,20 @@ async function DownloadSetting() {
         <div class="card-body">
           <h2 class="card-title flex items-center">
             <span class="material-icons text-primary mr-2">device_hub</span>
-            {{ $t('device_setting.compatibility') }}
+            {{ t('device_setting.compatibility') }}
           </h2>
           
           <div class="bg-base-200 p-4 rounded-lg">
             <div class="flex items-center justify-between">
-              <span class="label-text text-lg">{{ $t('device_setting.jtag_20pin') }}</span>
+              <span class="label-text text-lg">{{ t('device_setting.jtag_20pin') }}</span>
               <div class="flex items-center gap-2">
                 <input type="checkbox" class="toggle toggle-primary" 
                        :checked="jtag_20pin_compatible" 
                        @change="jtag_20pin_compatible = ($event.target as HTMLInputElement).checked"/>
-                <span class="label-text text-sm opacity-70">{{ jtag_20pin_compatible ? $t('device_setting.enabled') : $t('device_setting.disabled') }}</span>
+                <span class="label-text text-sm opacity-70">{{ jtag_20pin_compatible ? t('device_setting.enabled') : t('device_setting.disabled') }}</span>
               </div>
             </div>
-            <p class="text-xs ml-1 mt-1 opacity-70">{{ $t('device_setting.jtag_20pin_desc') }}</p>
+            <p class="text-xs ml-1 mt-1 opacity-70">{{ t('device_setting.jtag_20pin_desc') }}</p>
           </div>
         </div>
       </div>
@@ -366,47 +369,47 @@ async function DownloadSetting() {
         <div class="card-body">
           <h2 class="card-title flex items-center">
             <span class="material-icons text-primary mr-2">power</span>
-            {{ $t('device_setting.power_settings') }}
+            {{ t('device_setting.power_settings') }}
           </h2>
           
           <div class="grid md:grid-cols-2 gap-4">
             <!-- 左侧：上电开启电源输出-->
             <div class="form-control bg-base-200 p-3 rounded-lg">
               <div class="flex items-center justify-between">
-                <span class="label-text text-lg">{{ $t('device_setting.power_on_startup') }}</span>
+                <span class="label-text text-lg">{{ t('device_setting.power_on_startup') }}</span>
                 <div class="flex items-center gap-2">
                   <input type="checkbox" class="toggle toggle-primary" 
                          :checked="power_power_on" 
                          @change="power_power_on = ($event.target as HTMLInputElement).checked"/>
-                  <span class="label-text text-sm opacity-70">{{ power_power_on ? $t('device_setting.enabled') : $t('device_setting.disabled') }}</span>
+                  <span class="label-text text-sm opacity-70">{{ power_power_on ? t('device_setting.enabled') : t('device_setting.disabled') }}</span>
                 </div>
               </div>
-              <p class="text-xs ml-1 mt-1 opacity-70">{{ $t('device_setting.power_on_desc') }}</p>
-              <p class="text-xs ml-1 mt-1 opacity-70">{{ $t('device_setting.power_on_desc2') }}</p>
+              <p class="text-xs ml-1 mt-1 opacity-70">{{ t('device_setting.power_on_desc') }}</p>
+              <p class="text-xs ml-1 mt-1 opacity-70">{{ t('device_setting.power_on_desc2') }}</p>
             </div>
             
             <!-- 右侧：上电开启IO输出 -->
             <div class="form-control bg-base-200 p-3 rounded-lg">
               <div class="flex items-center justify-between">
-                <span class="label-text text-lg">{{ $t('device_setting.io_on_startup') }}</span>
+                <span class="label-text text-lg">{{ t('device_setting.io_on_startup') }}</span>
                 <div class="flex items-center gap-2">
                   <input type="checkbox" class="toggle toggle-primary" 
                          :checked="power_port_on" 
                          @change="power_port_on = ($event.target as HTMLInputElement).checked"/>
-                  <span class="label-text text-sm opacity-70">{{ power_port_on ? $t('device_setting.enabled') : $t('device_setting.disabled') }}</span>
+                  <span class="label-text text-sm opacity-70">{{ power_port_on ? t('device_setting.enabled') : t('device_setting.disabled') }}</span>
                 </div>
               </div>
-              <p class="text-xs ml-1 mt-1 opacity-70">{{ $t('device_setting.io_on_desc') }}</p>
-              <p class="text-xs ml-1 mt-1 opacity-70">{{ $t('device_setting.io_on_desc2') }}</p>
+              <p class="text-xs ml-1 mt-1 opacity-70">{{ t('device_setting.io_on_desc') }}</p>
+              <p class="text-xs ml-1 mt-1 opacity-70">{{ t('device_setting.io_on_desc2') }}</p>
             </div>
           </div>
 
           <div class="form-control mt-4">
             <div class="bg-base-200 p-4 rounded-lg">
               <div class="flex items-center justify-between mb-3">
-                <span class="label-text text-lg font-medium">{{ $t('device_setting.reference_voltage') }}</span>
+                <span class="label-text text-lg font-medium">{{ t('device_setting.reference_voltage') }}</span>
                 <div class="flex items-center gap-2">
-                  <span class="text-sm">{{ $t('device_setting.external_input') }}</span>
+                  <span class="text-sm">{{ t('device_setting.external_input') }}</span>
                   <input type="checkbox" class="toggle toggle-primary" 
                          :checked="isExternalVref" 
                          @change="isExternalVref = ($event.target as HTMLInputElement).checked"/>
@@ -420,8 +423,8 @@ async function DownloadSetting() {
                 <div v-if="!isExternalVref" key="internal" class="space-y-3">
                   <!-- 电压设置模式选择 -->
                   <div class="tabs tabs-boxed">
-                    <a class="tab" :class="{'tab-active': voltageMode === 'preset'}" @click="voltageMode = 'preset'">{{ $t('device_setting.voltage_modes.preset') }}</a>
-                    <a class="tab" :class="{'tab-active': voltageMode === 'custom'}" @click="switchToCustomMode">{{ $t('device_setting.voltage_modes.custom') }}</a>
+                    <a class="tab" :class="{'tab-active': voltageMode === 'preset'}" @click="voltageMode = 'preset'">{{ t('device_setting.voltage_modes.preset') }}</a>
+                    <a class="tab" :class="{'tab-active': voltageMode === 'custom'}" @click="switchToCustomMode">{{ t('device_setting.voltage_modes.custom') }}</a>
                   </div>
                   
                   <!-- 预设电压选择 -->
@@ -439,7 +442,7 @@ async function DownloadSetting() {
                     <div v-else key="custom" class="form-control">
                       <div class="relative">
                         <div class="text-center mb-2 pb-1 border-b border-base-300 opacity-70">
-                          <span class="text-sm font-medium">{{ $t('device_setting.voltage_input') }}</span>
+                          <span class="text-sm font-medium">{{ t('device_setting.voltage_input') }}</span>
                         </div>
                         <div class="relative">
                           <input type="number"
@@ -454,7 +457,7 @@ async function DownloadSetting() {
                                  step="0.1"
                                  min="1.8"
                                  max="5.0"
-                                 :placeholder="$t('device_setting.voltage_placeholder')"/>
+                                 :placeholder="t('device_setting.voltage_placeholder')"/>
                           <span class="absolute right-3 top-1/2 -translate-y-1/2 text-base-content opacity-70">V</span>
                         </div>
                       </div>
@@ -467,19 +470,19 @@ async function DownloadSetting() {
                             <div class="flex">
                               <span class="material-icons text-base mr-2">error_outline</span>
                               <div>
-                                <strong>{{ $t('device_setting.voltage_error') }}：</strong>{{ voltageErrorMsg }}
+                                <strong>{{ t('device_setting.voltage_error') }}：</strong>{{ voltageErrorMsg }}
                                 <div class="text-xs mt-1">
                                   <span v-if="voltageErrorMsg.includes('低于')">
-                                    {{ $t('device_setting.min_voltage') }}
+                                    {{ t('device_setting.min_voltage') }}
                                   </span>
                                   <span v-else-if="voltageErrorMsg.includes('超过')">
-                                    {{ $t('device_setting.max_voltage') }}
+                                    {{ t('device_setting.max_voltage') }}
                                   </span>
                                 </div>
                               </div>
                             </div>
                           </div>
-                          <div v-else class="text-xs mt-1 opacity-70 ml-1">{{ $t('device_setting.voltage_range_desc') }}</div>
+                          <div v-else class="text-xs mt-1 opacity-70 ml-1">{{ t('device_setting.voltage_range_desc') }}</div>
                         </transition>
                       </div>
                     </div>
@@ -488,19 +491,19 @@ async function DownloadSetting() {
                   <!-- Display current setting only if valid -->
                   <transition name="fade">
                     <div class="flex items-center" v-if="!voltageErrorMsg && !isExternalVref">
-                      <span class="text-sm mr-2">{{ $t('device_setting.current_setting') }}:</span>
+                      <span class="text-sm mr-2">{{ t('device_setting.current_setting') }}:</span>
                       <div class="badge badge-primary p-2">{{ power_vref_voltage }}V</div>
                     </div>
                   </transition>
                 </div>
                 
                 <div v-else key="external" class="bg-base-100 p-4 rounded-lg text-center">
-                  <div class="text-lg font-medium">{{ $t('device_setting.external_vref_title') }}</div>
-                  <p class="text-xs mt-1 opacity-70">{{ $t('device_setting.external_vref_desc') }}</p>
+                  <div class="text-lg font-medium">{{ t('device_setting.external_vref_title') }}</div>
+                  <p class="text-xs mt-1 opacity-70">{{ t('device_setting.external_vref_desc') }}</p>
                 </div>
               </transition>
               
-              <p class="text-xs mt-3 opacity-70">{{ $t('device_setting.voltage_select_desc') }}</p>
+              <p class="text-xs mt-3 opacity-70">{{ t('device_setting.voltage_select_desc') }}</p>
             </div>
           </div>
         </div>
@@ -511,14 +514,14 @@ async function DownloadSetting() {
         <div class="card-body">
           <h2 class="card-title flex items-center">
             <span class="material-icons text-primary mr-2">refresh</span>
-            {{ $t('device_setting.reset_settings') }}
+            {{ t('device_setting.reset_settings') }}
           </h2>
           
           <div class="form-control">
             <div class="bg-base-200 p-4 rounded-lg">
               <label class="label">
-                <span class="label-text text-lg font-medium">{{ $t('device_setting.reset_modes') }}</span>
-                <span class="text-xs opacity-70">{{ $t('device_setting.reset_multi_select') }}</span>
+                <span class="label-text text-lg font-medium">{{ t('device_setting.reset_modes') }}</span>
+                <span class="text-xs opacity-70">{{ t('device_setting.reset_multi_select') }}</span>
               </label>
               <div class="grid md:grid-cols-3 gap-2 mt-2">
                 <label class="flex items-center gap-2 p-3 bg-base-100 rounded-lg cursor-pointer border-2 transition-all hover:bg-base-300"
@@ -527,8 +530,8 @@ async function DownloadSetting() {
                          :checked="reset_mode.includes('nrst')"
                          @change="toggleResetMode('nrst', ($event.target as HTMLInputElement).checked)"/>
                   <div>
-                    <div class="font-medium">{{ $t('device_setting.reset_mode.nrst') }}</div>
-                    <div class="text-xs opacity-70">{{ $t('device_setting.reset_mode.nrst_desc') }}</div>
+                    <div class="font-medium">{{ t('device_setting.reset_mode.nrst') }}</div>
+                    <div class="text-xs opacity-70">{{ t('device_setting.reset_mode.nrst_desc') }}</div>
                   </div>
                 </label>
                 <label class="flex items-center gap-2 p-3 bg-base-100 rounded-lg cursor-pointer border-2 transition-all hover:bg-base-300" 
@@ -537,8 +540,8 @@ async function DownloadSetting() {
                          :checked="reset_mode.includes('por')"
                          @change="toggleResetMode('por', ($event.target as HTMLInputElement).checked)"/>
                   <div>
-                    <div class="font-medium">{{ $t('device_setting.reset_mode.por') }}</div>
-                    <div class="text-xs opacity-70">{{ $t('device_setting.reset_mode.por_desc') }}</div>
+                    <div class="font-medium">{{ t('device_setting.reset_mode.por') }}</div>
+                    <div class="text-xs opacity-70">{{ t('device_setting.reset_mode.por_desc') }}</div>
                   </div>
                 </label>
                 <label class="flex items-center gap-2 p-3 bg-base-100 rounded-lg cursor-pointer border-2 transition-all hover:bg-base-300" 
@@ -547,12 +550,12 @@ async function DownloadSetting() {
                          :checked="reset_mode.includes('arm_swd_soft')"
                          @change="toggleResetMode('arm_swd_soft', ($event.target as HTMLInputElement).checked)"/>
                   <div>
-                    <div class="font-medium">{{ $t('device_setting.reset_mode.arm_swd_soft') }}</div>
-                    <div class="text-xs opacity-70">{{ $t('device_setting.reset_mode.arm_swd_soft_desc') }}</div>
+                    <div class="font-medium">{{ t('device_setting.reset_mode.arm_swd_soft') }}</div>
+                    <div class="text-xs opacity-70">{{ t('device_setting.reset_mode.arm_swd_soft_desc') }}</div>
                   </div>
                 </label>
               </div>
-              <p class="text-xs mt-3 opacity-70">{{ $t('device_setting.reset_desc') }}</p>
+              <p class="text-xs mt-3 opacity-70">{{ t('device_setting.reset_desc') }}</p>
             </div>
           </div>
         </div>
@@ -563,28 +566,28 @@ async function DownloadSetting() {
         <div class="card-body">
           <h2 class="card-title flex items-center">
             <span class="material-icons text-primary mr-2">lightbulb</span>
-            {{ $t('device_setting.led_settings') }}
+            {{ t('device_setting.led_settings') }}
           </h2>
           
           <div class="bg-base-200 p-4 rounded-lg">
             <div class="form-control">
               <div class="flex items-center justify-between">
-                <span class="label-text text-lg">{{ $t('device_setting.enable_led') }}</span>
+                <span class="label-text text-lg">{{ t('device_setting.enable_led') }}</span>
                 <div class="flex items-center gap-2">
                   <input type="checkbox" class="toggle toggle-primary" 
                          :checked="led_enable" 
                          @change="led_enable = ($event.target as HTMLInputElement).checked"/>
-                  <span class="label-text text-sm opacity-70">{{ led_enable ? $t('device_setting.enabled') : $t('device_setting.disabled') }}</span>
+                  <span class="label-text text-sm opacity-70">{{ led_enable ? t('device_setting.enabled') : t('device_setting.disabled') }}</span>
                 </div>
               </div>
-              <p class="text-xs ml-1 mt-1 opacity-70">{{ $t('device_setting.led_desc') }}</p>
+              <p class="text-xs ml-1 mt-1 opacity-70">{{ t('device_setting.led_desc') }}</p>
             </div>
             
             <div class="led-brightness-container">
               <transition name="slide-fade">
                 <div v-if="led_enable" class="form-control mt-4 led-brightness-content">
                   <label class="label">
-                    <span class="label-text text-lg font-medium">{{ $t('device_setting.led_brightness') }}</span>
+                    <span class="label-text text-lg font-medium">{{ t('device_setting.led_brightness') }}</span>
                   </label>
                   <input type="range" min="1" max="100" v-model.number="led_brightness" class="range range-primary" step="1"/>
                   <div class="w-full flex justify-between text-xs px-2 mt-1">
@@ -596,11 +599,11 @@ async function DownloadSetting() {
                   </div>
                   <div class="mt-2">
                     <div class="flex justify-between items-center">
-                      <span class="text-sm opacity-70">{{ $t('device_setting.current_brightness') }}:</span>
+                      <span class="text-sm opacity-70">{{ t('device_setting.current_brightness') }}:</span>
                       <div class="badge badge-primary p-3">{{ led_brightness }}%</div>
                     </div>
                   </div>
-                  <p class="text-xs mt-3 opacity-70">{{ $t('device_setting.led_brightness_desc') }}</p>
+                  <p class="text-xs mt-3 opacity-70">{{ t('device_setting.led_brightness_desc') }}</p>
                 </div>
               </transition>
             </div>
@@ -613,7 +616,7 @@ async function DownloadSetting() {
               @click="DownloadSetting" 
               :disabled="!canSave">
         <span class="material-icons mr-2">save</span>
-        {{ $t('device_setting.save_settings') }}
+        {{ t('device_setting.save_settings') }}
       </button>
     </div>
   </div>
