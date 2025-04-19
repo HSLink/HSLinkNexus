@@ -11,7 +11,7 @@ on:
       - 'main'
 
 env:
-  REPO_NAME: hslink-nexus
+  REPO_NAME: "HSLink Nexus"
 
 jobs:
   get-version:
