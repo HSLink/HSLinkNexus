@@ -65,7 +65,7 @@ jobs:
       - name: Zip portable to release assets
         run: |
           cd src-tauri/target/release
-          7z a -tzip "../../../artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_windows_x64_portable.zip" "${{ env.REPO_NAME }}.exe"
+          7z a -tzip "../../../artifacts/${{ env.REPO_NAME }}_${{ env.VERSION }}_windows_x64_portable.zip" "hslinknexus.exe"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
