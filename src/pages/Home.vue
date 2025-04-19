@@ -411,7 +411,7 @@ watch(sn, () => {
     <div v-if="availableDevices.length > 0" class="flex flex-wrap justify-center -mx-3">
       <!-- 设备卡片 -->
       <div v-for="device in availableDevices" :key="device.sn" 
-           class="px-3 w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 mb-6">
+           class="px-3 w-full sm:w-2/3 md:w-1/2 lg:w-1/2 xl:w-1/3 mb-6">
         <div class="h-full flex flex-col bg-base-100 rounded-xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition-transform"
              :class="{'ring-2 ring-primary': device.sn === connectedDeviceSn}">
           <!-- 卡片头部：设备名称和连接状态 -->
@@ -616,4 +616,3 @@ watch(sn, () => {
   -ms-user-select: none;
 }
 </style>
-``` 
