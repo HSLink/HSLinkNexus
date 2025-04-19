@@ -1758,7 +1758,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "hslinkupper"
+name = "hslinknexus"
 version = "1.0.0"
 dependencies = [
  "hidapi",

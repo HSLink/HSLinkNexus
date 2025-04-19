@@ -1,6 +1,6 @@
-# HSLinkUpper
+# HSLink Nexus
 
-HSLinkUpper is a simple tool that allows you to config HSLink.
+HSLink Nexus is a simple tool that allows you to config HSLink.
 
 ## Road map
 
@@ -20,7 +20,7 @@ HSLinkUpper is a simple tool that allows you to config HSLink.
 If you are using a repository-compiled deb or rpm package, you need to install 99-hslink.rules manually.
 
 ```bash
-cd /usr/lib/hslinkupper
+cd /usr/lib/hslink-nexus
 sudo install -Dvm644 99-hslink.rules -t /usr/lib/udev/rules.d/ 
 ```
 
@@ -51,16 +51,16 @@ sudo gpasswd -a $USER plugdev
 
 ### Arch Linux
 
-Arch Linux can install the hslinkupper release via [AUR](https://aur.archlinux.org/packages/hslinkupper) or [self-sourcing](https://github.com/taotieren/aur-repo).
+Arch Linux can install the hslink-nexus release via [AUR](https://aur.archlinux.org/packages/hslink-nexus) or [self-sourcing](https://github.com/taotieren/aur-repo).
 
 ```bash
-yay -Syu hslinkupper
+yay -Syu hslink-nexus
 ```
 
-Arch Linux can install the hslinkupper development package via the [AUR](https://aur.archlinux.org/packages/hslink-upper-git).
+Arch Linux can install the hslink-nexus development package via the [AUR](https://aur.archlinux.org/packages/hslink-nexus-git).
 
 ```bash
-yay -Syu hslink-upper-git
+yay -Syu hslink-nexus-git
 ```
 
 ### Debian or  Ubuntu etc
@@ -68,7 +68,7 @@ yay -Syu hslink-upper-git
 ```bash
 pnpm install
 pnpm tauri build -b deb
-dpkg -i hslinkupper*.deb
+dpkg -i hslink-nexus*.deb
 ```
 
 
@@ -77,6 +77,6 @@ dpkg -i hslinkupper*.deb
 ```bash
 pnpm install
 pnpm tauri build -b rpm
-rpm -ivh hslinkupper*.rpm
+rpm -ivh hslink-nexus*.rpm
 ```
 

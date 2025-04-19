@@ -7,7 +7,7 @@
     "windows": [
       {
         "height": 720,
-        "title": "HSLinkUpper",
+        "title": "HSLink Nexus",
         "width": 1280
       }
     ]
@@ -35,7 +35,7 @@
     },
     "targets": "all"
   },
-  "identifier": "com.hslinkupper.app",
-  "productName": "hslinkupper",
+  "identifier": "com.hslinknexus.app",
+  "productName": "HSLink Nexus",
   "version": "1.2.0"
 }
