@@ -411,12 +411,12 @@ watch(sn, () => {
     <div v-if="availableDevices.length > 0" class="flex flex-wrap justify-center -mx-3">
       <!-- 设备卡片 -->
       <div v-for="device in availableDevices" :key="device.sn" 
-           class="px-3 w-full sm:w-2/3 md:w-1/2 lg:w-1/2 xl:w-1/3 mb-6">
+           class="px-3 w-full sm:w-4/5 md:w-2/3 lg:w-1/2 xl:w-2/5 mb-6">
         <div class="h-full flex flex-col bg-base-100 rounded-xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition-transform"
              :class="{'ring-2 ring-primary': device.sn === connectedDeviceSn}">
           <!-- 卡片头部：设备名称和连接状态 -->
           <div class="px-6 py-5 bg-base-200 flex items-center justify-between">
-            <h3 class="text-xl font-bold truncate">{{ getDeviceDisplayName(device) }}</h3>
+            <h3 class="text-xl font-bold truncate">{{ device.nickname || device.sn.substring(0, 6) }}</h3>
             <span v-if="device.sn === connectedDeviceSn" class="badge badge-success">已连接</span>
             <span v-else class="badge badge-outline">未连接</span>
           </div>
@@ -433,19 +433,7 @@ watch(sn, () => {
             
             <!-- 已加载信息但未连接的状态 -->
             <div v-else-if="device.sn !== connectedDeviceSn && device.infoLoaded" class="flex-grow flex flex-col">
-              <div class="grid grid-cols-2 gap-y-3 gap-x-4 mb-6">
-                <div>
-                  <p class="text-sm opacity-70">设备序列号</p>
-                  <p class="font-medium text-primary truncate">{{ device.sn }}</p>
-                </div>
-                <div>
-                  <p class="text-sm opacity-70">设备昵称</p>
-                  <p class="font-medium text-primary">{{ device.nickname || "未命名" }}</p>
-                </div>
-                <div>
-                  <p class="text-sm opacity-70">设备型号</p>
-                  <p class="font-medium text-primary">{{ device.model || "未知" }}</p>
-                </div>
+              <div class="grid grid-cols-2 gap-y-3 gap-x-4 mb-4">
                 <div>
                   <p class="text-sm opacity-70">硬件版本</p>
                   <p class="font-medium text-primary">{{ device.hw_ver || "未知" }}</p>
@@ -458,29 +446,33 @@ watch(sn, () => {
                   <p class="text-sm opacity-70">引导版本</p>
                   <p class="font-medium text-primary">{{ device.bl_ver || "未知" }}</p>
                 </div>
+                <div>
+                  <p class="text-sm opacity-70">设备型号</p>
+                  <p class="font-medium text-primary">{{ device.model || "未知" }}</p>
+                </div>
+              </div>
+              
+              <!-- 设备昵称和序列号 (可复制) -->
+              <div class="mb-4 allow-select">
+                <div class="mb-2">
+                  <p class="text-sm opacity-70">设备昵称</p>
+                  <p class="font-medium text-primary break-words">{{ device.nickname || "未命名" }}</p>
+                </div>
+                <div>
+                  <p class="text-sm opacity-70">设备序列号</p>
+                  <p class="font-medium text-primary break-words">{{ device.sn }}</p>
+                </div>
               </div>
               
               <!-- 设备图片 -->
-              <div class="flex justify-center my-4 flex-grow">
+              <div class="flex justify-center mt-2 flex-grow">
                 <img :src="setDeviceImage(device.model)" :alt="device.model" class="max-h-36 object-contain" />
               </div>
             </div>
             
             <!-- 已连接状态 -->
             <div v-else-if="device.sn === connectedDeviceSn" class="flex-grow flex flex-col">
-              <div class="grid grid-cols-2 gap-y-3 gap-x-4 mb-6">
-                <div>
-                  <p class="text-sm opacity-70">设备序列号</p>
-                  <p class="font-medium text-primary truncate">{{ device.sn }}</p>
-                </div>
-                <div>
-                  <p class="text-sm opacity-70">设备昵称</p>
-                  <p class="font-medium text-primary">{{ device.nickname || "未命名" }}</p>
-                </div>
-                <div>
-                  <p class="text-sm opacity-70">设备型号</p>
-                  <p class="font-medium text-primary">{{ device.model || "未知" }}</p>
-                </div>
+              <div class="grid grid-cols-2 gap-y-3 gap-x-4 mb-4">
                 <div>
                   <p class="text-sm opacity-70">硬件版本</p>
                   <p class="font-medium text-primary">{{ device.hw_ver || "未知" }}</p>
@@ -493,10 +485,26 @@ watch(sn, () => {
                   <p class="text-sm opacity-70">引导版本</p>
                   <p class="font-medium text-primary">{{ device.bl_ver || "未知" }}</p>
                 </div>
+                <div>
+                  <p class="text-sm opacity-70">设备型号</p>
+                  <p class="font-medium text-primary">{{ device.model || "未知" }}</p>
+                </div>
+              </div>
+              
+              <!-- 设备昵称和序列号 (可复制) -->
+              <div class="mb-4 allow-select">
+                <div class="mb-2">
+                  <p class="text-sm opacity-70">设备昵称</p>
+                  <p class="font-medium text-primary break-words">{{ device.nickname || "未命名" }}</p>
+                </div>
+                <div>
+                  <p class="text-sm opacity-70">设备序列号</p>
+                  <p class="font-medium text-primary break-words">{{ device.sn }}</p>
+                </div>
               </div>
               
               <!-- 设备图片 -->
-              <div class="flex justify-center my-4 flex-grow">
+              <div class="flex justify-center mt-2 flex-grow">
                 <img :src="setDeviceImage(device.model)" :alt="device.model" class="max-h-36 object-contain" />
               </div>
             </div>
@@ -598,12 +606,20 @@ watch(sn, () => {
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
 
-/* 禁止设备卡片中的文本选择 */
+/* 禁止设备卡片中的文本选择，但允许特定区域可选择 */
 .bg-base-100 {
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+}
+
+/* 允许设备昵称和序列号区域可选择 */
+.allow-select {
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
 }
 
 /* 禁止设备卡片中的图片被拖拽和选择 */
