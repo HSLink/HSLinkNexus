@@ -1,5 +1,5 @@
 <template>
-  <nav :class="`bg-base-100 shadow-md fixed left-0 top-0 bottom-0 transition-all duration-300 z-50 flex flex-col ${isCollapsed ? 'w-16' : 'w-64'}`">
+  <nav :class="`bg-base-100 shadow-md h-screen sticky left-0 top-0 transition-all duration-300 z-50 flex flex-col ${isCollapsed ? 'w-16' : 'w-64'}`">
     <!-- 导航菜单（包含展开/收起按钮和页面导航） -->
     <div class="flex-grow overflow-y-auto p-2">
       <ul class="space-y-3">
@@ -129,7 +129,7 @@ import {useUserStore} from "../stores/userStore.ts";
 import {useDeviceStore} from "../stores/deviceStore.ts"; // 导入设备存储
 import {storeToRefs} from "pinia"; // 导入storeToRefs
 import router from "../router.ts";
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const {locale} = useI18n();
 const userStore = useUserStore();
@@ -142,28 +142,22 @@ const setLanguage = (lang: string) => {
   userStore.setLanguage(lang);
 };
 
-// 导航栏折叠状态
-const isCollapsed = ref(false);
+// 导航栏折叠状态，使用userStore的状态
+const isCollapsed = ref(userStore.menuCollapsed);
 
 // 切换导航栏展开/收起状态
-const toggleNavbar = () => {
+const toggleNavbar = async () => {
   isCollapsed.value = !isCollapsed.value;
-  // 保存折叠状态到本地存储，以便用户下次打开应用时保持相同的状态
-  localStorage.setItem('navbarCollapsed', String(isCollapsed.value));
+  // 保存折叠状态到userStore
+  await userStore.setMenuCollapsed(isCollapsed.value);
   // 触发自定义事件，通知App.vue导航栏状态已更改
   window.dispatchEvent(new Event('navbarStateChanged'));
 };
 
-// 初始化时从本地存储获取折叠状态
-const initNavbarState = () => {
-  const savedState = localStorage.getItem('navbarCollapsed');
-  if (savedState !== null) {
-    isCollapsed.value = savedState === 'true';
-  }
-};
-
-// 组件挂载时初始化折叠状态
-initNavbarState();
+// 初始化导航栏状态
+onMounted(() => {
+  isCollapsed.value = userStore.menuCollapsed;
+});
 </script>
 
 <style scoped>

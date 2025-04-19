@@ -147,6 +147,23 @@
       "download_button": "下载固件"
     }
   },
+  "setting": {
+    "title": "应用设置",
+    "appearance": "外观设置",
+    "theme": "主题",
+    "theme_options": {
+      "light": "浅色",
+      "dark": "深色",
+      "system": "跟随系统"
+    },
+    "language": "语言",
+    "menu": "菜单设置",
+    "menu_collapsed": "默认折叠菜单",
+    "menu_collapsed_desc": "启用后，应用启动时菜单将默认处于折叠状态",
+    "save_settings": "保存设置",
+    "settings_saved": "设置已保存",
+    "restart_required": "部分设置需要重启应用后生效"
+  },
   "about": {
     "title": "关于",
     "team_members": "贡献列表",

@@ -1,9 +1,9 @@
 <template>
-  <div class="flex">
+  <div class="flex w-full h-screen overflow-hidden">
     <Navbar />
-    <div :class="`transition-all duration-300 w-full min-h-screen bg-base-100 ${isNavbarCollapsed ? 'ml-16' : 'ml-64'}`">
+    <main class="flex-1 overflow-auto">
       <router-view />
-    </div>
+    </main>
   </div>
 </template>
 
@@ -43,3 +43,13 @@ export default {
   }
 };
 </script>
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+</style>

@@ -1,0 +1,16 @@
+/* 国旗Emoji字体 */
+@font-face {
+  font-family: 'FlagEmoji';
+  src: url('./NotoColorEmoji.ttf') format('truetype');
+  font-display: swap;
+  unicode-range: U+1F1E6-1F1FF; /* 只加载区域指示符字符，用于国旗 */
+}
+
+:root {
+  --emoji-font: 'FlagEmoji', 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
+}
+
+/* 应用字体到国旗emoji元素 */
+.flag-emoji {
+  font-family: var(--emoji-font);
+} 

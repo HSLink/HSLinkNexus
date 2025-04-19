@@ -147,6 +147,23 @@
       "download_button": "Download firmware"
     }
   },
+  "setting": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "theme": "Theme",
+    "theme_options": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "language": "Language",
+    "menu": "Menu Settings",
+    "menu_collapsed": "Collapse menu by default",
+    "menu_collapsed_desc": "When enabled, the menu will be collapsed when the application starts",
+    "save_settings": "Save Settings",
+    "settings_saved": "Settings Saved",
+    "restart_required": "Some settings require restarting the application to take effect"
+  },
   "about": {
     "title": "About",
     "team_members": "Contributors",
