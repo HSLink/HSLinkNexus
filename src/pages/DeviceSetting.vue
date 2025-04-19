@@ -57,7 +57,7 @@ const canSave = computed(() => {
 });
 
 // 当选择预设值时更新电压
-const selectPresetVoltage = (voltage) => {
+const selectPresetVoltage = (voltage: number) => {
   power_vref_voltage.value = voltage;
   voltageMode.value = "preset";
   customVoltage.value = voltage.toString();
@@ -128,7 +128,7 @@ watch(() => power_vref_voltage.value, (newVal) => {
 }, { immediate: true });
 
 // 处理元素高度过渡动画
-const startExpandAnimation = (element) => {
+const startExpandAnimation = (element: HTMLElement) => {
   // 首先设置元素高度为0
   element.style.height = '0';
   
@@ -139,12 +139,12 @@ const startExpandAnimation = (element) => {
   element.style.height = element.scrollHeight + 'px';
 };
 
-const endExpandAnimation = (element) => {
+const endExpandAnimation = (element: HTMLElement) => {
   // 动画结束后移除高度限制，让元素自然适应内容
   element.style.height = '';
 };
 
-const startCollapseAnimation = (element) => {
+const startCollapseAnimation = (element: HTMLElement) => {
   // 先记录当前高度
   const elementHeight = element.scrollHeight;
   element.style.height = elementHeight + 'px';
@@ -156,7 +156,7 @@ const startCollapseAnimation = (element) => {
   element.style.height = '0';
 };
 
-const endCollapseAnimation = (element) => {
+const endCollapseAnimation = (element: HTMLElement) => {
   // 动画结束后移除高度设置，但保持父元素的高度稳定
   element.style.height = '';
   element.style.display = 'none';
@@ -311,7 +311,7 @@ async function DownloadSetting() {
                 <div class="flex items-center gap-2">
                   <input type="checkbox" class="toggle toggle-primary" 
                          :checked="speed_boost_enable" 
-                         @change="speed_boost_enable = $event.target.checked"/>
+                         @change="speed_boost_enable = ($event.target as HTMLInputElement).checked"/>
                   <span class="label-text text-sm opacity-70">{{ speed_boost_enable ? '已启用' : '已禁用' }}</span>
                 </div>
               </div>
@@ -375,7 +375,7 @@ async function DownloadSetting() {
                     <div class="flex items-center gap-2">
                       <input type="checkbox" class="toggle toggle-primary" 
                              :checked="!jtag_single_bit_mode" 
-                             @change="jtag_single_bit_mode = !$event.target.checked"/>
+                             @change="jtag_single_bit_mode = !($event.target as HTMLInputElement).checked"/>
                       <span class="label-text text-sm opacity-70">{{ !jtag_single_bit_mode ? '已启用' : '已禁用' }}</span>
                     </div>
                   </div>
@@ -403,7 +403,7 @@ async function DownloadSetting() {
               <div class="flex items-center gap-2">
                 <input type="checkbox" class="toggle toggle-primary" 
                        :checked="jtag_20pin_compatible" 
-                       @change="jtag_20pin_compatible = $event.target.checked"/>
+                       @change="jtag_20pin_compatible = ($event.target as HTMLInputElement).checked"/>
                 <span class="label-text text-sm opacity-70">{{ jtag_20pin_compatible ? '已启用' : '已禁用' }}</span>
               </div>
             </div>
@@ -428,7 +428,7 @@ async function DownloadSetting() {
                 <div class="flex items-center gap-2">
                   <input type="checkbox" class="toggle toggle-primary" 
                          :checked="power_power_on" 
-                         @change="power_power_on = $event.target.checked"/>
+                         @change="power_power_on = ($event.target as HTMLInputElement).checked"/>
                   <span class="label-text text-sm opacity-70">{{ power_power_on ? '已启用' : '已禁用' }}</span>
                 </div>
               </div>
@@ -443,7 +443,7 @@ async function DownloadSetting() {
                 <div class="flex items-center gap-2">
                   <input type="checkbox" class="toggle toggle-primary" 
                          :checked="power_port_on" 
-                         @change="power_port_on = $event.target.checked"/>
+                         @change="power_port_on = ($event.target as HTMLInputElement).checked"/>
                   <span class="label-text text-sm opacity-70">{{ power_port_on ? '已启用' : '已禁用' }}</span>
                 </div>
               </div>
@@ -460,7 +460,7 @@ async function DownloadSetting() {
                   <span class="text-sm">外部输入</span>
                   <input type="checkbox" class="toggle toggle-primary" 
                          :checked="isExternalVref" 
-                         @change="isExternalVref = $event.target.checked"/>
+                         @change="isExternalVref = ($event.target as HTMLInputElement).checked"/>
                 </div>
               </div>
               
@@ -576,7 +576,7 @@ async function DownloadSetting() {
                        :class="{'border-primary': reset_mode.includes('nrst'), 'border-transparent': !reset_mode.includes('nrst')}">
                   <input type="checkbox" class="checkbox checkbox-primary" 
                          :checked="reset_mode.includes('nrst')"
-                         @change="toggleResetMode('nrst', $event.target.checked)"/>
+                         @change="toggleResetMode('nrst', ($event.target as HTMLInputElement).checked)"/>
                   <div>
                     <div class="font-medium">NRST输出</div>
                     <div class="text-xs opacity-70">通过NRST引脚进行复位</div>
@@ -586,7 +586,7 @@ async function DownloadSetting() {
                        :class="{'border-primary': reset_mode.includes('por'), 'border-transparent': !reset_mode.includes('por')}">
                   <input type="checkbox" class="checkbox checkbox-primary" 
                          :checked="reset_mode.includes('por')"
-                         @change="toggleResetMode('por', $event.target.checked)"/>
+                         @change="toggleResetMode('por', ($event.target as HTMLInputElement).checked)"/>
                   <div>
                     <div class="font-medium">电源复位</div>
                     <div class="text-xs opacity-70">触发复位动作之后将关闭TVcc和+5V输出，复位动作结束后再打开</div>
@@ -596,7 +596,7 @@ async function DownloadSetting() {
                        :class="{'border-primary': reset_mode.includes('arm_swd_soft'), 'border-transparent': !reset_mode.includes('arm_swd_soft')}">
                   <input type="checkbox" class="checkbox checkbox-primary" 
                          :checked="reset_mode.includes('arm_swd_soft')"
-                         @change="toggleResetMode('arm_swd_soft', $event.target.checked)"/>
+                         @change="toggleResetMode('arm_swd_soft', ($event.target as HTMLInputElement).checked)"/>
                   <div>
                     <div class="font-medium">Arm SWD 软复位</div>
                     <div class="text-xs opacity-70">该选项只对Arm内核芯片有效</div>
@@ -624,7 +624,7 @@ async function DownloadSetting() {
                 <div class="flex items-center gap-2">
                   <input type="checkbox" class="toggle toggle-primary" 
                          :checked="led_enable" 
-                         @change="led_enable = $event.target.checked"/>
+                         @change="led_enable = ($event.target as HTMLInputElement).checked"/>
                   <span class="label-text text-sm opacity-70">{{ led_enable ? '已启用' : '已禁用' }}</span>
                 </div>
               </div>
