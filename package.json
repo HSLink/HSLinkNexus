@@ -4,6 +4,7 @@
     "@tauri-apps/plugin-dialog": "~2.2.0",
     "@tauri-apps/plugin-fs": "~2.2.0",
     "@tauri-apps/plugin-opener": "^2",
+    "@tauri-apps/plugin-os": "~2",
     "@tauri-apps/plugin-shell": "~2",
     "@tauri-apps/plugin-store": "~2",
     "autoprefixer": "^10.4.20",
@@ -33,6 +34,10 @@
   "scripts": {
     "build": "vue-tsc --noEmit && vite build",
     "dev": "vite",
+    "download-assets": "node ./scripts/download-assets.js",
+    "prebuild": "npm run download-assets",
+    "predev": "npm run download-assets",
+    "pretauri": "npm run download-assets",
     "preview": "vite preview",
     "tauri": "tauri"
   },
