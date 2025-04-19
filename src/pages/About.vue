@@ -3,7 +3,7 @@ import { onMounted, ref, Ref } from "vue";
 import { version } from "../../package.json";
 
 const ver = ref(version);
-const opensource_lic = ref("MIT");
+const opensource_lic = ref("Apache-2.0");
 
 interface Developer {
   name: string;
