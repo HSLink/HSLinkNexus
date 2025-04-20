@@ -141,7 +141,7 @@ const getCountryCode = (langCode: string) => {
                :class="{'opacity-100': feedbackItems.get('theme'), 'opacity-0': !feedbackItems.get('theme')}">
             <span class="inline-flex items-center px-3 py-1 bg-success/20 text-success rounded-full">
               <span class="material-icons text-sm mr-1">check_circle</span>
-              <span>已应用</span>
+              <span>{{ $t('setting.feedback_applied') }}</span>
             </span>
           </div>
         </div>
@@ -176,7 +176,7 @@ const getCountryCode = (langCode: string) => {
                :class="{'opacity-100': feedbackItems.get('language'), 'opacity-0': !feedbackItems.get('language')}">
             <span class="inline-flex items-center px-3 py-1 bg-success/20 text-success rounded-full">
               <span class="material-icons text-sm mr-1">check_circle</span>
-              <span>已应用</span>
+              <span>{{ $t('setting.feedback_applied') }}</span>
             </span>
           </div>
         </div>
@@ -206,7 +206,7 @@ const getCountryCode = (langCode: string) => {
             <div v-if="isLanguageDropdownOpen" class="language-dropdown">
               <div class="dropdown-header">
                 <span class="material-icons text-sm mr-1">language</span>
-                <span class="text-sm font-medium">选择语言 (Select Language)</span>
+                <span class="text-sm font-medium">{{ $t('setting.language_selector') }}</span>
               </div>
               
               <!-- 搜索框 -->
@@ -215,7 +215,7 @@ const getCountryCode = (langCode: string) => {
                   <input 
                     type="text" 
                     class="language-search-input w-full py-2 pl-10 pr-4 border-b border-base-300 focus:outline-none focus:border-primary" 
-                    placeholder="搜索语言..." 
+                    :placeholder="$t('setting.search_language')" 
                     v-model="searchQuery"
                     @click="stopPropagation"
                   >
@@ -245,7 +245,7 @@ const getCountryCode = (langCode: string) => {
                 
                 <!-- 没有匹配结果时显示提示 -->
                 <div v-if="filteredLanguages.length === 0" class="empty-result">
-                  <p class="text-center py-4 text-base-content/70">未找到匹配的语言</p>
+                  <p class="text-center py-4 text-base-content/70">{{ $t('setting.no_language_match') }}</p>
                 </div>
               </div>
             </div>

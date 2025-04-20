@@ -178,16 +178,6 @@ ${t('about.app_version')}: ${ver.value}
                 </div>
               </div>
               
-              <div class="flex items-center transform hover:translate-x-2 transition-transform duration-300">
-                <div class="bg-green-100 dark:bg-green-900 p-3 rounded-full mr-4">
-                  <span class="i-tabler-device-desktop text-green-500 dark:text-green-300"></span>
-                </div>
-                <div>
-                  <h4 class="font-medium text-gray-600 dark:text-gray-300">操作系统</h4>
-                  <p class="text-lg font-semibold text-gray-900 dark:text-white select-text">{{ osType }} {{ osVersionText }}</p>
-                </div>
-              </div>
-              
               <!-- 复制环境信息按钮 -->
               <div class="flex justify-center mt-4 w-full">
                 <button 
@@ -199,7 +189,7 @@ ${t('about.app_version')}: ${ver.value}
                     <span v-if="!isCopied" class="i-tabler-clipboard"></span>
                     <span v-else class="i-tabler-check"></span>
                   </div>
-                  <span>{{ isCopied ? '已复制' : '复制环境信息' }}</span>
+                  <span>{{ isCopied ? t('about.environment.success') : t('about.environment.copy') }}</span>
                 </button>
               </div>
             </div>

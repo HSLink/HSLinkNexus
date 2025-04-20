@@ -157,6 +157,10 @@
       "system": "System"
     },
     "language": "Language",
+    "feedback_applied": "Applied",
+    "language_selector": "Select Language",
+    "search_language": "Search languages...",
+    "no_language_match": "No matching languages found",
     "menu": "Menu Settings",
     "menu_collapsed": "Collapse menu by default",
     "menu_collapsed_desc": "When enabled, the menu will be collapsed when the application starts",
@@ -176,6 +180,10 @@
     "technology_stack": "Technology stack",
     "version_info": "Version information",
     "app_version": "App version",
-    "software_license": "Software license"
+    "software_license": "Software license",
+    "environment": {
+      "copy": "Copy environment information",
+      "success": "Copied successfully"
+    }
   }
 }

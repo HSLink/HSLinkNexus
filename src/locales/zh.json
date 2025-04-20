@@ -157,6 +157,10 @@
       "system": "跟随系统"
     },
     "language": "语言",
+    "feedback_applied": "已应用",
+    "language_selector": "选择语言",
+    "search_language": "搜索语言...",
+    "no_language_match": "未找到匹配的语言",
     "menu": "菜单设置",
     "menu_collapsed": "默认折叠菜单",
     "menu_collapsed_desc": "启用后，应用启动时菜单将默认处于折叠状态",
@@ -176,6 +180,10 @@
     "technology_stack": "技术栈列表",
     "version_info": "版本信息",
     "app_version": "应用版本",
-    "software_license": "软件许可"
+    "software_license": "软件许可",
+    "environment": {
+      "copy": "复制环境信息",
+      "success": "已复制"
+    }
   }
 }
