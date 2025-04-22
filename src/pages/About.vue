@@ -244,18 +244,22 @@ ${t('about.app_version')}: ${ver.value}
                   :key="tech.name" 
                   class="group bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-500 hover:border-blue-300 dark:hover:border-blue-700"
                   :class="[animationDelays[index % animationDelays.length], 'animate-fade-in-up']">
-                <div class="flex items-center justify-center mb-4">
-                  <div class="w-16 h-16 flex items-center justify-center bg-white dark:bg-gray-700 rounded-full transform group-hover:rotate-12 transition-transform duration-500 shadow-lg p-2 border border-gray-200 dark:border-gray-600">
-                    <img :src="tech.logo" :alt="`${tech.name} logo`" class="w-full h-full object-contain" />
+                <div class="flex flex-col justify-between h-full">
+                  <div class="flex flex-col">
+                    <div class="flex items-center justify-center mb-4">
+                      <div class="w-16 h-16 flex items-center justify-center bg-white dark:bg-gray-700 rounded-full transform group-hover:rotate-12 transition-transform duration-500 shadow-lg p-2 border border-gray-200 dark:border-gray-600">
+                        <img :src="tech.logo" :alt="`${tech.name} logo`" class="w-full h-full object-contain" />
+                      </div>
+                    </div>
+                    <h4 class="text-xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600 mb-2">{{ tech.name }}</h4>
+                    <p class="text-gray-600 dark:text-gray-400 text-center mb-4">{{ tech.description }}</p>
                   </div>
-                </div>
-                <h4 class="text-xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600 mb-2">{{ tech.name }}</h4>
-                <p class="text-gray-600 dark:text-gray-400 text-center mb-4">{{ tech.description }}</p>
-                <div class="text-center">
-                  <a :href="tech.url" target="_blank" class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium text-sm hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
-                    访问官网
-                    <span class="i-tabler-external-link ml-2"></span>
-                  </a>
+                  <div class="text-center">
+                    <a :href="tech.url" target="_blank" class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium text-sm hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
+                      访问官网
+                      <span class="i-tabler-external-link ml-2"></span>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
