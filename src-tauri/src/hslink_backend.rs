@@ -8,6 +8,7 @@ lazy_static! {
         Mutex::new(hidapi::HidApi::new().expect("Failed to create HidApi instance"));
     static ref HSLink_VID: u16 = 0x0D28;
     static ref HSLink_PID: u16 = 0x0204;
+    static ref HSLink_MANUFACTURER: String = String::from("CherryUSB");
     static ref HSLink_DEVICE: Mutex<Option<hidapi::HidDevice>> = Mutex::new(None);
     static ref HSLink_DONW_REPORT_ID: u8 = 0x01;
     static ref HSLink_UP_REPORT_ID: u8 = 0x02;
@@ -45,7 +46,10 @@ pub fn hslink_list_device() -> Vec<String> {
     let mut hid_api = HID_API.lock().unwrap();
     hid_api.refresh_devices().unwrap();
     for device_info in hid_api.device_list() {
-        if device_info.vendor_id() == *HSLink_VID && device_info.product_id() == *HSLink_PID {
+        if device_info.vendor_id() == *HSLink_VID
+            && device_info.product_id() == *HSLink_PID
+            && device_info.manufacturer_string().unwrap_or("") == *HSLink_MANUFACTURER
+        {
             println!("Device Found:");
             println!("  Vendor ID: {:04X}", device_info.vendor_id());
             println!("  Product ID: {:04X}", device_info.product_id());
