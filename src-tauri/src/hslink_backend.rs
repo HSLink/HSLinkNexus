@@ -75,13 +75,12 @@ pub fn hslink_open_device(serial_number: String) -> Result<String, HSLinkError> 
     if device_lock.is_some() {
         let device = device_lock.as_ref().unwrap();
         let device_info = device.get_device_info().unwrap();
-        let open_status = device.is_open_exclusive().unwrap();
-        if open_status && device_info.serial_number().unwrap().to_string() == serial_number {
+        if device_info.serial_number().unwrap().to_string() == serial_number {
             // just try open it
             match hid_api.open_serial(*HSLink_VID, *HSLink_PID, &*serial_number) {
                 Ok(device) => {
                     println!("Device re-opened: {:?}", device);
-                    *device_lock = Some(device); 
+                    *device_lock = Some(device);
                     return Ok(serial_number);
                 }
                 Err(e) =>{
