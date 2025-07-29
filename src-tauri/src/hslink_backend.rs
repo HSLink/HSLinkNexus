@@ -2,6 +2,7 @@ use hidapi;
 use lazy_static::lazy_static;
 use std::string::ToString;
 use std::sync::Mutex;
+use std::{thread, time};
 
 lazy_static! {
     static ref HID_API: Mutex<hidapi::HidApi> =
@@ -70,6 +71,26 @@ pub fn hslink_list_device() -> Vec<String> {
 pub fn hslink_open_device(serial_number: String) -> Result<String, HSLinkError> {
     let mut device_lock = HSLink_DEVICE.lock().unwrap();
     let mut hid_api = HID_API.lock().unwrap();
+    // 如果已经有打开的设备，检查sn是否匹配
+    if device_lock.is_some() {
+        let device = device_lock.as_ref().unwrap();
+        let device_info = device.get_device_info().unwrap();
+        let open_status = device.is_open_exclusive().unwrap();
+        if open_status && device_info.serial_number().unwrap().to_string() == serial_number {
+            // just try open it
+            match hid_api.open_serial(*HSLink_VID, *HSLink_PID, &*serial_number) {
+                Ok(device) => {
+                    println!("Device re-opened: {:?}", device);
+                    *device_lock = Some(device); 
+                    return Ok(serial_number);
+                }
+                Err(e) =>{
+                    println!("Device already opened");
+                    return Ok(serial_number)
+                }
+            }
+        }
+    }
     for device_info in hid_api.device_list() {
         if device_info.vendor_id() == *HSLink_VID && device_info.product_id() == *HSLink_PID {
             if device_info.serial_number().unwrap().to_string() == serial_number {
@@ -100,10 +121,14 @@ pub fn hslink_write(data: Vec<u8>) -> Result<(), HSLinkError> {
     let mut buff = vec![0u8; data.len() + 1];
     buff[0] = *HSLink_DONW_REPORT_ID;
     (&mut buff[1..]).copy_from_slice(&data);
+    // add \0 at the end
+    buff.push(0);
     if let Some(ref mut device) = *device_lock {
         match device.write(&buff) {
             Ok(res) => {
                 println!("Wrote: {:?} byte(s)", res);
+                // println!("Data: {:?}", buff);
+                println!("Data: {:?}", String::from_utf8(buff).unwrap().to_string());
                 Ok(())
             }
             Err(err) => {
@@ -136,8 +161,9 @@ pub fn hslink_write_wait_rsp(data: Vec<u8>, timeout: u32) -> Result<String, HSLi
                         i += 1;
                     }
                     let data = recv_buf[1..i].to_vec();
-                    println!("Received: {:?}", data);
-                    Ok(String::from_utf8(data).unwrap().to_string())
+                    let data_s = String::from_utf8(data).unwrap().to_string();
+                    // println!("Received: {:?}", data_s);
+                    Ok(data_s)
                 } else {
                     Err(HSLinkError::RspErr)
                 }
