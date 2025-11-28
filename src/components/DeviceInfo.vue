@@ -1,14 +1,13 @@
 <script setup lang="ts">
+import { computed, onMounted } from 'vue';
 
-import {computed, onMounted} from "vue";
+import { useDeviceStore } from '../stores/deviceStore.ts';
+import { storeToRefs } from 'pinia';
+import { hslink_write_wait_rsp } from '../backend/hslink_backend.ts';
 
-import {useDeviceStore} from "../stores/deviceStore.ts"
-import {storeToRefs} from "pinia";
-import {hslink_write_wait_rsp} from "../backend/hslink_backend.ts";
+const deviceStore = useDeviceStore();
 
-const deviceStore = useDeviceStore()
-
-const {connected} = storeToRefs(deviceStore);
+const { connected } = storeToRefs(deviceStore);
 
 // function TestToggleConn() {
 //   if (connected.value) {
@@ -51,36 +50,37 @@ const {connected} = storeToRefs(deviceStore);
 enum ConnectSta {
   NotConnected,
   Connect,
-  ConnectBootloader
+  ConnectBootloader,
 }
 
 onMounted(() => {
   // start a timer to check and keep connect status
   setInterval(async () => {
     if (connected.value) {
-      let rsp = await hslink_write_wait_rsp(JSON.stringify({
-        name: "Hello"
-      }), 1000);
+      let rsp = await hslink_write_wait_rsp(
+        JSON.stringify({
+          name: 'Hello',
+        }),
+        1000,
+      );
       // console.log("hb rsp is " + rsp)
-      if (rsp.indexOf("HSLinkError") !== -1) {
-        console.log("device disconnected");
-        deviceStore.resetDeviceInfo()
+      if (rsp.indexOf('HSLinkError') !== -1) {
+        console.log('device disconnected');
+        deviceStore.resetDeviceInfo();
       }
     }
-  }, 2000)
-})
+  }, 2000);
+});
 
 // function test() {
 //   console.log("test")
 //   TestToggleConn()
 // }
-
-
 </script>
 
 <template>
   <div v-if="connected" class="grid gap-4 text-sm font-bold text-orange-500">
-    {{ $t('device_info.device_connected') }}<br/>
+    {{ $t('device_info.device_connected') }}<br />
     {{ $t('device_info.model') }}: {{ deviceStore.model }}
   </div>
   <div v-else class="text-sm font-bold text-blue-500">
@@ -91,6 +91,4 @@ onMounted(() => {
   <!--  </button>-->
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

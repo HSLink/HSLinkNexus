@@ -1,0 +1,11 @@
+node_modules
+dist
+build
+coverage
+.vscode
+*.min.js
+src-tauri
+.github
+*-lock.yaml
+package.json
+*.config.js

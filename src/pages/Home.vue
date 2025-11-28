@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref, watch, onUnmounted } from "vue";
-import { hslink_list_device, hslink_open_device, hslink_write_wait_rsp } from "../backend/hslink_backend.ts";
-import { storeToRefs } from "pinia";
-import { useDeviceStore } from "../stores/deviceStore.ts";
+import { onMounted, ref, watch, onUnmounted } from 'vue';
+import {
+  hslink_list_device,
+  hslink_open_device,
+  hslink_write_wait_rsp,
+} from '../backend/hslink_backend.ts';
+import { storeToRefs } from 'pinia';
+import { useDeviceStore } from '../stores/deviceStore.ts';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -20,7 +24,7 @@ interface DeviceInfo {
 }
 
 const device_list = ref<string[]>([]);
-const selected_device_sn = ref("");
+const selected_device_sn = ref('');
 
 // 当前发现的设备列表
 const availableDevices = ref<DeviceInfo[]>([]);
@@ -32,54 +36,56 @@ const { connected } = storeToRefs(deviceStore);
 const { sn, nickname, model, hw_ver, sw_ver, bl_ver } = storeToRefs(deviceStore);
 
 const show_alert = ref(false);
-const alert_msg = ref("");
-const alert_type = ref(""); // "success" 或 "error"
+const alert_msg = ref('');
+const alert_type = ref(''); // "success" 或 "error"
 
 // 当前连接设备的序列号
-const connectedDeviceSn = ref("");
+const connectedDeviceSn = ref('');
 
 // 设备扫描函数，包含设备信息获取
 async function SearchDevice() {
-  console.log("searching device");
+  console.log('searching device');
   const newDeviceList = await hslink_list_device();
   console.log(`device list: ${newDeviceList}`);
-  
+
   // 检查设备是否有变化
-  const oldDeviceSns = availableDevices.value.map(device => device.sn);
+  const oldDeviceSns = availableDevices.value.map((device) => device.sn);
   const newDeviceSns = newDeviceList;
-  
+
   // 检查设备是否已移除
-  const removedDevices = oldDeviceSns.filter(sn => !newDeviceSns.includes(sn));
+  const removedDevices = oldDeviceSns.filter((sn) => !newDeviceSns.includes(sn));
   if (removedDevices.length > 0) {
     console.log(`Devices removed: ${removedDevices.join(', ')}`);
-    
+
     // 移除已拔出的设备
-    availableDevices.value = availableDevices.value.filter(device => !removedDevices.includes(device.sn));
-    
+    availableDevices.value = availableDevices.value.filter(
+      (device) => !removedDevices.includes(device.sn),
+    );
+
     // 如果当前连接的设备被移除，断开连接
     if (connectedDeviceSn.value && removedDevices.includes(connectedDeviceSn.value)) {
       console.log(`Connected device ${connectedDeviceSn.value} was removed`);
       DisconnectDevice();
-      showAlert(t('home.alert.disconnect'), "warning");
+      showAlert(t('home.alert.disconnect'), 'warning');
     }
   }
-  
+
   // 检查是否有新设备
-  const newDevices = newDeviceSns.filter(sn => !oldDeviceSns.includes(sn));
+  const newDevices = newDeviceSns.filter((sn) => !oldDeviceSns.includes(sn));
   for (const newDeviceSn of newDevices) {
     console.log(`New device found: ${newDeviceSn}`);
-    
+
     // 将新设备添加到列表中
     availableDevices.value.push({
       sn: newDeviceSn,
       connected: false,
-      infoLoaded: false
+      infoLoaded: false,
     });
-    
+
     // 获取新设备的基本信息
     getDeviceBasicInfo(newDeviceSn);
   }
-  
+
   // 更新设备列表
   device_list.value = newDeviceList;
   if (device_list.value.length > 0 && !selected_device_sn.value) {
@@ -93,33 +99,36 @@ async function getDeviceBasicInfo(deviceSn: string) {
     // 临时连接设备获取信息
     console.log(`Getting info for device: ${deviceSn}`);
     const ret = await hslink_open_device(deviceSn);
-    if (ret !== "success") {
+    if (ret !== 'success') {
       console.log(`Failed to open device ${deviceSn} for info: ${ret}`);
       return;
     }
-    
+
     // 设备已连接，获取基本信息
-    const rsp = await hslink_write_wait_rsp(JSON.stringify({
-      name: "Hello"
-    }), 1000);
-    
+    const rsp = await hslink_write_wait_rsp(
+      JSON.stringify({
+        name: 'Hello',
+      }),
+      1000,
+    );
+
     try {
       const rsp_json = JSON.parse(rsp);
-      const serial = rsp_json["serial"];
-      const model = rsp_json["model"];
-      const version = rsp_json["version"];
-      const hardware = rsp_json["hardware"];
-      const bootloader = rsp_json["bootloader"];
-      const nickname = rsp_json["nickname"] || "";
-      
+      const serial = rsp_json['serial'];
+      const model = rsp_json['model'];
+      const version = rsp_json['version'];
+      const hardware = rsp_json['hardware'];
+      const bootloader = rsp_json['bootloader'];
+      const nickname = rsp_json['nickname'] || '';
+
       console.log(`Got info for ${deviceSn}: model=${model}, nickname='${nickname}'`);
       console.log(`Raw device info response: ${JSON.stringify(rsp_json)}`);
-      
+
       // 确保昵称不是undefined或null
-      const safeNickname = (nickname === undefined || nickname === null) ? "" : nickname;
-      
+      const safeNickname = nickname === undefined || nickname === null ? '' : nickname;
+
       // 更新设备信息
-      const deviceIndex = availableDevices.value.findIndex(d => d.sn === deviceSn);
+      const deviceIndex = availableDevices.value.findIndex((d) => d.sn === deviceSn);
       if (deviceIndex >= 0) {
         availableDevices.value[deviceIndex] = {
           ...availableDevices.value[deviceIndex],
@@ -128,24 +137,27 @@ async function getDeviceBasicInfo(deviceSn: string) {
           hw_ver: hardware,
           sw_ver: version,
           bl_ver: bootloader,
-          infoLoaded: true
+          infoLoaded: true,
         };
-        
+
         console.log(`Updated device info: ${JSON.stringify(availableDevices.value[deviceIndex])}`);
       }
-      
+
       // 如果这不是当前连接的设备，断开临时连接
       if (deviceSn !== connectedDeviceSn.value) {
         // 显式断开临时连接
         console.log(`Explicitly closing temporary connection to ${deviceSn}`);
-        
+
         // 发送关闭命令
-        await hslink_write_wait_rsp(JSON.stringify({
-          name: "Close"
-        }), 500).catch(e => {
+        await hslink_write_wait_rsp(
+          JSON.stringify({
+            name: 'Close',
+          }),
+          500,
+        ).catch((e) => {
           console.log(`Error sending Close command: ${e}`);
         });
-        
+
         // 不需要调用DisconnectDevice，那会影响UI状态
       } else {
         console.log(`Device ${deviceSn} is already connected, keeping connection`);
@@ -159,44 +171,47 @@ async function getDeviceBasicInfo(deviceSn: string) {
 }
 
 // 完全连接设备（用于用户主动连接）
-async function ConnectDevice(deviceSn = "") {
+async function ConnectDevice(deviceSn = '') {
   // 如果已经有设备连接，先断开它
   if (connected.value || connectedDeviceSn.value) {
     await DisconnectDevice();
   }
-  
+
   const sn = deviceSn || selected_device_sn.value;
-  
+
   console.log(`Connecting to device: ${sn}`);
   let ret = await hslink_open_device(sn);
-  if (ret != "success") {
+  if (ret != 'success') {
     console.log(`connect to ${sn} failed: ${ret}`);
-    showAlert(t('home.alert.connect_fail') + `: ${ret}`, "error");
+    showAlert(t('home.alert.connect_fail') + `: ${ret}`, 'error');
     return;
   }
-  
+
   connectedDeviceSn.value = sn;
-  
+
   // 更新设备连接状态
   updateDeviceConnectionState();
-  
+
   console.log(`connect to ${sn} success`);
-  console.log("send hello to request info");
-  let rsp = await hslink_write_wait_rsp(JSON.stringify({
-    name: "Hello"
-  }), 1000);
-  
+  console.log('send hello to request info');
+  let rsp = await hslink_write_wait_rsp(
+    JSON.stringify({
+      name: 'Hello',
+    }),
+    1000,
+  );
+
   try {
     let rsp_json = JSON.parse(rsp);
-    let serial = rsp_json["serial"];
-    let model = rsp_json["model"];
-    let version = rsp_json["version"];
-    let hardware = rsp_json["hardware"];
-    let bootloader = rsp_json["bootloader"];
-    let nickname = rsp_json["nickname"];
+    let serial = rsp_json['serial'];
+    let model = rsp_json['model'];
+    let version = rsp_json['version'];
+    let hardware = rsp_json['hardware'];
+    let bootloader = rsp_json['bootloader'];
+    let nickname = rsp_json['nickname'];
     console.log(`get hslink info: serial: ${serial}, nickname ${nickname} model: ${model}`);
     console.log(`hw:${hardware} app: ${version}, bootloader: ${bootloader}`);
-    
+
     // 更新全局状态
     deviceStore.setDeviceInfo({
       sn: serial,
@@ -204,11 +219,11 @@ async function ConnectDevice(deviceSn = "") {
       model,
       hw_ver: hardware,
       sw_ver: version,
-      bl_ver: bootloader
+      bl_ver: bootloader,
     });
-    
+
     // 同时更新设备列表中的信息
-    const deviceIndex = availableDevices.value.findIndex(d => d.sn === sn);
+    const deviceIndex = availableDevices.value.findIndex((d) => d.sn === sn);
     if (deviceIndex >= 0) {
       availableDevices.value[deviceIndex] = {
         ...availableDevices.value[deviceIndex],
@@ -218,35 +233,38 @@ async function ConnectDevice(deviceSn = "") {
         sw_ver: version,
         bl_ver: bootloader,
         connected: true,
-        infoLoaded: true
+        infoLoaded: true,
       };
     }
-    
-    showAlert(t('home.alert.connect_success'), "success");
+
+    showAlert(t('home.alert.connect_success'), 'success');
   } catch (e) {
     console.log(`request info failed: ${rsp}`);
-    showAlert(t('home.alert.info_fail'), "error");
-    connectedDeviceSn.value = "";
+    showAlert(t('home.alert.info_fail'), 'error');
+    connectedDeviceSn.value = '';
     return;
   }
-  
-  rsp = await hslink_write_wait_rsp(JSON.stringify({
-    name: "get_setting"
-  }), 1000);
-  
+
+  rsp = await hslink_write_wait_rsp(
+    JSON.stringify({
+      name: 'get_setting',
+    }),
+    1000,
+  );
+
   try {
     let rsp_json = JSON.parse(rsp);
-    let speed_boost_enable = rsp_json["boost"];
-    let swd_simulate_mode = rsp_json["swd_port_mode"];
-    let jtag_simulate_mode = rsp_json["jtag_port_mode"];
-    let power_output = rsp_json["power"];
-    let power_on = power_output["power_on"];
-    let port_on = power_output["port_on"];
-    let vref_voltage = power_output["vref"];
-    let reset_mode = rsp_json["reset"];
-    let led = rsp_json["led"];
-    let led_brightness = rsp_json["led_brightness"];
-    let jtag_20pin_compatible = rsp_json["jtag_20pin_compatible"] ?? false;
+    let speed_boost_enable = rsp_json['boost'];
+    let swd_simulate_mode = rsp_json['swd_port_mode'];
+    let jtag_simulate_mode = rsp_json['jtag_port_mode'];
+    let power_output = rsp_json['power'];
+    let power_on = power_output['power_on'];
+    let port_on = power_output['port_on'];
+    let vref_voltage = power_output['vref'];
+    let reset_mode = rsp_json['reset'];
+    let led = rsp_json['led'];
+    let led_brightness = rsp_json['led_brightness'];
+    let jtag_20pin_compatible = rsp_json['jtag_20pin_compatible'] ?? false;
     console.log(`get device setting: ${rsp}`);
     deviceStore.setDeviceSetting({
       speed_boost_enable,
@@ -256,13 +274,13 @@ async function ConnectDevice(deviceSn = "") {
       power_output: {
         power_on,
         port_on,
-        vref_voltage
+        vref_voltage,
       },
       reset_mode,
       led: {
         enable: led,
-        brightness: led_brightness
-      }
+        brightness: led_brightness,
+      },
     });
   } catch (e) {
     console.log(`request setting failed: ${rsp}`);
@@ -270,30 +288,30 @@ async function ConnectDevice(deviceSn = "") {
 }
 
 function setDeviceImage(model?: string) {
-  if (model?.toLowerCase().includes("pro")) {
-    return "/series/HSLink-Pro.png";
-  } else if (model?.toLowerCase().includes("mini")) {
-    return "/series/HSLink-mini.png";
-  } else if (model?.toLowerCase().includes("ultra")) {
-    return "/series/HSLink-Ultra.png";
+  if (model?.toLowerCase().includes('pro')) {
+    return '/series/HSLink-Pro.png';
+  } else if (model?.toLowerCase().includes('mini')) {
+    return '/series/HSLink-mini.png';
+  } else if (model?.toLowerCase().includes('ultra')) {
+    return '/series/HSLink-Ultra.png';
   } else {
-    return "/HSLink.svg"; // 默认图片
+    return '/HSLink.svg'; // 默认图片
   }
 }
 
 async function DisconnectDevice() {
-  console.log("disconnect device");
-  
+  console.log('disconnect device');
+
   // 更新设备连接状态
-  const deviceIndex = availableDevices.value.findIndex(d => d.sn === connectedDeviceSn.value);
+  const deviceIndex = availableDevices.value.findIndex((d) => d.sn === connectedDeviceSn.value);
   if (deviceIndex >= 0) {
     availableDevices.value[deviceIndex].connected = false;
   }
-  
-  connectedDeviceSn.value = "";
+
+  connectedDeviceSn.value = '';
   deviceStore.resetDeviceInfo();
-  
-  showAlert(t('home.alert.disconnect'), "success");
+
+  showAlert(t('home.alert.disconnect'), 'success');
 }
 
 // 获取设备显示名称
@@ -301,7 +319,7 @@ function getDeviceDisplayName(device: DeviceInfo): string {
   if (device.nickname && device.nickname.trim() !== '') {
     return device.nickname;
   }
-  
+
   // 如果没有昵称，显示序列号的前6位
   return device.sn.substring(0, 6);
 }
@@ -317,9 +335,9 @@ function showAlert(message: string, type: string) {
 
 // 更新设备连接状态
 function updateDeviceConnectionState() {
-  availableDevices.value = availableDevices.value.map(device => ({
+  availableDevices.value = availableDevices.value.map((device) => ({
     ...device,
-    connected: device.sn === connectedDeviceSn.value
+    connected: device.sn === connectedDeviceSn.value,
   }));
 }
 
@@ -331,7 +349,7 @@ function syncConnectedState() {
     updateDeviceConnectionState();
   } else if (!connected.value) {
     // 如果store中显示设备未连接，但connectedDeviceSn不为空，则清空
-    connectedDeviceSn.value = "";
+    connectedDeviceSn.value = '';
     updateDeviceConnectionState();
   }
 }
@@ -355,10 +373,10 @@ onMounted(async () => {
   if (device_list.value.length > 0) {
     selected_device_sn.value = device_list.value[0];
   }
-  
+
   // 在组件挂载时同步连接状态
   syncConnectedState();
-  
+
   // 启动定期扫描
   startDeviceScanning();
 });
@@ -411,29 +429,44 @@ watch(sn, () => {
     <!-- 设备卡片布局 -->
     <div v-if="availableDevices.length > 0" class="flex flex-wrap justify-center -mx-3">
       <!-- 设备卡片 -->
-      <div v-for="device in availableDevices" :key="device.sn" 
-           class="px-3 w-full sm:w-4/5 md:w-2/3 lg:w-1/2 xl:w-2/5 mb-6">
-        <div class="h-full flex flex-col bg-base-100 rounded-xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition-transform"
-             :class="{'ring-2 ring-primary': device.sn === connectedDeviceSn}">
+      <div
+        v-for="device in availableDevices"
+        :key="device.sn"
+        class="px-3 w-full sm:w-4/5 md:w-2/3 lg:w-1/2 xl:w-2/5 mb-6"
+      >
+        <div
+          class="h-full flex flex-col bg-base-100 rounded-xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition-transform"
+          :class="{ 'ring-2 ring-primary': device.sn === connectedDeviceSn }"
+        >
           <!-- 卡片头部：设备名称和连接状态 -->
           <div class="px-6 py-5 bg-base-200 flex items-center justify-between">
-            <h3 class="text-xl font-bold truncate">{{ device.nickname || device.sn.substring(0, 6) }}</h3>
-            <span v-if="device.sn === connectedDeviceSn" class="badge badge-success">{{ t('home.connected') }}</span>
+            <h3 class="text-xl font-bold truncate">
+              {{ device.nickname || device.sn.substring(0, 6) }}
+            </h3>
+            <span v-if="device.sn === connectedDeviceSn" class="badge badge-success">{{
+              t('home.connected')
+            }}</span>
             <span v-else class="badge badge-outline">{{ t('home.disconnected') }}</span>
           </div>
-          
+
           <!-- 设备信息部分 -->
           <div class="p-6 flex-grow flex flex-col">
             <!-- 未加载信息时显示加载中 -->
-            <div v-if="!device.infoLoaded" class="flex-grow flex flex-col items-center justify-center">
+            <div
+              v-if="!device.infoLoaded"
+              class="flex-grow flex flex-col items-center justify-center"
+            >
               <span class="loading loading-spinner loading-lg text-primary mb-4"></span>
               <p class="text-center text-base-content opacity-70">
                 {{ t('home.loading') }}
               </p>
             </div>
-            
+
             <!-- 已加载信息但未连接的状态 -->
-            <div v-else-if="device.sn !== connectedDeviceSn && device.infoLoaded" class="flex-grow flex flex-col">
+            <div
+              v-else-if="device.sn !== connectedDeviceSn && device.infoLoaded"
+              class="flex-grow flex flex-col"
+            >
               <div class="grid grid-cols-2 gap-y-3 gap-x-4 mb-4">
                 <div>
                   <p class="text-sm opacity-70">{{ t('home.hardware_version') }}</p>
@@ -452,25 +485,31 @@ watch(sn, () => {
                   <p class="font-medium text-primary">{{ device.model || t('home.unknown') }}</p>
                 </div>
               </div>
-              
+
               <!-- 设备昵称和序列号 (可复制) -->
               <div class="mb-4 allow-select">
                 <div class="mb-2">
                   <p class="text-sm opacity-70">{{ t('home.device_nickname') }}</p>
-                  <p class="font-medium text-primary break-words">{{ device.nickname || t('home.unnamed') }}</p>
+                  <p class="font-medium text-primary break-words">
+                    {{ device.nickname || t('home.unnamed') }}
+                  </p>
                 </div>
                 <div>
                   <p class="text-sm opacity-70">{{ t('device_info.sn') }}</p>
                   <p class="font-medium text-primary break-words">{{ device.sn }}</p>
                 </div>
               </div>
-              
+
               <!-- 设备图片 -->
               <div class="flex justify-center mt-2 flex-grow">
-                <img :src="setDeviceImage(device.model)" :alt="device.model" class="max-h-36 object-contain" />
+                <img
+                  :src="setDeviceImage(device.model)"
+                  :alt="device.model"
+                  class="max-h-36 object-contain"
+                />
               </div>
             </div>
-            
+
             <!-- 已连接状态 -->
             <div v-else-if="device.sn === connectedDeviceSn" class="flex-grow flex flex-col">
               <div class="grid grid-cols-2 gap-y-3 gap-x-4 mb-4">
@@ -491,37 +530,53 @@ watch(sn, () => {
                   <p class="font-medium text-primary">{{ device.model || t('home.unknown') }}</p>
                 </div>
               </div>
-              
+
               <!-- 设备昵称和序列号 (可复制) -->
               <div class="mb-4 allow-select">
                 <div class="mb-2">
                   <p class="text-sm opacity-70">{{ t('home.device_nickname') }}</p>
-                  <p class="font-medium text-primary break-words">{{ device.nickname || t('home.unnamed') }}</p>
+                  <p class="font-medium text-primary break-words">
+                    {{ device.nickname || t('home.unnamed') }}
+                  </p>
                 </div>
                 <div>
                   <p class="text-sm opacity-70">{{ t('device_info.sn') }}</p>
                   <p class="font-medium text-primary break-words">{{ device.sn }}</p>
                 </div>
               </div>
-              
+
               <!-- 设备图片 -->
               <div class="flex justify-center mt-2 flex-grow">
-                <img :src="setDeviceImage(device.model)" :alt="device.model" class="max-h-36 object-contain" />
+                <img
+                  :src="setDeviceImage(device.model)"
+                  :alt="device.model"
+                  class="max-h-36 object-contain"
+                />
               </div>
             </div>
-            
+
             <!-- 操作按钮 -->
             <div class="flex flex-wrap justify-center gap-2 mt-4">
-              <button v-if="device.sn === connectedDeviceSn" 
-                      class="btn btn-sm btn-outline min-w-[80px]" 
-                      @click="DisconnectDevice">{{ t('home.disconnect') }}</button>
-              <button v-else 
-                      class="btn btn-sm btn-primary min-w-[80px]" 
-                      @click="ConnectDevice(device.sn)">{{ t('home.connect') }}</button>
-                      
-              <router-link v-if="device.sn === connectedDeviceSn" 
-                          to="/device_setting" 
-                          class="btn btn-sm btn-primary min-w-[80px]">
+              <button
+                v-if="device.sn === connectedDeviceSn"
+                class="btn btn-sm btn-outline min-w-[80px]"
+                @click="DisconnectDevice"
+              >
+                {{ t('home.disconnect') }}
+              </button>
+              <button
+                v-else
+                class="btn btn-sm btn-primary min-w-[80px]"
+                @click="ConnectDevice(device.sn)"
+              >
+                {{ t('home.connect') }}
+              </button>
+
+              <router-link
+                v-if="device.sn === connectedDeviceSn"
+                to="/device_setting"
+                class="btn btn-sm btn-primary min-w-[80px]"
+              >
                 <span class="material-icons mr-1 text-sm">settings</span>
                 {{ t('home.settings') }}
               </router-link>
@@ -529,10 +584,12 @@ watch(sn, () => {
                 <span class="material-icons mr-1 text-sm">settings</span>
                 {{ t('home.settings') }}
               </button>
-              
-              <router-link v-if="device.sn === connectedDeviceSn" 
-                          to="/device_upgrade" 
-                          class="btn btn-sm btn-secondary min-w-[80px]">
+
+              <router-link
+                v-if="device.sn === connectedDeviceSn"
+                to="/device_upgrade"
+                class="btn btn-sm btn-secondary min-w-[80px]"
+              >
                 <span class="material-icons mr-1 text-sm">update</span>
                 {{ t('home.upgrade') }}
               </router-link>
@@ -546,7 +603,7 @@ watch(sn, () => {
       </div>
     </div>
   </div>
-  
+
   <!-- 提示框 -->
   <transition
     enter-active-class="transition duration-300 ease-out"
@@ -556,9 +613,15 @@ watch(sn, () => {
     leave-from-class="transform translate-x-0 opacity-100"
     leave-to-class="transform translate-x-full opacity-0"
   >
-    <div v-if="show_alert"
-         class="fixed top-4 right-4 p-4 rounded-lg shadow-lg flex items-center text-white"
-         :class="{'bg-success': alert_type === 'success', 'bg-error': alert_type === 'error', 'bg-warning': alert_type === 'warning'}">
+    <div
+      v-if="show_alert"
+      class="fixed top-4 right-4 p-4 rounded-lg shadow-lg flex items-center text-white"
+      :class="{
+        'bg-success': alert_type === 'success',
+        'bg-error': alert_type === 'error',
+        'bg-warning': alert_type === 'warning',
+      }"
+    >
       <span class="mr-2">
         <span class="material-icons" v-if="alert_type === 'success'">check_circle</span>
         <span class="material-icons" v-else-if="alert_type === 'warning'">warning</span>

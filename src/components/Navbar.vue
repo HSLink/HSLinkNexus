@@ -1,5 +1,7 @@
 <template>
-  <nav :class="`bg-base-100 shadow-md h-screen sticky left-0 top-0 transition-all duration-300 z-50 flex flex-col ${isCollapsed ? 'w-16' : 'w-64'}`">
+  <nav
+    :class="`bg-base-100 shadow-md h-screen sticky left-0 top-0 transition-all duration-300 z-50 flex flex-col ${isCollapsed ? 'w-16' : 'w-64'}`"
+  >
     <!-- 导航菜单（包含展开/收起按钮和页面导航） -->
     <div class="flex-grow overflow-y-auto p-2">
       <ul class="space-y-3">
@@ -9,12 +11,12 @@
             <div class="icon-box">
               <span class="material-icons">{{ isCollapsed ? 'menu' : 'menu_open' }}</span>
             </div>
-            <span class="label" :class="{'hidden-label': isCollapsed}">
+            <span class="label" :class="{ 'hidden-label': isCollapsed }">
               {{ isCollapsed ? '' : $t('navbar.collapse_menu') }}
             </span>
           </button>
         </li>
-        
+
         <!-- 页面导航菜单 -->
         <li>
           <router-link to="/home" class="nav-item">
@@ -22,65 +24,49 @@
               <span class="material-icons">home</span>
               <div v-if="isCollapsed" class="tooltip">{{ $t('navbar.home') }}</div>
             </div>
-            <span class="label" :class="{'hidden-label': isCollapsed}">
+            <span class="label" :class="{ 'hidden-label': isCollapsed }">
               {{ $t('navbar.home') }}
             </span>
           </router-link>
         </li>
         <li>
           <!-- 设备设置按钮，添加禁用逻辑 -->
-          <router-link 
-            v-if="connected" 
-            to="/device_setting" 
-            class="nav-item"
-          >
+          <router-link v-if="connected" to="/device_setting" class="nav-item">
             <div class="icon-box">
               <span class="material-icons">hardware</span>
               <div v-if="isCollapsed" class="tooltip">{{ $t('navbar.device_setting') }}</div>
             </div>
-            <span class="label" :class="{'hidden-label': isCollapsed}">
+            <span class="label" :class="{ 'hidden-label': isCollapsed }">
               {{ $t('navbar.device_setting') }}
             </span>
           </router-link>
-          <div 
-            v-else
-            class="nav-item disabled-nav-item" 
-            :title="$t('navbar.device_required')"
-          >
+          <div v-else class="nav-item disabled-nav-item" :title="$t('navbar.device_required')">
             <div class="icon-box">
               <span class="material-icons">hardware</span>
               <div v-if="isCollapsed" class="tooltip">{{ $t('navbar.device_required') }}</div>
             </div>
-            <span class="label" :class="{'hidden-label': isCollapsed}">
+            <span class="label" :class="{ 'hidden-label': isCollapsed }">
               {{ $t('navbar.device_setting') }}
             </span>
           </div>
         </li>
         <li>
           <!-- 设备升级按钮，添加禁用逻辑 -->
-          <router-link 
-            v-if="connected" 
-            to="/device_upgrade" 
-            class="nav-item"
-          >
+          <router-link v-if="connected" to="/device_upgrade" class="nav-item">
             <div class="icon-box">
               <span class="material-icons">update</span>
               <div v-if="isCollapsed" class="tooltip">{{ $t('navbar.device_upgrade') }}</div>
             </div>
-            <span class="label" :class="{'hidden-label': isCollapsed}">
+            <span class="label" :class="{ 'hidden-label': isCollapsed }">
               {{ $t('navbar.device_upgrade') }}
             </span>
           </router-link>
-          <div 
-            v-else
-            class="nav-item disabled-nav-item"
-            :title="$t('navbar.device_required')"
-          >
+          <div v-else class="nav-item disabled-nav-item" :title="$t('navbar.device_required')">
             <div class="icon-box">
               <span class="material-icons">update</span>
               <div v-if="isCollapsed" class="tooltip">{{ $t('navbar.device_required') }}</div>
             </div>
-            <span class="label" :class="{'hidden-label': isCollapsed}">
+            <span class="label" :class="{ 'hidden-label': isCollapsed }">
               {{ $t('navbar.device_upgrade') }}
             </span>
           </div>
@@ -91,7 +77,7 @@
               <span class="material-icons">memory</span>
               <div v-if="isCollapsed" class="tooltip">{{ $t('navbar.flash') }}</div>
             </div>
-            <span class="label" :class="{'hidden-label': isCollapsed}">
+            <span class="label" :class="{ 'hidden-label': isCollapsed }">
               {{ $t('navbar.flash') }}
             </span>
           </router-link>
@@ -102,7 +88,7 @@
               <span class="material-icons">settings</span>
               <div v-if="isCollapsed" class="tooltip">{{ $t('navbar.setting') }}</div>
             </div>
-            <span class="label" :class="{'hidden-label': isCollapsed}">
+            <span class="label" :class="{ 'hidden-label': isCollapsed }">
               {{ $t('navbar.setting') }}
             </span>
           </router-link>
@@ -113,7 +99,7 @@
               <span class="material-icons">help_outline</span>
               <div v-if="isCollapsed" class="tooltip">{{ $t('navbar.about') }}</div>
             </div>
-            <span class="label" :class="{'hidden-label': isCollapsed}">
+            <span class="label" :class="{ 'hidden-label': isCollapsed }">
               {{ $t('navbar.about') }}
             </span>
           </router-link>
@@ -124,17 +110,17 @@
 </template>
 
 <script setup lang="ts">
-import {useI18n} from 'vue-i18n';
-import {useUserStore} from "../stores/userStore.ts";
-import {useDeviceStore} from "../stores/deviceStore.ts"; // 导入设备存储
-import {storeToRefs} from "pinia"; // 导入storeToRefs
-import router from "../router.ts";
+import { useI18n } from 'vue-i18n';
+import { useUserStore } from '../stores/userStore.ts';
+import { useDeviceStore } from '../stores/deviceStore.ts'; // 导入设备存储
+import { storeToRefs } from 'pinia'; // 导入storeToRefs
+import router from '../router.ts';
 import { ref, onMounted } from 'vue';
 
-const {locale} = useI18n();
+const { locale } = useI18n();
 const userStore = useUserStore();
 const deviceStore = useDeviceStore(); // 获取设备存储
-const {connected} = storeToRefs(deviceStore); // 获取连接状态
+const { connected } = storeToRefs(deviceStore); // 获取连接状态
 
 // 保留语言切换功能，但从界面上移除按钮
 const setLanguage = (lang: string) => {
@@ -171,7 +157,10 @@ onMounted(() => {
   text-decoration: none;
   overflow: hidden;
   width: 100%;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    color 0.3s ease;
   cursor: pointer;
   background: none;
   border: none;
@@ -205,7 +194,9 @@ onMounted(() => {
 /* 图标样式 */
 .material-icons {
   font-size: 24px;
-  transition: transform 0.2s, color 0.3s;
+  transition:
+    transform 0.2s,
+    color 0.3s;
   user-select: none; /* 防止文本被选中 */
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -235,7 +226,8 @@ onMounted(() => {
 }
 
 /* 弱化的强调色，用于鼠标悬停状态 */
-.nav-item:hover, .toggle-btn:hover {
+.nav-item:hover,
+.toggle-btn:hover {
   background-color: rgba(74, 108, 247, 0.2) !important;
   color: #4a6cf7 !important;
   box-shadow: 0 0 0 1px rgba(74, 108, 247, 0.3) !important;
@@ -246,13 +238,14 @@ onMounted(() => {
   background-color: rgba(74, 108, 247, 0.3) !important;
   color: #4a6cf7 !important;
   font-weight: 500 !important;
-  box-shadow: 0 0 0 2px rgba(74, 108, 247, 0.5) !important, 
-              inset 4px 0 0 #4a6cf7 !important, 
-              0 4px 8px rgba(0, 0, 0, 0.1) !important;
+  box-shadow:
+    0 0 0 2px rgba(74, 108, 247, 0.5) !important,
+    inset 4px 0 0 #4a6cf7 !important,
+    0 4px 8px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* 悬停和激活状态下的图标效果 */
-.nav-item:hover .material-icons, 
+.nav-item:hover .material-icons,
 .toggle-btn:hover .material-icons {
   color: #4a6cf7 !important;
 }
@@ -297,19 +290,20 @@ onMounted(() => {
     background-color: rgba(100, 130, 255, 0.25) !important;
     color: #90a8ff !important;
   }
-  
+
   .nav-item:hover .material-icons,
   .toggle-btn:hover .material-icons,
   .nav-item.router-link-active .material-icons {
     color: #90a8ff !important;
   }
-  
+
   .nav-item.router-link-active {
-    box-shadow: 0 0 0 2px rgba(100, 130, 255, 0.5) !important, 
-                inset 4px 0 0 #90a8ff !important,
-                0 4px 8px rgba(0, 0, 0, 0.2) !important;
+    box-shadow:
+      0 0 0 2px rgba(100, 130, 255, 0.5) !important,
+      inset 4px 0 0 #90a8ff !important,
+      0 4px 8px rgba(0, 0, 0, 0.2) !important;
   }
-  
+
   .tooltip {
     background-color: #6482ff !important;
   }

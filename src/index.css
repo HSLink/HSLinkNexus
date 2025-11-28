@@ -23,13 +23,14 @@
 
   /* IE, Edge and Firefox */
   .no-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 }
 
 /* 全局禁用滚动条 */
-html, body {
+html,
+body {
   overflow: hidden;
   height: 100%;
 }

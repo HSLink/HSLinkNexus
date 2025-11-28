@@ -83,9 +83,9 @@ pub fn hslink_open_device(serial_number: String) -> Result<String, HSLinkError> 
                     *device_lock = Some(device);
                     return Ok(serial_number);
                 }
-                Err(e) =>{
+                Err(e) => {
                     println!("Device already opened");
-                    return Ok(serial_number)
+                    return Ok(serial_number);
                 }
             }
         }
