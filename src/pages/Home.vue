@@ -239,7 +239,6 @@ async function ConnectDevice(deviceSn = "") {
     let speed_boost_enable = rsp_json["boost"];
     let swd_simulate_mode = rsp_json["swd_port_mode"];
     let jtag_simulate_mode = rsp_json["jtag_port_mode"];
-    let jtag_single_bit_mode = rsp_json["jtag_single_bit_mode"] ?? false;
     let power_output = rsp_json["power"];
     let power_on = power_output["power_on"];
     let port_on = power_output["port_on"];
@@ -253,7 +252,6 @@ async function ConnectDevice(deviceSn = "") {
       speed_boost_enable,
       swd_simulate_mode,
       jtag_simulate_mode,
-      jtag_single_bit_mode,
       jtag_20pin_compatible,
       power_output: {
         power_on,

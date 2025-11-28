@@ -13,7 +13,6 @@ interface DeviceSetting {
     speed_boost_enable: boolean
     swd_simulate_mode: "gpio" | "spi"
     jtag_simulate_mode: "gpio" | "spi"
-    jtag_single_bit_mode: boolean
     jtag_20pin_compatible: boolean
     power_output: {
         power_on: boolean
@@ -31,7 +30,6 @@ const DEVICE_SETTING_DEFAULT: DeviceSetting = {
     speed_boost_enable: false,
     swd_simulate_mode: "gpio",
     jtag_simulate_mode: "gpio",
-    jtag_single_bit_mode: false,
     jtag_20pin_compatible: false,
     power_output: {
         power_on: false,
@@ -59,7 +57,6 @@ export const useDeviceStore = defineStore('device', {
         speed_boost_enable: false,
         swd_simulate_mode: "gpio",
         jtag_simulate_mode: "gpio",
-        jtag_single_bit_mode: false,
         jtag_20pin_compatible: false,
         power_power_on: false,
         power_port_on: false,
@@ -91,7 +88,6 @@ export const useDeviceStore = defineStore('device', {
             this.speed_boost_enable = deviceSetting.speed_boost_enable;
             this.swd_simulate_mode = deviceSetting.swd_simulate_mode;
             this.jtag_simulate_mode = deviceSetting.jtag_simulate_mode;
-            this.jtag_single_bit_mode = deviceSetting.jtag_single_bit_mode;
             this.jtag_20pin_compatible = deviceSetting.jtag_20pin_compatible;
             this.power_power_on = deviceSetting.power_output.power_on;
             this.power_port_on = deviceSetting.power_output.port_on;
@@ -104,7 +100,6 @@ export const useDeviceStore = defineStore('device', {
             this.speed_boost_enable = DEVICE_SETTING_DEFAULT.speed_boost_enable;
             this.swd_simulate_mode = DEVICE_SETTING_DEFAULT.swd_simulate_mode;
             this.jtag_simulate_mode = DEVICE_SETTING_DEFAULT.jtag_simulate_mode;
-            this.jtag_single_bit_mode = DEVICE_SETTING_DEFAULT.jtag_single_bit_mode;
             this.jtag_20pin_compatible = DEVICE_SETTING_DEFAULT.jtag_20pin_compatible;
             this.power_power_on = DEVICE_SETTING_DEFAULT.power_output.power_on;
             this.power_port_on = DEVICE_SETTING_DEFAULT.power_output.port_on;

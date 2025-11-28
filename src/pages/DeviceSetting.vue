@@ -14,7 +14,7 @@ const {sn, nickname, model, hw_ver, sw_ver, bl_ver} = storeToRefs(deviceStore)
 const {
   speed_boost_enable, swd_simulate_mode, jtag_simulate_mode,
   power_power_on, power_port_on, power_vref_voltage,
-  reset_mode, led_enable, led_brightness, jtag_single_bit_mode, jtag_20pin_compatible
+  reset_mode, led_enable, led_brightness, jtag_20pin_compatible
 } = storeToRefs(deviceStore)
 
 const show_alert = ref(false)
@@ -170,7 +170,6 @@ async function DownloadSetting() {
       boost: speed_boost_enable.value,
       swd_port_mode: swd_simulate_mode.value,
       jtag_port_mode: jtag_simulate_mode.value,
-      jtag_single_bit_mode: jtag_single_bit_mode.value,
       jtag_20pin_compatible: jtag_20pin_compatible.value,
       power: {
         power_on: power_power_on.value,
@@ -317,27 +316,7 @@ async function DownloadSetting() {
             </div>
           </div>
 
-          <!-- JTAG_SHIFT 加速选项 -->
-          <div class="jtag-shift-container mt-4">
-            <transition name="slide-fade">
-              <div class="form-control" v-if="jtag_simulate_mode === 'spi'">
-                <div class="bg-base-200 p-4 rounded-lg">
-                  <div class="flex items-center justify-between">
-                    <span class="label-text text-lg">{{ t('device_setting.jtag_shift') }}</span>
-                    <div class="flex items-center gap-2">
-                      <input type="checkbox" class="toggle toggle-primary" 
-                             :checked="!jtag_single_bit_mode" 
-                             @change="jtag_single_bit_mode = !($event.target as HTMLInputElement).checked"/>
-                      <span class="label-text text-sm opacity-70">{{ !jtag_single_bit_mode ? t('device_setting.enabled') : t('device_setting.disabled') }}</span>
-                    </div>
-                  </div>
-                  <div class="text-xs mt-1 ml-1 opacity-70">
-                    {{ t('device_setting.jtag_shift_desc') }}
-                  </div>
-                </div>
-              </div>
-            </transition>
-          </div>
+
         </div>
       </div>
 
