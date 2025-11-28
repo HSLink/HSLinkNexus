@@ -8,6 +8,7 @@ import {
 import { storeToRefs } from 'pinia';
 import { useDeviceStore } from '../stores/deviceStore.ts';
 import { useI18n } from 'vue-i18n';
+import { listen, type UnlistenFn } from '@tauri-apps/api/event';
 
 const { t } = useI18n();
 
@@ -354,10 +355,20 @@ function syncConnectedState() {
   }
 }
 
-// 开始定期扫描设备
-function startDeviceScanning() {
-  // 每3秒扫描一次设备
-  deviceScanInterval.value = setInterval(SearchDevice, 3000) as unknown as number;
+// USB 热插拔事件监听器
+let unlistenHotplug: UnlistenFn | null = null;
+
+// 设置热插拔事件监听
+async function setupHotplugListener() {
+  unlistenHotplug = await listen<{ event_type: string; vid: number; pid: number }>(
+    'hslink-device-changed',
+    (event) => {
+      console.log(`USB hotplug event: ${event.payload.event_type}`);
+      // 收到热插拔事件后刷新设备列表
+      SearchDevice();
+    },
+  );
+  console.log('USB hotplug listener registered');
 }
 
 // 停止扫描
@@ -377,13 +388,17 @@ onMounted(async () => {
   // 在组件挂载时同步连接状态
   syncConnectedState();
 
-  // 启动定期扫描
-  startDeviceScanning();
+  // 设置热插拔事件监听
+  await setupHotplugListener();
 });
 
 onUnmounted(() => {
-  // 组件卸载时停止扫描
+  // 组件卸载时停止扫描和取消事件监听
   stopDeviceScanning();
+  if (unlistenHotplug) {
+    unlistenHotplug();
+    unlistenHotplug = null;
+  }
 });
 
 // 监听连接状态变化

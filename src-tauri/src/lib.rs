@@ -1,6 +1,7 @@
 mod copy_file;
 mod find_bl;
 mod hslink_backend;
+mod usb_hotplug;
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
@@ -17,6 +18,11 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
+        .setup(|app| {
+            // 启动 USB 热插拔监听
+            usb_hotplug::start_hotplug_listener(app.handle().clone());
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             greet,
             hslink_backend::hslink_list_device,
