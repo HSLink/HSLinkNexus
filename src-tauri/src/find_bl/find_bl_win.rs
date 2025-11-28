@@ -1,12 +1,10 @@
 use crate::hslink_backend;
 use std::ffi::OsString;
-use std::fs;
 use std::os::windows::ffi::OsStringExt;
-use std::path::Path;
-use std::process::Command;
 use std::ptr;
 use winapi::um::fileapi::{GetLogicalDriveStringsW, GetVolumeInformationW};
-use winapi::um::winnt::WCHAR;
+
+const VOLUME_NAME: &str = "CHERRYUF2";
 
 /// 获取所有盘符
 fn get_logical_drives() -> Vec<String> {
@@ -18,14 +16,12 @@ fn get_logical_drives() -> Vec<String> {
     }
 
     let drive_str = OsString::from_wide(&buffer[..len as usize]);
-    let drives: Vec<String> = drive_str
+    drive_str
         .to_string_lossy()
         .split('\0')
         .filter(|s| !s.is_empty())
         .map(|s| s.to_string())
-        .collect();
-
-    drives
+        .collect()
 }
 
 /// 获取指定盘符的卷标
@@ -49,35 +45,24 @@ fn get_volume_label(drive: &str) -> Option<String> {
     if result != 0 {
         let label = OsString::from_wide(&volume_name)
             .to_string_lossy()
-            .into_owned();
-        Some(label.trim_end_matches('\0').to_string())
+            .trim_end_matches('\0')
+            .to_string();
+        Some(label)
     } else {
         None
     }
 }
 
-/// 查找 CherryDAP 盘符
-fn find_cherrydap_drive() -> Option<String> {
-    let drives = get_logical_drives();
-    for drive in &drives {
-        if let Some(label) = get_volume_label(drive) {
-            if label == "CHERRYUF2" {
-                println!("Found CherryDAP drive: {}", drive);
-                return Some(drive.clone());
-            } else {
-                println!("Drive {} has label {}", drive, label);
+pub fn find_bl() -> Result<String, hslink_backend::HSLinkError> {
+    for drive in get_logical_drives() {
+        if let Some(label) = get_volume_label(&drive) {
+            if label == VOLUME_NAME {
+                println!("Found CHERRYUF2 drive: {}", drive);
+                return Ok(drive);
             }
         }
     }
-    None
-}
 
-pub fn find_bl() -> Result<String, hslink_backend::HSLinkError> {
-    match find_cherrydap_drive() {
-        Some(drive) => Ok(drive),
-        None => {
-            println!("CherryDAP drive not found");
-            Err(hslink_backend::HSLinkError::DeviceNotFound)
-        }
-    }
+    println!("CHERRYUF2 drive not found");
+    Err(hslink_backend::HSLinkError::DeviceNotFound)
 }
