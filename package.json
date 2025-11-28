@@ -36,11 +36,10 @@
     "dev": "vite",
     "download-assets": "node ./scripts/download-assets.js",
     "update-version": "node ./scripts/update-version.js",
-    "prebuild": "pnpm download-assets && pnpm update-version",
-    "predev": "pnpm download-assets",
+    "prebuild": "pnpm download-assets",
     "preview": "vite preview",
     "tauri": "tauri"
   },
   "type": "module",
-  "version": "1.2.2-2+g881dec1"
+  "version": "1.2.3"
 }
