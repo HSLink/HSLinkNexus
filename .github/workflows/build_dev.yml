@@ -1,4 +1,4 @@
-name: 'build_dev'
+name: 'build and release'
 
 on:
   push:
@@ -20,11 +20,21 @@ jobs:
       VERSION: ${{ steps.get_version.outputs.VERSION }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 需要完整的 git 历史来获取 tag 信息
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Update version from git tags
+        run: node scripts/update-version.js
 
       - name: Get version number
         id: get_version
         run: |
-          VERSION=$(jq -r '.version' src-tauri/tauri.conf.json)
+          VERSION=$(jq -r '.version' package.json)
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
   windows-build:
