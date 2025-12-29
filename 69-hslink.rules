@@ -3,7 +3,7 @@
 # HSLinkPro boards, https://github.com/HSLink/HSLink_Hardware
 # HSLinkPro firmware, https://github.com/cherry-embedded/CherryDAP/releases
 
-# Copy this file to /etc/udev/rules.d/
+# Copy this file to /etc/udev/rules.d/, ensure the order number SHALL less than 70.
 # If rules fail to reload automatically, you can refresh udev rules
 # with the command "udevadm control --reload"
 

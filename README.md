@@ -21,7 +21,7 @@ If you are using a repository-compiled deb or rpm package, you need to install 9
 
 ```bash
 cd /usr/lib/hslink-nexus
-sudo install -Dvm644 99-hslink.rules -t /usr/lib/udev/rules.d/
+sudo install -Dvm644 69-hslink.rules -t /usr/lib/udev/rules.d/
 ```
 
 If rules fail to reload automatically, you can refresh udev rules with the command "udevadm control --reload"
