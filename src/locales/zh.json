@@ -67,6 +67,8 @@
     "compatibility": "兼容性选项",
     "jtag_20pin": "20P JTAG接口兼容模式",
     "jtag_20pin_desc": "启用后将关闭UART功能，全部输出低电平，避免部分设备接地导致发热较高",
+    "webusb_popup": "WebUSB 弹窗",
+    "webusb_popup_desc": "启用后，设备插入电脑时浏览器会弹出 WebUSB 引导页通知；修改后需重新插拔 USB 生效",
     "power_settings": "电源设置",
     "power_on_startup": "上电开启电源输出",
     "power_on_desc": "打开之后TVcc默认开启，输出电压与参考电压保持一致",

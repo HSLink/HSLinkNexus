@@ -266,6 +266,7 @@ async function ConnectDevice(deviceSn = '') {
     let led = rsp_json['led'];
     let led_brightness = rsp_json['led_brightness'];
     let jtag_20pin_compatible = rsp_json['jtag_20pin_compatible'] ?? false;
+    let webusb_popup_enable = rsp_json['webusb_popup'] ?? true;
     console.log(`get device setting: ${rsp}`);
     deviceStore.setDeviceSetting({
       speed_boost_enable,
@@ -282,6 +283,7 @@ async function ConnectDevice(deviceSn = '') {
         enable: led,
         brightness: led_brightness,
       },
+      webusb_popup_enable,
     });
   } catch (e) {
     console.log(`request setting failed: ${rsp}`);

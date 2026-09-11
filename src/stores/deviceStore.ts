@@ -24,6 +24,7 @@ interface DeviceSetting {
     enable: boolean;
     brightness: number;
   };
+  webusb_popup_enable: boolean;
 }
 
 const DEVICE_SETTING_DEFAULT: DeviceSetting = {
@@ -41,6 +42,7 @@ const DEVICE_SETTING_DEFAULT: DeviceSetting = {
     enable: true,
     brightness: 60,
   },
+  webusb_popup_enable: true,
 };
 
 export const useDeviceStore = defineStore('device', {
@@ -64,6 +66,7 @@ export const useDeviceStore = defineStore('device', {
     reset_mode: ['nrst'],
     led_enable: true,
     led_brightness: 60,
+    webusb_popup_enable: true,
   }),
   actions: {
     setDeviceInfo(deviceInfo: DeviceInfo) {
@@ -95,6 +98,7 @@ export const useDeviceStore = defineStore('device', {
       this.reset_mode = deviceSetting.reset_mode;
       this.led_enable = deviceSetting.led.enable;
       this.led_brightness = deviceSetting.led.brightness;
+      this.webusb_popup_enable = deviceSetting.webusb_popup_enable;
     },
     resetDeviceSetting() {
       this.speed_boost_enable = DEVICE_SETTING_DEFAULT.speed_boost_enable;
@@ -107,6 +111,7 @@ export const useDeviceStore = defineStore('device', {
       this.reset_mode = DEVICE_SETTING_DEFAULT.reset_mode;
       this.led_enable = DEVICE_SETTING_DEFAULT.led.enable;
       this.led_brightness = DEVICE_SETTING_DEFAULT.led.brightness;
+      this.webusb_popup_enable = DEVICE_SETTING_DEFAULT.webusb_popup_enable;
     },
   },
 });
