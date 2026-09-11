@@ -21,6 +21,7 @@ const {
   led_enable,
   led_brightness,
   jtag_20pin_compatible,
+  webusb_popup_enable,
 } = storeToRefs(deviceStore);
 
 const show_alert = ref(false);
@@ -189,6 +190,7 @@ async function DownloadSetting() {
       reset: reset_mode.value,
       led: led_enable.value,
       led_brightness: led_brightness.value,
+      webusb_popup: webusb_popup_enable.value,
     },
   });
   console.log(`setting str is ${setting_str}, len is ${setting_str.length}`);
@@ -393,6 +395,24 @@ async function DownloadSetting() {
               </div>
             </div>
             <p class="text-xs ml-1 mt-1 opacity-70">{{ t('device_setting.jtag_20pin_desc') }}</p>
+          </div>
+
+          <div class="bg-base-200 p-4 rounded-lg mt-4">
+            <div class="flex items-center justify-between">
+              <span class="label-text text-lg">{{ t('device_setting.webusb_popup') }}</span>
+              <div class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  class="toggle toggle-primary"
+                  :checked="webusb_popup_enable"
+                  @change="webusb_popup_enable = ($event.target as HTMLInputElement).checked"
+                />
+                <span class="label-text text-sm opacity-70">{{
+                  webusb_popup_enable ? t('device_setting.enabled') : t('device_setting.disabled')
+                }}</span>
+              </div>
+            </div>
+            <p class="text-xs ml-1 mt-1 opacity-70">{{ t('device_setting.webusb_popup_desc') }}</p>
           </div>
         </div>
       </div>
